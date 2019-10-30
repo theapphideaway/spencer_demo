@@ -27,6 +27,58 @@ class LoginState extends State<Login>{
 
               ),
               new Text(
+                "LOGIN USING ",
+                style: TextStyle(color: Colors.grey,),),
+              new Expanded(
+                child: new Padding(
+                    padding: EdgeInsets.only(left: 8, right: 16),
+                    child: Divider(
+                      color: Colors.black,
+                    )),
+
+              )
+            ],
+
+
+          ),new Row(
+            children: <Widget>[
+              new Expanded(
+                  child: Container()
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                child: GestureDetector(child:Image.asset('assets/GoogleButton.png',scale: 1.2),)
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                child: GestureDetector(child: Image.asset('assets/FacebookButton.png', scale: 1.2)),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                child: GestureDetector(child: Image.asset('assets/Twitter.png', scale: 1.2,)),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                child: GestureDetector(child: Image.asset('assets/LinkedinButton.png', scale: 1.2)),
+              ),
+              new Expanded(
+                child: Container()
+              )
+            ],
+          ),
+
+
+          new Row(
+            children: <Widget>[
+              new Expanded(
+                child: new Padding(
+                    padding: EdgeInsets.only(left: 16, right: 8),
+                    child: Divider(
+                      color: Colors.black,
+                    )),
+
+              ),
+              new Text(
                 "LOGIN USING EMAIL",
                 style: TextStyle(color: Colors.grey,),),
               new Expanded(
