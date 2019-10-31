@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'SignUp.dart';
+
 class Login extends StatefulWidget{
   LoginState createState()=> LoginState();
 }
@@ -8,9 +10,9 @@ class Login extends StatefulWidget{
 class LoginState extends State<Login>{
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-        body: SingleChildScrollView(child: Container(child: Column(children: <Widget>[
+    return Scaffold(
+        body: SafeArea(
+            child: SingleChildScrollView(child: Container(child: Column(children: <Widget>[
 
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 64),
@@ -67,7 +69,6 @@ class LoginState extends State<Login>{
             ],
           ),
 
-
           new Row(
             children: <Widget>[
               new Expanded(
@@ -76,7 +77,6 @@ class LoginState extends State<Login>{
                     child: Divider(
                       color: Colors.black,
                     )),
-
               ),
               new Text(
                 "LOGIN USING EMAIL",
@@ -87,7 +87,6 @@ class LoginState extends State<Login>{
                     child: Divider(
                       color: Colors.black,
                     )),
-
               )
             ],
           ),
@@ -149,9 +148,13 @@ class LoginState extends State<Login>{
                 new Text(
                   "Don't have an account? ",
                   style: TextStyle(color: Colors.grey,),),
-                new Text(
-                  "Sign up",
-                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
+                GestureDetector(
+                  onTap: onSignUp,
+                  child: new Text(
+                    "Sign up",
+                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
+                ),
+
                 Expanded(child: Container()),
 
               ],
@@ -160,6 +163,10 @@ class LoginState extends State<Login>{
 
         ],
         )))));
+  }
+
+  onSignUp(){
+    Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
   }
 
 }
