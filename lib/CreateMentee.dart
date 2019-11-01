@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'MenteeQuestionaire.dart';
 import 'SignUp.dart';
 
 class CreateMentee extends StatefulWidget {
@@ -8,6 +9,7 @@ class CreateMentee extends StatefulWidget {
 }
 
 class CreateMenteeState extends State<CreateMentee> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -129,7 +131,7 @@ class CreateMenteeState extends State<CreateMentee> {
                   borderRadius: new BorderRadius.circular(10.0)),
               padding: EdgeInsets.all(16),
               color: Colors.indigoAccent,
-              onPressed: () => {},
+              onPressed: _next,
               child: Text(
                 "Continue",
                 style: TextStyle(
@@ -145,7 +147,7 @@ class CreateMenteeState extends State<CreateMentee> {
               borderRadius: new BorderRadius.circular(10.0)),
           padding: EdgeInsets.all(16),
           color: Colors.transparent,
-          onPressed: () => {Navigator.pop(context)},
+          onPressed: _next,
           child: Text(
             "Cancel",
             style: TextStyle(
@@ -158,7 +160,7 @@ class CreateMenteeState extends State<CreateMentee> {
     )))));
   }
 
-  onSignUp() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
+  _next() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MenteeQuestionaire()));
   }
 }
