@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:way_ahead/MenteeDashboard.dart';
 import 'MenteePlans.dart';
 import 'SignUp.dart';
 
@@ -387,7 +387,7 @@ class MenteeQuestionaireState extends State<MenteeQuestionaire> {
                                                   fontSize: 18),
                                             ),
                                             color: Colors.blue[800],
-                                            onPressed: ()=> onNext,
+                                            onPressed: onFinish,
                                           ))),
                             ],),
 
@@ -456,5 +456,10 @@ class MenteeQuestionaireState extends State<MenteeQuestionaire> {
 
   onSignUp() {
     Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
+  }
+
+  onFinish(){
+
+    //Navigator.push(context, MaterialPageRoute(builder: (context) => MenteeDashboard()));
   }
 }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>723668210377-m42i97t425s8f5hrdienobd5f0puldna.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.723668210377-m42i97t425s8f5hrdienobd5f0puldna</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDHhUo495o71QytTFYga8Mex4JBSuK1f7g</string>
+	<key>GCM_SENDER_ID</key>
+	<string>723668210377</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>io.wayahead.wayAhead</string>
+	<key>PROJECT_ID</key>
+	<string>wayahead-2ca20</string>
+	<key>STORAGE_BUCKET</key>
+	<string>wayahead-2ca20.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:723668210377:ios:df61b82f31a8a7b6c3f318</string>
+	<key>DATABASE_URL</key>
+	<string>https://wayahead-2ca20.firebaseio.com</string>
+</dict>
+</plist>

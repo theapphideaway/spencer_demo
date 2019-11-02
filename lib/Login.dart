@@ -1,13 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'SignUp.dart';
 
 class Login extends StatefulWidget{
+
   LoginState createState()=> LoginState();
 }
 
 class LoginState extends State<Login>{
+
+  final databaseReference = FirebaseDatabase.instance.reference();
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -129,7 +136,7 @@ class LoginState extends State<Login>{
                 ),
                 padding: EdgeInsets.all(16),
                 color: Colors.indigoAccent,
-                onPressed: ()=> {} ,
+                onPressed: onLogin ,
                 child: Text("Login",
                   style: TextStyle(
                     fontSize: 18,
@@ -167,6 +174,21 @@ class LoginState extends State<Login>{
 
   onSignUp(){
     Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
+  }
+
+  Future<String> signIn(String email, String password) async {
+    AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(
+        email: email, password: password);
+    FirebaseUser user = result.user;
+    return user.uid;
+  }
+
+  onLogin(){
+    FirebaseDatabase.instance.reference().child('recentboi')
+        .set({
+      'title': 'Realtime db rocks',
+      'created_at': "idk"
+    });
   }
 
 }
