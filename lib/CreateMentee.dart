@@ -147,7 +147,7 @@ class CreateMenteeState extends State<CreateMentee> {
               borderRadius: new BorderRadius.circular(10.0)),
           padding: EdgeInsets.all(16),
           color: Colors.transparent,
-          onPressed: _next,
+          onPressed: ()=> {Navigator.pop(context)},
           child: Text(
             "Cancel",
             style: TextStyle(

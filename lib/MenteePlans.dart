@@ -3,18 +3,18 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class IncidentTypes extends StatefulWidget {
-  IncidentTypesState createState() => IncidentTypesState();
+class MenteePlans extends StatefulWidget {
+  MenteePlansState createState() => MenteePlansState();
 }
 
-const incidentTypes = [
+const planTypes = [
   "College",
   "Military",
   "Trade School",
   "Straight To Work",
 ];
 
-class IncidentTypesState extends State<IncidentTypes> {
+class MenteePlansState extends State<MenteePlans> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -40,12 +40,12 @@ class IncidentTypesState extends State<IncidentTypes> {
                     removeTop: true,
                     context: context,
                     child: ListView.builder(
-                      itemCount: incidentTypes.length,
+                      itemCount: planTypes.length,
                       itemBuilder: (context, index) {
                         return ListTile(
                             onTap: () =>
-                            {Navigator.pop(context, incidentTypes[index])},
-                            title: Text(incidentTypes[index]));
+                            {Navigator.pop(context, planTypes[index])},
+                            title: Text(planTypes[index]));
                       },
                     ),
                   ),

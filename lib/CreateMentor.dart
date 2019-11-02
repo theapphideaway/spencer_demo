@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:way_ahead/MentorQuestionaire.dart';
 
 import 'SignUp.dart';
 
@@ -129,7 +130,7 @@ class CreateMentorState extends State<CreateMentor> {
                                   borderRadius: new BorderRadius.circular(10.0)),
                               padding: EdgeInsets.all(16),
                               color: Colors.indigoAccent,
-                              onPressed: () => {},
+                              onPressed: onContinue,
                               child: Text(
                                 "Continue",
                                 style: TextStyle(
@@ -158,7 +159,9 @@ class CreateMentorState extends State<CreateMentor> {
                     )))));
   }
 
-  onSignUp() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
+  onContinue() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MentorQuestionaire()));
   }
+
+
 }

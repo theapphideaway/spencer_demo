@@ -13,6 +13,27 @@ class MenteeQuestionaireState extends State<MenteeQuestionaire> {
   bool isWork = true;
   bool isSchool = false;
   bool isMilitary = false;
+  int currentQuestion = 0;
+
+  int _radioValue = 0;
+
+  void _handleRadioValueChange(int value) {
+    setState(() {
+      _radioValue = value;
+
+      switch (_radioValue) {
+        case 0:
+          break;
+        case 1:
+          break;
+        case 2:
+          break;
+        case 3:
+          break;
+      }
+    });
+  }
+
   @override
   void initState() {
     planController.text = "Straight To Work";
@@ -43,7 +64,7 @@ class MenteeQuestionaireState extends State<MenteeQuestionaire> {
                   padding: EdgeInsets.only(left: 16, right: 8),
                   child: Divider(
                     thickness: 3,
-                    color: Colors.blue[800],
+                    color: currentQuestion == 0?Colors.blue[800]: Colors.grey[300],
                   )),
             ),
             new Expanded(
@@ -51,48 +72,47 @@ class MenteeQuestionaireState extends State<MenteeQuestionaire> {
                   padding: EdgeInsets.only(left: 8, right: 16),
                   child: Divider(
                     thickness: 3,
-                    color: Colors.grey[300],
+                    color: currentQuestion == 0?Colors.grey[300]: Colors.blue[800],
                   )),
             )
           ],
         ),
-        Padding(
-          padding: EdgeInsets.only(top: 16),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: Container(),
-              ),
-              Text("What are your ",
-                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
-              Text("current",
-                  style: TextStyle(
-                      color: Colors.blue[800],
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold)),
-              Expanded(
-                child: Container(),
-              ),
-            ],
-          ),
-        ),
-        Text("plans for the future?",
-            style: TextStyle(
-                color: Colors.blue[800],
-                fontSize: 32,
-                fontWeight: FontWeight.bold)),
+
         Container(
           height: 500,
           width: double.infinity,
           child: PageView.builder(
             physics: new NeverScrollableScrollPhysics(),
             itemBuilder: (context, position) {
-              return PageView(
-                physics: new NeverScrollableScrollPhysics(),
-                children: <Widget>[
-                  Container(
+              position = currentQuestion;
+              return position == 0?Container(
                     child: Column(
                       children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(top: 16),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Container(),
+                            ),
+                            Text("What are your ",
+                                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+                            Text("current",
+                                style: TextStyle(
+                                    color: Colors.blue[800],
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.bold)),
+                            Expanded(
+                              child: Container(),
+                            ),
+                          ],
+                        ),
+                        ),
+                        Text("plans for the future?",
+                            style: TextStyle(
+                                color: Colors.blue[800],
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold)),
                         Padding(
                           padding: EdgeInsets.only(
                             left: 16,
@@ -167,38 +187,216 @@ class MenteeQuestionaireState extends State<MenteeQuestionaire> {
                                 ),
                               ),
                             ),
-                            Align(
-                                alignment: Alignment.bottomRight,
-                                child: Padding(
-                                    padding: EdgeInsets.all(16),
-                                    child: Container(
-                                        child: FlatButton(
-                                      shape: RoundedRectangleBorder(
-                                          side: BorderSide(
-                                              color: Colors.grey,
-                                              width: 1,
-                                              style: BorderStyle.solid),
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
-                                      child: Text(
-                                        "Next",
-                                        style: TextStyle(
-                                            color: Colors.blue[800],
-                                            fontSize: 18),
-                                      ),
-                                    )))),
+                            Row(children: <Widget>[
+                              Padding(
+                                  padding: EdgeInsets.all(16),
+                                  child: Container(
+                                      child: FlatButton(
+                                        shape: RoundedRectangleBorder(
+                                            side: BorderSide(
+                                                color: Colors.grey,
+                                                width: 1,
+                                                style: BorderStyle.solid),
+                                            borderRadius:
+                                            BorderRadius.circular(5)),
+                                        child: Text(
+                                          "Back",
+                                          style: TextStyle(
+                                              color: Colors.blue[800],
+                                              fontSize: 18),
+                                        ),
+                                        onPressed: ()=> {Navigator.pop(context)},
+                                      ))),
+
+                              Expanded(child: Container(),),
+
+                              Padding(
+                                  padding: EdgeInsets.all(16),
+                                  child: Container(
+                                      child: FlatButton(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                            BorderRadius.circular(5)),
+                                        child: Text(
+                                          "Next",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18),
+                                        ),
+                                        color: Colors.blue[800],
+                                        onPressed: onNext ,
+                                      ))),
+                            ],),
                           ],
 
                         ),
 
                       ],
                     ),
-                  ),
+                  ):
+
+
+
+
+
                   Container(
-                    color: Colors.blue,
-                  ),
-                ],
-              );
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(top: 16),
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Container(),
+                              ),
+                              Text("How certain are you ",
+                                  style: TextStyle(color: Colors.blue[800],fontSize: 32, fontWeight: FontWeight.bold)),
+                              Text("of",
+                                  style: TextStyle(
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.bold)),
+                              Expanded(
+                                child: Container(),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Text("your plans?",
+                            style: TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold)),
+
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 0),
+                          child: new Row(
+                            children: <Widget>[
+                              new Padding(
+                                  padding: EdgeInsets.only(left: 0, right: 0),
+                                  child: Radio(
+                                    value: 0,
+                                    groupValue: _radioValue,
+                                    onChanged: _handleRadioValueChange,
+                                  )),
+                              new Text(
+                                "100% certain",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 0),
+                          child: new Row(
+                            children: <Widget>[
+                              new Padding(
+                                  padding: EdgeInsets.only(left: 0, right: 0),
+                                  child: Radio(
+                                    value: 1,
+                                    groupValue: _radioValue,
+                                    onChanged: _handleRadioValueChange,
+                                  )),
+                              new Text(
+                                "I have a good idea, but things could change",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 0),
+                          child: new Row(
+                            children: <Widget>[
+                              new Padding(
+                                  padding: EdgeInsets.only(left: 0, right: 0),
+                                  child: Radio(
+                                    value: 2,
+                                    groupValue: _radioValue,
+                                    onChanged: _handleRadioValueChange,
+                                  )),
+                              new Text(
+                                "Its something I\'m interested in, but who knows",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 0),
+                          child: new Row(
+                            children: <Widget>[
+                              new Padding(
+                                  padding: EdgeInsets.only(left: 0, right: 0),
+                                  child: Radio(
+                                    value: 3,
+                                    groupValue: _radioValue,
+                                    onChanged: _handleRadioValueChange,
+                                  )),
+                              new Text(
+                                "I have no clue what I want to do",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                            Row(children: <Widget>[
+                              Padding(
+                                      padding: EdgeInsets.all(16),
+                                      child: Container(
+                                          child: FlatButton(
+                                            shape: RoundedRectangleBorder(
+                                                side: BorderSide(
+                                                    color: Colors.grey,
+                                                    width: 1,
+                                                    style: BorderStyle.solid),
+                                                borderRadius:
+                                                BorderRadius.circular(5)),
+                                            child: Text(
+                                              "Back",
+                                              style: TextStyle(
+                                                  color: Colors.blue[800],
+                                                  fontSize: 18),
+                                            ),
+                                            onPressed: ()=> onBack(),
+                                          ))),
+
+                              Expanded(child: Container(),),
+
+                              Padding(
+                                      padding: EdgeInsets.all(16),
+                                      child: Container(
+                                          child: FlatButton(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                BorderRadius.circular(5)),
+                                            child: Text(
+                                              "Finish",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 18),
+                                            ),
+                                            color: Colors.blue[800],
+                                            onPressed: ()=> onNext,
+                                          ))),
+                            ],),
+
+
+
+
+                      ],
+                    ),
+                  );
             },
           ),
         ),
@@ -211,7 +409,7 @@ class MenteeQuestionaireState extends State<MenteeQuestionaire> {
       opaque: false,
       pageBuilder: (BuildContext context, Animation<double> animation,
           Animation<double> secondaryAnimation) {
-        return IncidentTypes();
+        return MenteePlans();
       },
       transitionsBuilder: (BuildContext context, Animation<double> animation,
           Animation<double> secondaryAnimation, Widget child) {
@@ -245,7 +443,15 @@ class MenteeQuestionaireState extends State<MenteeQuestionaire> {
   }
 
   onNext(){
+    setState(() {
+      currentQuestion += 1;
+    });
+  }
 
+  onBack(){
+    setState(() {
+      currentQuestion -= 1;
+    });
   }
 
   onSignUp() {
