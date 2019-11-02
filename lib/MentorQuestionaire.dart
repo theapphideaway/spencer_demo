@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:way_ahead/MentorEducation.dart';
 
 import 'MenteePlans.dart';
 import 'MentorIndustries.dart';
@@ -10,19 +11,34 @@ class MentorQuestionaire extends StatefulWidget {
 }
 
 class MentorQuestionaireState extends State<MentorQuestionaire> {
-  TextEditingController planController = new TextEditingController();
-  bool isWork = true;
-  bool isSchool = false;
-  bool isMilitary = false;
+  TextEditingController industryController = new TextEditingController();
+  TextEditingController educationController = new TextEditingController();
   int currentQuestion = 0;
-
-  int _radioValue = 0;
-
-  void _handleRadioValueChange(int value) {
+  int _veteranValue = 0;
+  int _experienceValue = 0;
+  bool _hasServed = false;
+  void _handleExperienceValueChange(int value) {
     setState(() {
-      _radioValue = value;
+      _experienceValue = value;
 
-      switch (_radioValue) {
+      switch (_experienceValue) {
+        case 0:
+          break;
+        case 1:
+          break;
+        case 2:
+          break;
+        case 3:
+          break;
+      }
+    });
+  }
+
+  void _handleVeteranStatusChange(int value) {
+    setState(() {
+      _veteranValue = value;
+
+      switch (_veteranValue) {
         case 0:
           break;
         case 1:
@@ -37,7 +53,8 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
 
   @override
   void initState() {
-    planController.text = "Select industry";
+    industryController.text = "Select industry";
+    educationController.text = "High School/GED";
     super.initState();
   }
 
@@ -88,7 +105,7 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                         ),
 
                         Container(
-                          height: 550,
+                          height: 600,
                           width: double.infinity,
                           child: PageView.builder(
                             physics: new NeverScrollableScrollPhysics(),
@@ -117,11 +134,14 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                         ],
                                       ),
                                     ),
-                                    Text("living?",
+                                    Padding(
+                                      padding: EdgeInsets.only(bottom: 16),
+                                      child: Text("living?",
                                         style: TextStyle(
                                             color: Colors.blue[800],
                                             fontSize: 32,
-                                            fontWeight: FontWeight.bold)),
+                                            fontWeight: FontWeight.bold)),),
+
 
                                     Column(
                                       children: <Widget>[
@@ -133,7 +153,7 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                           child: TextField(
                                             decoration: InputDecoration(
                                                 contentPadding: EdgeInsets.all(16),
-                                                hintText: isWork?"Job Title": isSchool? "School Name": isMilitary? "Branch":"",
+                                                hintText: "Job Title",
                                                 border: OutlineInputBorder(
                                                     borderRadius: BorderRadius.circular(10)
                                                 )),
@@ -145,7 +165,7 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                             obscureText: true,
                                             decoration: InputDecoration(
                                               contentPadding: EdgeInsets.all(16),
-                                              hintText: isWork? "Company Name": isSchool? "School Major": isMilitary? "Military Occupation":"",
+                                              hintText: "Company Name",
                                               border: OutlineInputBorder(
                                                   borderRadius: BorderRadius.circular(10)
                                               ),
@@ -158,8 +178,8 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                             right: 16,
                                           ),
                                           child: TextFormField(
-                                            onTap: menteePlans,
-                                            controller: planController,
+                                            onTap: mentorIndustry,
+                                            controller: industryController,
                                             decoration: InputDecoration(
                                                 contentPadding: EdgeInsets.all(16),
                                                 suffixIcon: Icon(Icons.arrow_drop_down),
@@ -190,8 +210,8 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                                           padding: EdgeInsets.only(left: 0, right: 0),
                                                           child: Radio(
                                                             value: 0,
-                                                            groupValue: _radioValue,
-                                                            onChanged: _handleRadioValueChange,
+                                                            groupValue: _experienceValue,
+                                                            onChanged: _handleExperienceValueChange,
                                                           )),
                                                       new Text(
                                                         "1-4",
@@ -204,8 +224,8 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                                           padding: EdgeInsets.only(left: 0, right: 0),
                                                           child: Radio(
                                                             value: 1,
-                                                            groupValue: _radioValue,
-                                                            onChanged: _handleRadioValueChange,
+                                                            groupValue: _experienceValue,
+                                                            onChanged: _handleExperienceValueChange,
                                                           )),
                                                       new Text(
                                                         "5-9",
@@ -218,8 +238,8 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                                           padding: EdgeInsets.only(left: 0, right: 0),
                                                           child: Radio(
                                                             value: 2,
-                                                            groupValue: _radioValue,
-                                                            onChanged: _handleRadioValueChange,
+                                                            groupValue: _experienceValue,
+                                                            onChanged: _handleExperienceValueChange,
                                                           )),
                                                       new Text(
                                                         "10+",
@@ -281,7 +301,7 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
 
                                   ],
                                 ),
-                              ):
+                              ):position == 1?
 
 
 
@@ -297,10 +317,11 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                           Expanded(
                                             child: Container(),
                                           ),
-                                          Text("How certain are you ",
-                                              style: TextStyle(color: Colors.blue[800],fontSize: 32, fontWeight: FontWeight.bold)),
-                                          Text("of",
+                                          Text("Select your ",
+                                              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+                                          Text("highest level of",
                                               style: TextStyle(
+                                                  color: Colors.blue[800],
                                                   fontSize: 32,
                                                   fontWeight: FontWeight.bold)),
                                           Expanded(
@@ -309,95 +330,52 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                         ],
                                       ),
                                     ),
-                                    Text("your plans?",
-                                        style: TextStyle(
-                                            fontSize: 32,
-                                            fontWeight: FontWeight.bold)),
-
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(vertical: 0),
-                                      child: new Row(
-                                        children: <Widget>[
-                                          new Padding(
-                                              padding: EdgeInsets.only(left: 0, right: 0),
-                                              child: Radio(
-                                                value: 0,
-                                                groupValue: _radioValue,
-                                                onChanged: _handleRadioValueChange,
-                                              )),
-                                          new Text(
-                                            "100% certain",
+                                    Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Container(),
+                                        ),
+                                        Text("education ",
+                                            style: TextStyle(color: Colors.blue[800],fontSize: 32, fontWeight: FontWeight.bold)),
+                                        Text("attained",
                                             style: TextStyle(
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                                fontSize: 32,
+                                                fontWeight: FontWeight.bold)),
+                                        Expanded(
+                                          child: Container(),
+                                        ),
+                                      ],
                                     ),
 
                                     Padding(
-                                      padding: EdgeInsets.symmetric(vertical: 0),
-                                      child: new Row(
-                                        children: <Widget>[
-                                          new Padding(
-                                              padding: EdgeInsets.only(left: 0, right: 0),
-                                              child: Radio(
-                                                value: 1,
-                                                groupValue: _radioValue,
-                                                onChanged: _handleRadioValueChange,
-                                              )),
-                                          new Text(
-                                            "I have a good idea, but things could change",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ],
+                                      padding: EdgeInsets.only(
+                                        left: 16,
+                                        right: 16,
+                                        top:16
+                                      ),
+                                      child: TextFormField(
+                                        onTap: mentorEducation,
+                                        controller: educationController,
+                                        decoration: InputDecoration(
+                                            contentPadding: EdgeInsets.all(16),
+                                            suffixIcon: Icon(Icons.arrow_drop_down),
+                                            border: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(10))),
                                       ),
                                     ),
-
                                     Padding(
-                                      padding: EdgeInsets.symmetric(vertical: 0),
-                                      child: new Row(
-                                        children: <Widget>[
-                                          new Padding(
-                                              padding: EdgeInsets.only(left: 0, right: 0),
-                                              child: Radio(
-                                                value: 2,
-                                                groupValue: _radioValue,
-                                                onChanged: _handleRadioValueChange,
-                                              )),
-                                          new Text(
-                                            "Its something I\'m interested in, but who knows",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                            ),
+                                      padding: EdgeInsets.all(16),
+                                      child: TextField(
+                                        obscureText: true,
+                                        decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.all(16),
+                                          hintText: "School Name",
+                                          border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(10)
                                           ),
-                                        ],
+                                        ),
                                       ),
                                     ),
-
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(vertical: 0),
-                                      child: new Row(
-                                        children: <Widget>[
-                                          new Padding(
-                                              padding: EdgeInsets.only(left: 0, right: 0),
-                                              child: Radio(
-                                                value: 3,
-                                                groupValue: _radioValue,
-                                                onChanged: _handleRadioValueChange,
-                                              )),
-                                          new Text(
-                                            "I have no clue what I want to do",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-
                                     Row(children: <Widget>[
                                       Padding(
                                           padding: EdgeInsets.all(16),
@@ -416,7 +394,7 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                                       color: Colors.blue[800],
                                                       fontSize: 18),
                                                 ),
-                                                onPressed: ()=> onBack(),
+                                                onPressed: onBack,
                                               ))),
 
                                       Expanded(child: Container(),),
@@ -435,12 +413,236 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                                       fontSize: 18),
                                                 ),
                                                 color: Colors.blue[800],
-                                                onPressed: ()=> onNext,
+                                                onPressed: onNext ,
                                               ))),
                                     ],),
+                                  ],
+                                ),
+                              ):
 
 
 
+                              Container(
+                                child: Column(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 16),
+                                      child: Row(
+                                        children: <Widget>[
+                                          Expanded(
+                                            child: Container(),
+                                          ),
+                                          Text("Did you ever  ",
+                                              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+                                          Text("serve in the ",
+                                              style: TextStyle(
+                                                  color: Colors.blue[800],
+                                                  fontSize: 32,
+                                                  fontWeight: FontWeight.bold)),
+                                          Expanded(
+                                            child: Container(),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(bottom: 16),
+                                      child: Text("military?",
+                                          style: TextStyle(
+                                              color: Colors.blue[800],
+                                              fontSize: 32,
+                                              fontWeight: FontWeight.bold)),),
+                                    Padding(
+                                        padding:
+                                        EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                                        child: Row(
+                                          children: <Widget>[
+                                            Expanded(child: Container()),
+                                            FlatButton(
+                                                child: Text(
+                                                  "Yes",
+                                                  style: _hasServed
+                                                      ? TextStyle(color: Colors.white)
+                                                      : TextStyle(color: Colors.grey),
+                                                ),
+                                                color: _hasServed
+                                                    ? Colors.blue[800]
+                                                    : Colors.transparent,
+                                                onPressed: toggleServed,
+                                                shape: RoundedRectangleBorder(
+                                                    side:
+                                                    BorderSide(color: Colors.grey, width: .5),
+                                                    borderRadius: BorderRadius.only(
+                                                        topLeft: Radius.circular(3),
+                                                        bottomLeft: Radius.circular(3)))),
+                                            FlatButton(
+                                                child: Text(
+                                                  "No",
+                                                  style: !_hasServed
+                                                      ? TextStyle(color: Colors.white)
+                                                      : TextStyle(color: Colors.grey),
+                                                ),
+                                                color: !_hasServed
+                                                    ? Colors.blue[800]
+                                                    : Colors.transparent,
+                                                onPressed: toggleServed,
+                                                shape: RoundedRectangleBorder(
+                                                    side:
+                                                    BorderSide(color: Colors.grey, width: .5),
+                                                    borderRadius: BorderRadius.only(
+                                                        topRight: Radius.circular(3),
+                                                        bottomRight: Radius.circular(3)))),
+                                            Expanded(child: Container()),
+                                          ],
+                                        )),
+
+
+
+                                    Column(
+                                      children: <Widget>[
+                                        Visibility(
+                                          visible: _hasServed,
+                                          child: Column(children: <Widget>[
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                              left: 16,
+                                              right: 16,
+                                            ),
+                                            child: TextField(
+                                              decoration: InputDecoration(
+                                                  contentPadding: EdgeInsets.all(16),
+                                                  hintText: "Branch",
+                                                  border: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.circular(10)
+                                                  )),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.all(16),
+                                            child: TextField(
+                                              obscureText: true,
+                                              decoration: InputDecoration(
+                                                contentPadding: EdgeInsets.all(16),
+                                                hintText: "Military Occupation",
+                                                border: OutlineInputBorder(
+                                                    borderRadius: BorderRadius.circular(10)
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(horizontal: 16),
+                                            child: TextField(
+                                              keyboardType: TextInputType.number,
+                                              obscureText: true,
+                                              decoration: InputDecoration(
+                                                contentPadding: EdgeInsets.all(16),
+                                                hintText: "Years Served",
+                                                border: OutlineInputBorder(
+                                                    borderRadius: BorderRadius.circular(10)
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                              padding: EdgeInsets.all(16),
+                                              child: Container(
+                                                height: 120,
+                                                width: double.infinity,
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                    border: Border.all(color: Colors.grey)
+                                                ),
+                                                child: Column(
+                                                  children: <Widget>[
+                                                    Padding(
+                                                        padding: EdgeInsets.symmetric(vertical: 16),
+                                                        child: Text("Are you still active in the military or a veteran?", style: TextStyle(fontSize: 16),)),
+                                                    Padding(
+                                                      padding: EdgeInsets.symmetric(vertical: 0),
+                                                      child: new Row(
+                                                        children: <Widget>[
+                                                          Expanded(child: Container(),),
+                                                          new Padding(
+                                                              padding: EdgeInsets.only(left: 0, right: 0),
+                                                              child: Radio(
+                                                                value: 0,
+                                                                groupValue: _veteranValue,
+                                                                onChanged: _handleVeteranStatusChange,
+                                                              )),
+                                                          new Text(
+                                                            "Still active",
+                                                            style: TextStyle(
+                                                              color: Colors.black,
+                                                            ),
+                                                          ),
+                                                          Expanded(child: Container(),),
+                                                          new Padding(
+                                                              padding: EdgeInsets.only(left: 0, right: 0),
+                                                              child: Radio(
+                                                                value: 1,
+                                                                groupValue: _veteranValue,
+                                                                onChanged: _handleVeteranStatusChange,
+                                                              )),
+                                                          new Text(
+                                                            "Veteran",
+                                                            style: TextStyle(
+                                                              color: Colors.black,
+                                                            ),
+                                                          ),
+                                                          Expanded(child: Container(),),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                          ),
+                                        ],),),
+
+                                        Row(children: <Widget>[
+                                          Padding(
+                                              padding: EdgeInsets.all(16),
+                                              child: Container(
+                                                  child: FlatButton(
+                                                    shape: RoundedRectangleBorder(
+                                                        side: BorderSide(
+                                                            color: Colors.grey,
+                                                            width: 1,
+                                                            style: BorderStyle.solid),
+                                                        borderRadius:
+                                                        BorderRadius.circular(5)),
+                                                    child: Text(
+                                                      "Back",
+                                                      style: TextStyle(
+                                                          color: Colors.blue[800],
+                                                          fontSize: 18),
+                                                    ),
+                                                    onPressed: onBack,
+                                                  ))),
+
+                                          Expanded(child: Container(),),
+
+                                          Padding(
+                                              padding: EdgeInsets.all(16),
+                                              child: Container(
+                                                  child: FlatButton(
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius.circular(5)),
+                                                    child: Text(
+                                                      "Next",
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 18),
+                                                    ),
+                                                    color: Colors.blue[800],
+                                                    onPressed: onNext ,
+                                                  ))),
+                                        ],),
+                                      ],
+
+                                    ),
 
                                   ],
                                 ),
@@ -452,7 +654,7 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                     )))));
   }
 
-  menteePlans() async {
+  mentorIndustry() async {
     final type = await Navigator.of(context).push(PageRouteBuilder(
       opaque: false,
       pageBuilder: (BuildContext context, Animation<double> animation,
@@ -470,23 +672,33 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
         );
       },
     ));
-    if(type == "Straight To Work") setState(() {
-      isWork = true;
-      isSchool = false;
-      isMilitary = false;
-    });
-    if(type == "Trade School" || type == "College") setState(() {
-      isSchool = true;
-      isWork = false;
-      isMilitary = false;
-    });
-    if(type == "Military" ) setState(() {
-      isMilitary = true;
-      isSchool = false;
-      isWork = false;
-    });
+
     setState(() {
-      planController.text = type;
+      industryController.text = type;
+    });
+  }
+
+  mentorEducation() async {
+    final type = await Navigator.of(context).push(PageRouteBuilder(
+      opaque: false,
+      pageBuilder: (BuildContext context, Animation<double> animation,
+          Animation<double> secondaryAnimation) {
+        return MentorEducation();
+      },
+      transitionsBuilder: (BuildContext context, Animation<double> animation,
+          Animation<double> secondaryAnimation, Widget child) {
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 1),
+            end: Offset.zero,
+          ).animate(animation),
+          child: child,
+        );
+      },
+    ));
+
+    setState(() {
+      educationController.text = type;
     });
   }
 
@@ -504,5 +716,11 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
 
   onSignUp() {
     Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
+  }
+
+  toggleServed(){
+    setState(() {
+      _hasServed = !_hasServed;
+    });
   }
 }
