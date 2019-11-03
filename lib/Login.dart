@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:way_ahead/Services/FirebaseProvider.dart';
 import 'SignUp.dart';
 
 class Login extends StatefulWidget{
@@ -184,11 +185,8 @@ class LoginState extends State<Login>{
   }
 
   onLogin(){
-    FirebaseDatabase.instance.reference().child('recentboi')
-        .set({
-      'title': 'Realtime db rocks',
-      'created_at': "idk"
-    });
+    //TODO Configure android app to firebase
+    //FirebaseProvider.firebaseProvider.addMentor();
   }
 
 }

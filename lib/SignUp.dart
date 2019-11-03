@@ -2,6 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:way_ahead/CreateMentee.dart';
 import 'package:way_ahead/CreateMentor.dart';
+import 'package:way_ahead/Services/FirebaseProvider.dart';
+
+import 'Model/Mentor.dart';
+import 'Services/FirebaseProvider.dart';
 
 class SignUp extends StatefulWidget {
   SignUpState createState() => SignUpState();
@@ -9,6 +13,9 @@ class SignUp extends StatefulWidget {
 
 class SignUpState extends State<SignUp> {
   int _radioValue = 0;
+  Mentor mentor = new Mentor();
+  TextEditingController emailController = new TextEditingController();
+  TextEditingController passwordController = new TextEditingController();
 
   void _handleRadioValueChange(int value) {
     setState(() {
@@ -216,6 +223,7 @@ class SignUpState extends State<SignUp> {
             right: 16,
           ),
           child: TextField(
+            controller: emailController,
             decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(16),
                 hintText: "Username",
@@ -225,6 +233,7 @@ class SignUpState extends State<SignUp> {
         Padding(
           padding: EdgeInsets.all(16),
           child: TextField(
+            controller: passwordController,
             obscureText: true,
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(16),
@@ -232,17 +241,6 @@ class SignUpState extends State<SignUp> {
               border: OutlineInputBorder(),
             ),
           ),
-        ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: Padding(
-              padding: EdgeInsets.all(8),
-              child: FlatButton(
-                  child: Text(
-                "Forgot Password",
-                textAlign: TextAlign.end,
-                style: TextStyle(color: Colors.grey),
-              ))),
         ),
         new Container(
           width: double.infinity,
@@ -288,10 +286,11 @@ class SignUpState extends State<SignUp> {
     )))));
   }
 
-  startQuestionaire(){
+  startQuestionaire()async {
     if(_radioValue == 0){
       Navigator.push(context, MaterialPageRoute(builder: (context) => CreateMentee()));
     }else{
+      mentor.id = FirebaseProvider.firebaseProvider.signUp(emailController.text, passwordController.text);
       Navigator.push(context, MaterialPageRoute(builder: (context) => CreateMentor()));
     }
   }
