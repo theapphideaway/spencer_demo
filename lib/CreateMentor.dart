@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:way_ahead/MentorQuestionaire.dart';
 
+import 'Model/Mentor.dart';
 import 'SignUp.dart';
 
 class CreateMentor extends StatefulWidget {
@@ -9,6 +10,11 @@ class CreateMentor extends StatefulWidget {
 }
 
 class CreateMentorState extends State<CreateMentor> {
+  TextEditingController bioController = new TextEditingController();
+  TextEditingController firstNameController = new TextEditingController();
+  TextEditingController lastNameController = new TextEditingController();
+  TextEditingController phoneNumberController = new TextEditingController();
+  Mentor mentor = new Mentor();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,6 +56,7 @@ class CreateMentorState extends State<CreateMentor> {
                             right: 16,
                           ),
                           child: TextField(
+                            controller: firstNameController,
                             decoration: InputDecoration(
                                 contentPadding: EdgeInsets.all(16),
                                 hintText: "First Name",
@@ -63,6 +70,7 @@ class CreateMentorState extends State<CreateMentor> {
                             right: 16,
                           ),
                           child: TextField(
+                            controller: lastNameController,
                             decoration: InputDecoration(
                                 contentPadding: EdgeInsets.all(16),
                                 hintText: "Last Name",
@@ -72,6 +80,8 @@ class CreateMentorState extends State<CreateMentor> {
                         Padding(
                           padding: EdgeInsets.all(16),
                           child: TextField(
+                            controller: phoneNumberController,
+                            keyboardType: TextInputType.phone,
                             obscureText: true,
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.all(16),
@@ -110,6 +120,7 @@ class CreateMentorState extends State<CreateMentor> {
                         Padding(
                           padding: EdgeInsets.all(16),
                           child: TextField(
+                            controller: bioController,
                             obscureText: true,
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.all(16),
@@ -160,7 +171,42 @@ class CreateMentorState extends State<CreateMentor> {
   }
 
   onContinue() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => MentorQuestionaire()));
+    if(bioController.text.isNotEmpty &&
+        firstNameController.text.isNotEmpty &&
+        lastNameController.text.isNotEmpty &&
+        phoneNumberController.text.isNotEmpty){
+      mentor.FirstName = firstNameController.text;
+      mentor.LastName = lastNameController.text;
+      mentor.PhoneNumber = phoneNumberController.text;
+      mentor.Bio = bioController.text;
+      Navigator.push(context, MaterialPageRoute(builder: (context) => MentorQuestionaire(mentor: mentor)));
+    }
+    else{
+      showAlertDialog(context);
+    }
+  }
+
+  showAlertDialog(BuildContext context) {
+    // set up the button
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () =>{Navigator.pop(context)},
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("OOPS"),
+      content: Text("You forgot to answer everything"),
+      actions: [
+        okButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
 

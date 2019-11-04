@@ -1,21 +1,38 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:way_ahead/MentorDashboard.dart';
 import 'package:way_ahead/MentorEducation.dart';
+import 'package:way_ahead/Services/FirebaseProvider.dart';
 import 'MenteePlans.dart';
 import 'MentorIndustries.dart';
+import 'Model/Mentor.dart';
 import 'SignUp.dart';
 
 class MentorQuestionaire extends StatefulWidget {
-  MentorQuestionaireState createState() => MentorQuestionaireState();
+  final Mentor mentor;
+  MentorQuestionaire({Key key, @required this.mentor});
+  MentorQuestionaireState createState() => MentorQuestionaireState(mentor);
 }
 
 class MentorQuestionaireState extends State<MentorQuestionaire> {
   TextEditingController industryController = new TextEditingController();
   TextEditingController educationController = new TextEditingController();
+  TextEditingController jobController = new TextEditingController();
+  TextEditingController companyController = new TextEditingController();
+  TextEditingController schoolNameController = new TextEditingController();
+  TextEditingController militaryBranchController = new TextEditingController();
+  TextEditingController militaryOccupationController = new TextEditingController();
+  TextEditingController yearsServedController = new TextEditingController();
   int currentQuestion = 0;
   int _veteranValue = 0;
   int _experienceValue = 0;
   bool _hasServed = false;
+  Mentor mentor;
+
+  MentorQuestionaireState(Mentor mentor){
+    this.mentor = mentor;
+  }
+
   void _handleExperienceValueChange(int value) {
     setState(() {
       _experienceValue = value;
@@ -365,7 +382,7 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                     Padding(
                                       padding: EdgeInsets.all(16),
                                       child: TextField(
-                                        obscureText: true,
+                                        controller: schoolNameController,
                                         decoration: InputDecoration(
                                           contentPadding: EdgeInsets.all(16),
                                           hintText: "School Name",
@@ -508,6 +525,7 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                               right: 16,
                                             ),
                                             child: TextField(
+                                              controller: militaryBranchController,
                                               decoration: InputDecoration(
                                                   contentPadding: EdgeInsets.all(16),
                                                   hintText: "Branch",
@@ -519,6 +537,7 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                           Padding(
                                             padding: EdgeInsets.all(16),
                                             child: TextField(
+                                              controller: militaryOccupationController,
                                               obscureText: true,
                                               decoration: InputDecoration(
                                                 contentPadding: EdgeInsets.all(16),
@@ -532,6 +551,7 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                           Padding(
                                             padding: EdgeInsets.symmetric(horizontal: 16),
                                             child: TextField(
+                                              controller: yearsServedController,
                                               keyboardType: TextInputType.number,
                                               obscureText: true,
                                               decoration: InputDecoration(
@@ -640,9 +660,7 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                                   ))),
                                         ],),
                                       ],
-
                                     ),
-
                                   ],
                                 ),
                               );
@@ -714,13 +732,71 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
   }
 
   onSignUp() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
+    if(validateMentor()){
+      FirebaseProvider.firebaseProvider.addMentor(mentor);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => MentorDashboard()));
+    } else{
+
+    }
   }
 
   toggleServed(){
     setState(() {
       _hasServed = !_hasServed;
     });
+  }
+
+  bool validateMentor(){
+    int validator = 0;
+    if(industryController.text.isNotEmpty){
+      mentor.Industry = industryController.text;
+      validator += 1;
+    }
+    if(educationController.text.isNotEmpty){
+      mentor.Education = educationController.text;
+      validator += 1;
+    }
+    if(jobController.text.isNotEmpty){
+      mentor.JobTitle = jobController.text;
+      validator += 1;
+    }
+    if(companyController.text.isNotEmpty){
+      mentor.CompanyName = companyController.text;
+      validator += 1;
+    }
+    if(schoolNameController.text.isNotEmpty){
+      mentor.SchoolName = schoolNameController.text;
+      validator += 1;
+    }
+    if(militaryBranchController.text.isNotEmpty){
+      mentor.MilitaryBranch = militaryBranchController.text;
+      validator += 1;
+    }
+    if(militaryOccupationController.text.isNotEmpty){
+      mentor.MilitaryOccupation = militaryOccupationController.text;
+      validator += 1;
+    }
+    if(yearsServedController.text.isNotEmpty){
+      mentor.YearsServed = yearsServedController.text;
+      validator += 1;
+    }
+    if(_experienceValue == 0){
+      mentor.Experience = "1-4";
+      validator += 1;
+    }
+    if(_experienceValue == 1){
+      mentor.Experience = "5-9";
+      validator += 1;
+    }
+    if(_experienceValue == 2){
+      mentor.Experience = "10+";
+      validator += 1;
+    }
+    if(validator == 9){
+      return true;
+    } else{
+      return false;
+    }
   }
 
 

@@ -290,7 +290,9 @@ class SignUpState extends State<SignUp> {
     if(_radioValue == 0){
       Navigator.push(context, MaterialPageRoute(builder: (context) => CreateMentee()));
     }else{
-      mentor.id = FirebaseProvider.firebaseProvider.signUp(emailController.text, passwordController.text);
+      if(emailController.text != null && passwordController.text != null){
+       mentor.id = FirebaseProvider.firebaseProvider.signUp(emailController.text, passwordController.text);
+      }
       Navigator.push(context, MaterialPageRoute(builder: (context) => CreateMentor()));
     }
   }

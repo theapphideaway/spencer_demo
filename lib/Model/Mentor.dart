@@ -17,4 +17,5 @@ class Mentor{
   String MilitaryOccupation;
   String YearsServed;
   String MilitaryActivity;
+  bool isMentor = true;
 }

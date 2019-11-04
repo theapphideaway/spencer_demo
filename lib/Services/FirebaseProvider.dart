@@ -15,10 +15,7 @@ class FirebaseProvider{
   }
 
   addMentor(Mentor mentor){
-    var random = Random.secure();
-
-    var id = random.nextInt(1000000000);
-    FirebaseDatabase.instance.reference().child('Mentors').child(id.toString())
+    FirebaseDatabase.instance.reference().child('Mentors').child(mentor.id)
         .set({
       'id': mentor.id,
       'first_name': mentor.FirstName,
@@ -37,5 +34,7 @@ class FirebaseProvider{
       'years_served': mentor.YearsServed,
       'still_active': mentor.MilitaryActivity,
     });
+
+    print("Successfully Added Mentor");
   }
 }

@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:way_ahead/MenteeDashboard.dart';
 import 'package:way_ahead/Services/FirebaseProvider.dart';
+import 'MentorDashboard.dart';
 import 'SignUp.dart';
 
 class Login extends StatefulWidget{
@@ -11,7 +13,7 @@ class Login extends StatefulWidget{
 }
 
 class LoginState extends State<Login>{
-
+  bool isLoading = true;
   final databaseReference = FirebaseDatabase.instance.reference();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
@@ -187,6 +189,31 @@ class LoginState extends State<Login>{
   onLogin(){
     //TODO Configure android app to firebase
     //FirebaseProvider.firebaseProvider.addMentor();
+  }
+
+  getUser() async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    if(user = null) {
+      setState(() {
+        isLoading = false;
+      });
+    } else{
+      var mentor = FirebaseDatabase.instance.reference().child(user.uid).child("IsMentor").equalTo("true");
+      var mentee= FirebaseDatabase.instance.reference().child(user.uid).child("IsMentor").equalTo("false");
+      if(mentor != null){
+        setState(() {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => MentorDashboard()));
+        });
+      }
+      if(mentee != null){
+        setState(() {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => MenteeDashboard()));
+        });
+      } else{
+        Login();
+      }
+
+    }
   }
 
 }
