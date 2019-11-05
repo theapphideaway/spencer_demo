@@ -8,10 +8,11 @@ class FirebaseProvider{
 
   static final FirebaseProvider firebaseProvider = FirebaseProvider._();
 
-  signUp(String email, String password)async {
+  Future<String> signUp(String email, String password)async {
     AuthResult result = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
     FirebaseUser user = result.user;
     return user.uid;
+
   }
 
   addMentor(Mentor mentor){

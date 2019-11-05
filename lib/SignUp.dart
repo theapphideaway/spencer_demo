@@ -4,6 +4,7 @@ import 'package:way_ahead/CreateMentee.dart';
 import 'package:way_ahead/CreateMentor.dart';
 import 'package:way_ahead/Services/FirebaseProvider.dart';
 
+import 'Model/Mentee.dart';
 import 'Model/Mentor.dart';
 import 'Services/FirebaseProvider.dart';
 
@@ -14,6 +15,7 @@ class SignUp extends StatefulWidget {
 class SignUpState extends State<SignUp> {
   int _radioValue = 0;
   Mentor mentor = new Mentor();
+  Mentee mentee = new Mentee();
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
 
@@ -288,12 +290,15 @@ class SignUpState extends State<SignUp> {
 
   startQuestionaire()async {
     if(_radioValue == 0){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => CreateMentee()));
+      if(emailController.text != null && passwordController.text != null){
+        mentee.Id = await FirebaseProvider.firebaseProvider.signUp(emailController.text, passwordController.text);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => CreateMentee(mentee: mentee)));
+      }
     }else{
       if(emailController.text != null && passwordController.text != null){
-       mentor.id = FirebaseProvider.firebaseProvider.signUp(emailController.text, passwordController.text);
+       mentor.id = await FirebaseProvider.firebaseProvider.signUp(emailController.text, passwordController.text);
+       Navigator.push(context, MaterialPageRoute(builder: (context) => CreateMentor(mentor: mentor,)));
       }
-      Navigator.push(context, MaterialPageRoute(builder: (context) => CreateMentor()));
     }
   }
 }

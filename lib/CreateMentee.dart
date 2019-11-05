@@ -2,13 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'MenteeQuestionaire.dart';
+import 'Model/Mentee.dart';
 import 'SignUp.dart';
 
 class CreateMentee extends StatefulWidget {
-  CreateMenteeState createState() => CreateMenteeState();
+  final Mentee mentee;
+  CreateMentee({Key key, @required this.mentee});
+  CreateMenteeState createState() => CreateMenteeState(mentee);
 }
 
 class CreateMenteeState extends State<CreateMentee> {
+  Mentee mentee;
+  CreateMenteeState(Mentee mentee){
+    this.mentee = mentee;
+  }
 
   @override
   Widget build(BuildContext context) {

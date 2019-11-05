@@ -308,7 +308,7 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                                           fontSize: 18),
                                                     ),
                                                     color: Colors.blue[800],
-                                                    onPressed: onNext ,
+                                                    onPressed: gotToSchool ,
                                                   ))),
                                         ],),
                                       ],
@@ -429,7 +429,7 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                                       fontSize: 18),
                                                 ),
                                                 color: Colors.blue[800],
-                                                onPressed: onNext ,
+                                                onPressed: goToMilitary ,
                                               ))),
                                     ],),
                                   ],
@@ -656,7 +656,7 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                                           fontSize: 18),
                                                     ),
                                                     color: Colors.blue[800],
-                                                    onPressed: onNext ,
+                                                    onPressed: onSignUp ,
                                                   ))),
                                         ],),
                                       ],
@@ -668,7 +668,9 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                           ),
                         ),
                       ],
-                    )))));
+                    )
+                              )
+                              )));
   }
 
   mentorIndustry() async {
@@ -719,9 +721,15 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
     });
   }
 
-  onNext(){
+  gotToSchool(){
     setState(() {
-      currentQuestion += 1;
+      currentQuestion = 1;
+    });
+  }
+
+  goToMilitary(){
+    setState(() {
+      currentQuestion = 2;
     });
   }
 
@@ -731,13 +739,14 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
     });
   }
 
-  onSignUp() {
-    if(validateMentor()){
-      FirebaseProvider.firebaseProvider.addMentor(mentor);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => MentorDashboard()));
-    } else{
+  onSignUp() async {
+      if(validateMentor()){
+        await FirebaseProvider.firebaseProvider.addMentor(mentor);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => MentorDashboard()));
+      } else{
 
-    }
+      }
+
   }
 
   toggleServed(){
@@ -792,11 +801,13 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
       mentor.Experience = "10+";
       validator += 1;
     }
-    if(validator == 9){
-      return true;
-    } else{
-      return false;
-    }
+    print(validator);
+//    if(validator == 9){
+//      return true;
+//    } else{
+//      return false;
+//    }
+  return true;
   }
 
 

@@ -6,7 +6,9 @@ import 'Model/Mentor.dart';
 import 'SignUp.dart';
 
 class CreateMentor extends StatefulWidget {
-  CreateMentorState createState() => CreateMentorState();
+  final Mentor mentor;
+  CreateMentor({Key key, @required this.mentor});
+  CreateMentorState createState() => CreateMentorState(mentor);
 }
 
 class CreateMentorState extends State<CreateMentor> {
@@ -14,7 +16,12 @@ class CreateMentorState extends State<CreateMentor> {
   TextEditingController firstNameController = new TextEditingController();
   TextEditingController lastNameController = new TextEditingController();
   TextEditingController phoneNumberController = new TextEditingController();
-  Mentor mentor = new Mentor();
+  Mentor mentor;
+
+   CreateMentorState(Mentor mentor){
+     this.mentor = mentor;
+   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,7 +89,6 @@ class CreateMentorState extends State<CreateMentor> {
                           child: TextField(
                             controller: phoneNumberController,
                             keyboardType: TextInputType.phone,
-                            obscureText: true,
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.all(16),
                               hintText: "Phone Number",
@@ -121,7 +127,6 @@ class CreateMentorState extends State<CreateMentor> {
                           padding: EdgeInsets.all(16),
                           child: TextField(
                             controller: bioController,
-                            obscureText: true,
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.all(16),
                               hintText: "Write your bio here...",

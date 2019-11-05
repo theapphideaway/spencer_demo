@@ -2,20 +2,33 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:way_ahead/MenteeDashboard.dart';
 import 'MenteePlans.dart';
+import 'Model/Mentee.dart';
 import 'SignUp.dart';
 
 class MenteeQuestionaire extends StatefulWidget {
-  MenteeQuestionaireState createState() => MenteeQuestionaireState();
+  final Mentee mentee;
+  MenteeQuestionaire({Key key, @required this.mentee});
+  MenteeQuestionaireState createState() => MenteeQuestionaireState(mentee);
 }
 
 class MenteeQuestionaireState extends State<MenteeQuestionaire> {
   TextEditingController planController = new TextEditingController();
+  TextEditingController jobController = new TextEditingController();
+  TextEditingController companyController = new TextEditingController();
+  TextEditingController schoolNameController = new TextEditingController();
+  TextEditingController schoolMajorController = new TextEditingController();
+  TextEditingController militaryBranchController = new TextEditingController();
+  TextEditingController militaryOccupationController = new TextEditingController();
   bool isWork = true;
   bool isSchool = false;
   bool isMilitary = false;
   int currentQuestion = 0;
-
   int _radioValue = 0;
+  Mentee mentee;
+
+  MenteeQuestionaireState(Mentee mentee){
+    this.mentee = mentee;
+  }
 
   void _handleRadioValueChange(int value) {
     setState(() {
@@ -166,6 +179,7 @@ class MenteeQuestionaireState extends State<MenteeQuestionaire> {
                                 right: 16,
                               ),
                               child: TextField(
+                                controller: isWork? jobController: isSchool? schoolNameController: isMilitary? militaryBranchController:"",
                                 decoration: InputDecoration(
                                     contentPadding: EdgeInsets.all(16),
                                     hintText: isWork?"Job Title": isSchool? "School Name": isMilitary? "Branch":"",
@@ -177,7 +191,7 @@ class MenteeQuestionaireState extends State<MenteeQuestionaire> {
                             Padding(
                               padding: EdgeInsets.all(16),
                               child: TextField(
-                                obscureText: true,
+                                controller: isWork? companyController: isSchool? schoolMajorController: isMilitary? militaryOccupationController:"",
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.all(16),
                                   hintText: isWork? "Company Name": isSchool? "School Major": isMilitary? "Military Occupation":"",
@@ -461,5 +475,59 @@ class MenteeQuestionaireState extends State<MenteeQuestionaire> {
   onFinish(){
 
     //Navigator.push(context, MaterialPageRoute(builder: (context) => MenteeDashboard()));
+  }
+
+  bool validateMentor(){
+    int validator = 0;
+    if(planController.text.isNotEmpty){
+      mentee.Plan = planController.text;
+      validator += 1;
+    }
+    if(jobController.text.isNotEmpty){
+      mentee.Job = jobController.text;
+      validator += 1;
+    }
+    if(companyController.text.isNotEmpty){
+      mentee.Company = companyController.text;
+      validator += 1;
+    }
+    if(schoolNameController.text.isNotEmpty){
+      mentee.SchoolName = schoolNameController.text;
+      validator += 1;
+    }
+    if(schoolMajorController.text.isNotEmpty){
+      mentee.SchoolMajor = schoolMajorController.text;
+      validator += 1;
+    }
+    if(militaryBranchController.text.isNotEmpty){
+      mentee.MilitaryBranch = militaryBranchController.text;
+      validator += 1;
+    }
+    if(militaryOccupationController.text.isNotEmpty){
+      mentee.MilitaryOccupation = militaryOccupationController.text;
+      validator += 1;
+    }
+
+    if(_radioValue == 0){
+      mentee.Certainty = "certain";
+      validator += 1;
+    }
+    if(_radioValue == 1){
+      mentee.Certainty = "mostly certain";
+      validator += 1;
+    }
+    if(_radioValue == 2){
+      mentee.Certainty = "just interested";
+      validator += 1;
+    }
+    if(_radioValue == 3){
+      mentee.Certainty = "no clue";
+      validator += 1;
+    }
+    if(validator == 9){
+      return true;
+    } else{
+      return false;
+    }
   }
 }
