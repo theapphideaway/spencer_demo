@@ -13,16 +13,36 @@ class Login extends StatefulWidget{
 }
 
 class LoginState extends State<Login>{
+  TextEditingController emailController = new TextEditingController();
+  TextEditingController passwordController = new TextEditingController();
   bool isLoading = true;
   final databaseReference = FirebaseDatabase.instance.reference();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
+  @override
+  void initState() {
+    getUser();
+    super.initState();
+  }
+
+  signout()async {
+    await _firebaseAuth.signOut();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: SafeArea(
-            child: SingleChildScrollView(child: Container(child: Column(children: <Widget>[
+            child:
+            isLoading? Container(
+              color: Colors.white,
+              child: Center(
+                child: CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue[800]),
+                ),
+              ),
+            ):
+            SingleChildScrollView(child: Container(child: Column(children: <Widget>[
 
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 64),
@@ -103,15 +123,17 @@ class LoginState extends State<Login>{
           Padding(
             padding: EdgeInsets.only(left: 16, top: 32, right: 16, ),
             child: TextField(
+              controller: emailController,
               decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(16),
-                  hintText: "Username",
+                  hintText: "Email",
                   border: OutlineInputBorder()
               ),
             ),
           ), Padding(
             padding: EdgeInsets.all(16),
             child: TextField(
+              controller: passwordController,
               obscureText: true,
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(16),
@@ -139,7 +161,7 @@ class LoginState extends State<Login>{
                 ),
                 padding: EdgeInsets.all(16),
                 color: Colors.indigoAccent,
-                onPressed: onLogin ,
+                onPressed: ()=>signIn(emailController.text, passwordController.text) ,
                 child: Text("Login",
                   style: TextStyle(
                     fontSize: 18,
@@ -179,11 +201,11 @@ class LoginState extends State<Login>{
     Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
   }
 
-  Future<String> signIn(String email, String password) async {
+  signIn(String email, String password) async {
     AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(
         email: email, password: password);
     FirebaseUser user = result.user;
-    return user.uid;
+    getMentor(user.uid);
   }
 
   onLogin(){
@@ -192,28 +214,48 @@ class LoginState extends State<Login>{
   }
 
   getUser() async {
-    FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    if(user = null) {
-      setState(() {
-        isLoading = false;
+    try {
+      await FirebaseAuth.instance.currentUser().then((user) =>  {
+        if(user == null) {
+          setState(() {
+            isLoading = false;
+          })
+        } else  {
+          getMentee(user.uid),
+        }
       });
-    } else{
-      var mentor = FirebaseDatabase.instance.reference().child(user.uid).child("IsMentor").equalTo("true");
-      var mentee= FirebaseDatabase.instance.reference().child(user.uid).child("IsMentor").equalTo("false");
-      if(mentor != null){
-        setState(() {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => MentorDashboard()));
-        });
-      }
-      if(mentee != null){
-        setState(() {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => MenteeDashboard()));
-        });
-      } else{
-        Login();
-      }
+
+    } catch (e) {
 
     }
   }
+
+  getMentee(String id) async {
+    var mentor = await FirebaseDatabase.instance.reference().child("Mentees").child(id).child("is_mentor");
+    mentor.once().then((snapshot) => {
+      print(snapshot.value),
+      if(snapshot.value == false){
+        Navigator.push(context, MaterialPageRoute(builder: (context) => MenteeDashboard())),
+      } else{
+        getMentor(id)
+      }
+    });
+  }
+
+  getMentor(String id)async{
+    var mentor = await FirebaseDatabase.instance.reference().child("Mentors").child(id).child("is_mentor");
+    mentor.once().then((snapshot) => {
+      print(snapshot.value),
+      if(snapshot.value == false){
+        Navigator.push(context, MaterialPageRoute(builder: (context) => MenteeDashboard())),
+      } else{
+        signout(),
+        setState((){
+          isLoading = false;
+        })
+      }
+    });
+  }
+
 
 }

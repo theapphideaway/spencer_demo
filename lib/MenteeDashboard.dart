@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 
@@ -45,7 +46,10 @@ class MenteeDashboardState extends State<MenteeDashboard>{
     );
   }
 
-  void onTabTapped(int index) {
+  void onTabTapped(int index) async {
+    await FirebaseAuth.instance.currentUser().then((user){
+      print(user);
+    });
     setState(() {
       _currentIndex = index;
     });

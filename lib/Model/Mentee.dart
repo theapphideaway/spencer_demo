@@ -12,4 +12,5 @@ class Mentee{
   String MilitaryBranch;
   String MilitaryOccupation;
   String Certainty;
+  bool IsMentor = false;
 }
