@@ -17,7 +17,7 @@ class ProfileState extends State<Profile> {
   bool isWork = true;
   bool isSchool = false;
   bool isMilitary = false;
-  int _certainty = 0;
+  int _certaintyValue = 0;
   String firstName = "a";
   String lastName= "a";
   String email= "a";
@@ -82,7 +82,7 @@ class ProfileState extends State<Profile> {
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16),
                             child: Text(
-                              "rebecca@gmail.com",
+                              email,
                               textAlign: TextAlign.left,
                             ),
                           ),
@@ -234,7 +234,7 @@ class ProfileState extends State<Profile> {
                             padding: EdgeInsets.only(left: 0, right: 0),
                             child: Radio(
                               value: 0,
-                              groupValue: _certainty,
+                              groupValue: _certaintyValue,
                               onChanged: _handleRadioValueChange,
                             )),
                         new Text(
@@ -255,7 +255,7 @@ class ProfileState extends State<Profile> {
                             padding: EdgeInsets.only(left: 0, right: 0),
                             child: Radio(
                               value: 1,
-                              groupValue: _certainty,
+                              groupValue: _certaintyValue,
                               onChanged: _handleRadioValueChange,
                             )),
                         new Text(
@@ -276,7 +276,7 @@ class ProfileState extends State<Profile> {
                             padding: EdgeInsets.only(left: 0, right: 0),
                             child: Radio(
                               value: 2,
-                              groupValue: _certainty,
+                              groupValue: _certaintyValue,
                               onChanged: _handleRadioValueChange,
                             )),
                         new Text(
@@ -297,7 +297,7 @@ class ProfileState extends State<Profile> {
                             padding: EdgeInsets.only(left: 0, right: 0),
                             child: Radio(
                               value: 3,
-                              groupValue: _certainty,
+                              groupValue: _certaintyValue,
                               onChanged: _handleRadioValueChange,
                             )),
                         new Text(
@@ -406,7 +406,18 @@ class ProfileState extends State<Profile> {
 
   updateUser(String id)async {
     await FirebaseDatabase.instance.reference().child("Mentees").child(id).update({"bio": bioController.text});
-
+    if(_certaintyValue == 0){
+      await FirebaseDatabase.instance.reference().child("Mentees").child(id).update({"certainty": "certain"});
+    }
+    if(_certaintyValue == 1){
+      await FirebaseDatabase.instance.reference().child("Mentees").child(id).update({"certainty": "mostly certain"});
+    }
+    if(_certaintyValue == 2){
+      await FirebaseDatabase.instance.reference().child("Mentees").child(id).update({"certainty": "just interested"});
+    }
+    if(_certaintyValue == 3){
+      await FirebaseDatabase.instance.reference().child("Mentees").child(id).update({"certainty": "no clue"});
+    }
     if(labelOne == "Job Title: "){
        await FirebaseDatabase.instance.reference().child("Mentees").child(id).update({"job": detailOneController.text});
     }
@@ -417,7 +428,7 @@ class ProfileState extends State<Profile> {
       await FirebaseDatabase.instance.reference().child("Mentees").child(id).update({"school_name": detailOneController.text});
     }
     if(labelTwo == "Company Name: "){
-      await FirebaseDatabase.instance.reference().child("Mentees").child(id).update({"job": detailTwoController.text});
+      await FirebaseDatabase.instance.reference().child("Mentees").child(id).update({"company": detailTwoController.text});
     }
     if(labelTwo == "Military Occupation: "){
       await FirebaseDatabase.instance.reference().child("Mentees").child(id).update({"military_occupation": detailTwoController.text});
@@ -429,9 +440,9 @@ class ProfileState extends State<Profile> {
 
   void _handleRadioValueChange(int value) {
     setState(() {
-      _certainty = value;
+      _certaintyValue = value;
 
-      switch (_certainty) {
+      switch (_certaintyValue) {
         case 0:
           break;
         case 1:
@@ -446,14 +457,27 @@ class ProfileState extends State<Profile> {
 
   getUser() async {
     try {
-
+      await FirebaseAuth.instance.currentUser().then((user) =>  {
+        if(user == null) {
+          setState(() {
+            isLoading = false;
+          })
+        } else  {
+          getMentee(user.uid),
+        }
+      });
 
     } catch (e) {
 
     }
   }
 
-  getMentor(String id)async{
+  getMentee(String id)async{
+    await FirebaseAuth.instance.currentUser().then((user)=>{
+      email = user.email
+    });
+
+
     var bioResponse = await FirebaseDatabase.instance.reference().child("Mentees").child(id).child("bio");
     bioResponse.once().then((snapshot) => {
       print(snapshot.value),
@@ -568,6 +592,16 @@ class ProfileState extends State<Profile> {
     majorResponse.once().then((snapshot) => {
       print(snapshot.value),
       detailTwo = snapshot.value,
+      detailTwoController.text  = snapshot.value,
+      setState(() {
+        isLoading = false;
+      })
+    });
+
+    var certaintyResponse = await FirebaseDatabase.instance.reference().child("Mentees").child(id).child("certainty");
+    certaintyResponse.once().then((snapshot) => {
+      print(snapshot.value),
+      certainty = snapshot.value,
       detailTwoController.text  = snapshot.value,
       setState(() {
         isLoading = false;
