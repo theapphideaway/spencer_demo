@@ -151,25 +151,7 @@ class LoginState extends State<Login>{
                   child: Text("Forgot Password", textAlign: TextAlign.end, style: TextStyle(color: Colors.grey),))
           ),),
 
-          new Container(
-            width: double.infinity,
-            child: new Padding(
-              padding: EdgeInsets.only(left: 16, top: 10, right: 16, bottom: 32),
-              child: RaisedButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(10.0)
-                ),
-                padding: EdgeInsets.all(16),
-                color: Colors.indigoAccent,
-                onPressed: ()=>signIn(emailController.text, passwordController.text) ,
-                child: Text("Login",
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                  ),),
 
-
-              ),),),
 
 
 
