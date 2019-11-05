@@ -1,3 +1,4 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,12 @@ class CreateMentee extends StatefulWidget {
 }
 
 class CreateMenteeState extends State<CreateMentee> {
+  TextEditingController firstNameController = new TextEditingController();
+  TextEditingController lastNameController = new TextEditingController();
+  TextEditingController phoneNumberController = new TextEditingController();
+  TextEditingController bioController = new TextEditingController();
   Mentee mentee;
+
   CreateMenteeState(Mentee mentee){
     this.mentee = mentee;
   }
@@ -58,6 +64,7 @@ class CreateMenteeState extends State<CreateMentee> {
             right: 16,
           ),
           child: TextField(
+            controller: firstNameController,
             decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(16),
                 hintText: "First Name",
@@ -71,6 +78,7 @@ class CreateMenteeState extends State<CreateMentee> {
             right: 16,
           ),
           child: TextField(
+            controller: lastNameController,
             decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(16),
                 hintText: "Last Name",
@@ -80,6 +88,7 @@ class CreateMenteeState extends State<CreateMentee> {
         Padding(
           padding: EdgeInsets.all(16),
           child: TextField(
+            controller: phoneNumberController,
             obscureText: true,
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(16),
@@ -118,6 +127,7 @@ class CreateMenteeState extends State<CreateMentee> {
         Padding(
           padding: EdgeInsets.all(16),
           child: TextField(
+            controller: bioController,
             obscureText: true,
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(16),
@@ -168,6 +178,41 @@ class CreateMenteeState extends State<CreateMentee> {
   }
 
   _next() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => MenteeQuestionaire()));
+    if(bioController.text.isNotEmpty &&
+        firstNameController.text.isNotEmpty &&
+        lastNameController.text.isNotEmpty &&
+        phoneNumberController.text.isNotEmpty){
+      mentee.FirstName = firstNameController.text;
+      mentee.LastName = lastNameController.text;
+      mentee.PhoneNumber = phoneNumberController.text;
+      mentee.Bio = bioController.text;
+      Navigator.push(context, MaterialPageRoute(builder: (context) => MenteeQuestionaire(mentee: mentee ,)));
+    }
+    else{
+      showAlertDialog(context);
+    }
+  }
+
+  showAlertDialog(BuildContext context) {
+    // set up the button
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () =>{Navigator.pop(context)},
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("OOPS"),
+      content: Text("You forgot to answer everything"),
+      actions: [
+        okButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }

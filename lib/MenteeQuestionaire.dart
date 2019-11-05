@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:way_ahead/MenteeDashboard.dart';
 import 'MenteePlans.dart';
 import 'Model/Mentee.dart';
+import 'Services/FirebaseProvider.dart';
 import 'SignUp.dart';
 
 class MenteeQuestionaire extends StatefulWidget {
@@ -401,7 +402,7 @@ class MenteeQuestionaireState extends State<MenteeQuestionaire> {
                                                   fontSize: 18),
                                             ),
                                             color: Colors.blue[800],
-                                            onPressed: onFinish,
+                                            onPressed: onSignUp,
                                           ))),
                             ],),
 
@@ -468,14 +469,16 @@ class MenteeQuestionaireState extends State<MenteeQuestionaire> {
     });
   }
 
-  onSignUp() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
+  onSignUp() async {
+    if(validateMentor()){
+      await FirebaseProvider.firebaseProvider.addMentee(mentee);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => MenteeDashboard()));
+    } else{
+
+    }
+
   }
 
-  onFinish(){
-
-    //Navigator.push(context, MaterialPageRoute(builder: (context) => MenteeDashboard()));
-  }
 
   bool validateMentor(){
     int validator = 0;
@@ -524,10 +527,11 @@ class MenteeQuestionaireState extends State<MenteeQuestionaire> {
       mentee.Certainty = "no clue";
       validator += 1;
     }
-    if(validator == 9){
-      return true;
-    } else{
-      return false;
-    }
+//    if(validator == 9){
+//      return true;
+//    } else{
+//      return false;
+//    }
+  return true;
   }
 }

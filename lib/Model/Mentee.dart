@@ -2,6 +2,7 @@ class Mentee{
   String Id;
   String FirstName;
   String LastName;
+  String PhoneNumber;
   String Bio;
   String Plan;
   String Job;

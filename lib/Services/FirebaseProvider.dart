@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:way_ahead/Model/Mentee.dart';
 import 'package:way_ahead/Model/Mentor.dart';
 
 class FirebaseProvider{
@@ -31,11 +32,32 @@ class FirebaseProvider{
       'school_name': mentor.SchoolName,
       'is_veteran': mentor.IsVeteran,
       'branch': mentor.MilitaryBranch,
-      'military_occupation': mentor.MilitaryBranch,
+      'military_occupation': mentor.MilitaryOccupation,
       'years_served': mentor.YearsServed,
       'still_active': mentor.MilitaryActivity,
     });
 
     print("Successfully Added Mentor");
+  }
+
+  addMentee(Mentee mentee){
+    FirebaseDatabase.instance.reference().child('Mentees').child(mentee.Id)
+        .set({
+      'id': mentee.Id,
+      'first_name': mentee.FirstName,
+      'last_name': mentee.LastName,
+      'phone_number': mentee.PhoneNumber,
+      'bio': mentee.Bio,
+      'plan': mentee.Plan,
+      'job': mentee.Job,
+      'company': mentee.Company,
+      'school_name': mentee.SchoolName,
+      'school_major': mentee.SchoolMajor,
+      'military_branch': mentee.MilitaryBranch,
+      'military_occupation': mentee.MilitaryOccupation,
+      'certainty': mentee.Certainty
+    });
+
+    print("Successfully Added Mentee");
   }
 }
