@@ -27,11 +27,26 @@ class ProfileState extends State<Profile> {
   String detailOne= "a";
   String labelTwo= "a";
   String detailTwo= "a";
+  String labelThree= "a";
+  String detailThree= "a";
+  String labelFour= "a";
+  String detailFour= "a";
+  String labelFive= "a";
+  String detailFive= "a";
+  String labelSix= "a";
+  String detailSix= "a";
+  String labelSeven= "a";
+  String detailSeven= "a";
   String certainty;
   TextEditingController bioController = TextEditingController();
   TextEditingController planController = TextEditingController();
   TextEditingController detailOneController = TextEditingController();
   TextEditingController detailTwoController = TextEditingController();
+  TextEditingController detailThreeController = TextEditingController();
+  TextEditingController detailFourController = TextEditingController();
+  TextEditingController detailFiveController = TextEditingController();
+  TextEditingController detailSixController = TextEditingController();
+  TextEditingController detailSevenController = TextEditingController();
 
   @override
   void initState() {
@@ -206,113 +221,252 @@ class ProfileState extends State<Profile> {
                 ],
               )),
 
-          Padding(
-              padding: EdgeInsets.only(left: 32, top: 16, right: 16, ),
-              child: Row(
-                children: <Widget>[
-                  Text(
-                    "Certainty: ",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  !isEditing
-                      ? Text("College", style: TextStyle(fontSize: 24))
-                      :Container()
-                ],
-              ),
-          ),
           Visibility(
-            visible: isEditing,
-            child: Padding(
-              padding: EdgeInsets.only(left: 32, right: 16,bottom: 32 ),
-              child: Column(
-                children: <Widget>[
+            visible: !isMentee,
+            child: Column(children: <Widget>[
+              Padding(
+                  padding:EdgeInsets.only(left: 32, top: 16, right: 16, bottom: 16),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        labelThree,
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      !isEditing
+                          ? Text(detailThree, style: TextStyle(fontSize: 24))
+                          : Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Container(
+                            width: 150,
+                            child: TextField(
+                              controller: detailThreeController,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(16),
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                          )),
+                    ],
+                  )),
+              Padding(
+                  padding: EdgeInsets.only(left: 32, top: 16, right: 16, bottom: 16),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        labelFour,
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      !isEditing
+                          ? Text(detailFour, style: TextStyle(fontSize: 24))
+                          : Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Container(
+                            width: 150,
+                            child: TextField(
+                              controller: detailFourController,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(16),
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                          )),
+                    ],
+                  )),
+              Padding(
+                  padding: EdgeInsets.only(left: 32, top: 16, right: 16, bottom: 16),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        labelFive,
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      !isEditing
+                          ? Text(detailFive, style: TextStyle(fontSize: 24))
+                          : Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Container(
+                            width: 150,
+                            child: TextField(
+                              controller: detailFiveController,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(16),
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                          )),
+                    ],
+                  )),
+              Visibility(
+                visible: isMilitary,
+                child: Column(children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.symmetric(vertical: 0),
-                    child: new Row(
-                      children: <Widget>[
-                        new Padding(
-                            padding: EdgeInsets.only(left: 0, right: 0),
-                            child: Radio(
-                              value: 0,
-                              groupValue: _certaintyValue,
-                              onChanged: _handleRadioValueChange,
-                            )),
-                        new Text(
-                          "100% certain",
-                          style: TextStyle(
-                            color: Colors.black,
+                      padding: EdgeInsets.only(left: 32, top: 16, right: 16, bottom: 16),
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                            labelSix,
+                            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-
+                          !isEditing
+                              ? Text(detailSix, style: TextStyle(fontSize: 24))
+                              : Padding(
+                              padding: EdgeInsets.all(16),
+                              child: Container(
+                                width: 150,
+                                child: TextField(
+                                  controller: detailSixController,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.all(16),
+                                    border: OutlineInputBorder(),
+                                  ),
+                                ),
+                              )),
+                        ],
+                      )),
                   Padding(
-                    padding: EdgeInsets.symmetric(vertical: 0),
-                    child: new Row(
-                      children: <Widget>[
-                        new Padding(
-                            padding: EdgeInsets.only(left: 0, right: 0),
-                            child: Radio(
-                              value: 1,
-                              groupValue: _certaintyValue,
-                              onChanged: _handleRadioValueChange,
-                            )),
-                        new Text(
-                          "I have a good idea, but things could change",
-                          style: TextStyle(
-                            color: Colors.black,
+                      padding: EdgeInsets.only(left: 32, top: 16, right: 16, bottom: 16),
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                            labelSeven,
+                            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 0),
-                    child: new Row(
-                      children: <Widget>[
-                        new Padding(
-                            padding: EdgeInsets.only(left: 0, right: 0),
-                            child: Radio(
-                              value: 2,
-                              groupValue: _certaintyValue,
-                              onChanged: _handleRadioValueChange,
-                            )),
-                        new Text(
-                          "Its something I\'m interested in, but who knows",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 0),
-                    child: new Row(
-                      children: <Widget>[
-                        new Padding(
-                            padding: EdgeInsets.only(left: 0, right: 0),
-                            child: Radio(
-                              value: 3,
-                              groupValue: _certaintyValue,
-                              onChanged: _handleRadioValueChange,
-                            )),
-                        new Text(
-                          "I have no clue what I want to do",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            )
+                          !isEditing
+                              ? Text(detailSeven, style: TextStyle(fontSize: 24))
+                              : Padding(
+                              padding: EdgeInsets.all(16),
+                              child: Container(
+                                width: 150,
+                                child: TextField(
+                                  controller: detailSevenController,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.all(16),
+                                    border: OutlineInputBorder(),
+                                  ),
+                                ),
+                              )),
+                        ],
+                      )),
+                ],),
+              )
+            ],)
           ),
+
+          Visibility(
+            visible: isMentee,
+            child: Column(children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(left: 32, top: 16, right: 16, ),
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                      "Certainty: ",
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    !isEditing
+                        ? Text("College", style: TextStyle(fontSize: 24))
+                        :Container()
+                  ],
+                ),
+              ),
+              Visibility(
+                  visible: isEditing,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 32, right: 16,bottom: 32 ),
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 0),
+                          child: new Row(
+                            children: <Widget>[
+                              new Padding(
+                                  padding: EdgeInsets.only(left: 0, right: 0),
+                                  child: Radio(
+                                    value: 0,
+                                    groupValue: _certaintyValue,
+                                    onChanged: _handleRadioValueChange,
+                                  )),
+                              new Text(
+                                "100% certain",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 0),
+                          child: new Row(
+                            children: <Widget>[
+                              new Padding(
+                                  padding: EdgeInsets.only(left: 0, right: 0),
+                                  child: Radio(
+                                    value: 1,
+                                    groupValue: _certaintyValue,
+                                    onChanged: _handleRadioValueChange,
+                                  )),
+                              new Text(
+                                "I have a good idea, but things could change",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 0),
+                          child: new Row(
+                            children: <Widget>[
+                              new Padding(
+                                  padding: EdgeInsets.only(left: 0, right: 0),
+                                  child: Radio(
+                                    value: 2,
+                                    groupValue: _certaintyValue,
+                                    onChanged: _handleRadioValueChange,
+                                  )),
+                              new Text(
+                                "Its something I\'m interested in, but who knows",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 0),
+                          child: new Row(
+                            children: <Widget>[
+                              new Padding(
+                                  padding: EdgeInsets.only(left: 0, right: 0),
+                                  child: Radio(
+                                    value: 3,
+                                    groupValue: _certaintyValue,
+                                    onChanged: _handleRadioValueChange,
+                                  )),
+                              new Text(
+                                "I have no clue what I want to do",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+              ),
+            ],)
+          ),
+
+
+
           new Container(
             width: double.infinity,
             child: new Padding(
@@ -398,13 +552,17 @@ class ProfileState extends State<Profile> {
           isLoading = false;
         })
       } else  {
-        updateUser(user.uid)
+        if(isMentee){
+          updateMentee(user.uid)
+        } else{
+          //updateMentor(id);
+        }
       }
     });
 
   }
 
-  updateUser(String id)async {
+  updateMentee(String id)async {
     await FirebaseDatabase.instance.reference().child("Mentees").child(id).update({"bio": bioController.text});
     if(_certaintyValue == 0){
       await FirebaseDatabase.instance.reference().child("Mentees").child(id).update({"certainty": "certain"});
@@ -678,7 +836,5 @@ class ProfileState extends State<Profile> {
         isLoading = false;
       })
     });
-
-
   }
 }
