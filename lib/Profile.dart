@@ -463,13 +463,87 @@ class ProfileState extends State<Profile> {
             isLoading = false;
           })
         } else  {
-          getMentee(user.uid),
+          if(isMentee){
+            getMentee(user.uid),
+          } else{
+            getMentor(user.uid),
+          }
         }
       });
 
     } catch (e) {
 
     }
+  }
+  getMentor(String id)async {
+    await FirebaseAuth.instance.currentUser().then((user)=>{
+      email = user.email
+    });
+
+
+    var bioResponse = await FirebaseDatabase.instance.reference().child("Mentors").child(id).child("bio");
+    bioResponse.once().then((snapshot) => {
+      print(snapshot.value),
+      bio = snapshot.value,
+
+    });
+    var firstNameResponse = await FirebaseDatabase.instance.reference().child("Mentors").child(id).child("first_name");
+    firstNameResponse.once().then((snapshot) => {
+      print(snapshot.value),
+      firstName = snapshot.value,
+
+    });
+
+    var lastNameResponse = await FirebaseDatabase.instance.reference().child("Mentors").child(id).child("last_name");
+    lastNameResponse.once().then((snapshot) => {
+      print(snapshot.value),
+      lastName = snapshot.value,
+
+    });
+    var jobResponse = await FirebaseDatabase.instance.reference().child("Mentors").child(id).child("job_title");
+    jobResponse.once().then((snapshot) => {
+      print(snapshot.value),
+
+    });
+    var companyNameResponse = await FirebaseDatabase.instance.reference().child("Mentors").child(id).child("company_name");
+    companyNameResponse.once().then((snapshot) => {
+      print(snapshot.value),
+      lastName = snapshot.value,
+
+    });
+    var industryResponse = await FirebaseDatabase.instance.reference().child("Mentors").child(id).child("industry");
+    industryResponse.once().then((snapshot) => {
+      print(snapshot.value),
+      lastName = snapshot.value,
+
+    });
+    var experienceResponse = await FirebaseDatabase.instance.reference().child("Mentors").child(id).child("experience");
+    experienceResponse.once().then((snapshot) => {
+      print(snapshot.value),
+      lastName = snapshot.value,
+
+    });
+    var educationResponse = await FirebaseDatabase.instance.reference().child("Mentors").child(id).child("education");
+    educationResponse.once().then((snapshot) => {
+      print(snapshot.value),
+      lastName = snapshot.value,
+
+    });
+    var schoolNameResponse = await FirebaseDatabase.instance.reference().child("Mentors").child(id).child("school_name");
+    schoolNameResponse.once().then((snapshot) => {
+      print(snapshot.value),
+      lastName = snapshot.value,
+
+    });
+
+    var veteranResponse = await FirebaseDatabase.instance.reference().child("Mentors").child(id).child("is_veteran");
+    veteranResponse.once().then((snapshot) => {
+      print(snapshot.value),
+      lastName = snapshot.value,
+
+    });
+
+
   }
 
   getMentee(String id)async{
@@ -498,7 +572,6 @@ class ProfileState extends State<Profile> {
 
     });
 
-    var something;
     var planResponse = await FirebaseDatabase.instance.reference().child("Mentees").child(id).child("plan");
     planResponse.once().then((snapshot) => {
       print(snapshot.value),
@@ -506,31 +579,39 @@ class ProfileState extends State<Profile> {
         plan = snapshot.value;
         isLoading = false;
         print(snapshot.value);
-        getView(id);
+        getMenteeView(id);
       })
 
     });
 
   }
 
-  getView(String id){
+  getMenteeView(String id)async {
     if(plan == "Military" ){
       labelOne = "Military Branch: ";
       labelTwo = "Military Occupation: ";
-      getMilitaryInfo(id);
+      getMenteeMilitaryInfo(id);
     }
     if(plan == "Straight To Work"){
       labelOne = "Job Title: ";
       labelTwo = "Company Name: ";
-      getWorkInfo(id);
+      getMenteeWorkInfo(id);
     }
     else{
       labelOne = "School Name: ";
       labelTwo = "School Major: ";
-      getEducationInfo(id);
+      getMenteeEducationInfo(id);
     }
+    var certaintyResponse = await FirebaseDatabase.instance.reference().child("Mentees").child(id).child("certainty");
+    certaintyResponse.once().then((snapshot) => {
+      print(snapshot.value),
+      certainty = snapshot.value,
+      setState(() {
+        isLoading = false;
+      })
+    });
   }
-  getEducationInfo(String id)async {
+  getMenteeEducationInfo(String id)async {
     var schoolResponse = await FirebaseDatabase.instance.reference().child("Mentees").child(id).child("school_name");
     schoolResponse.once().then((snapshot) => {
       print(snapshot.value),
@@ -553,7 +634,7 @@ class ProfileState extends State<Profile> {
     });
   }
 
-  getWorkInfo(String id)async {
+  getMenteeWorkInfo(String id)async {
     var schoolResponse = await FirebaseDatabase.instance.reference().child("Mentees").child(id).child("job");
     schoolResponse.once().then((snapshot) => {
       print(snapshot.value),
@@ -576,7 +657,7 @@ class ProfileState extends State<Profile> {
     });
   }
 
-  getMilitaryInfo(String id)async {
+  getMenteeMilitaryInfo(String id)async {
     var schoolResponse = await FirebaseDatabase.instance.reference().child("Mentees").child(id).child("military_branch");
     schoolResponse.once().then((snapshot) => {
       print(snapshot.value),
@@ -598,14 +679,6 @@ class ProfileState extends State<Profile> {
       })
     });
 
-    var certaintyResponse = await FirebaseDatabase.instance.reference().child("Mentees").child(id).child("certainty");
-    certaintyResponse.once().then((snapshot) => {
-      print(snapshot.value),
-      certainty = snapshot.value,
-      detailTwoController.text  = snapshot.value,
-      setState(() {
-        isLoading = false;
-      })
-    });
+
   }
 }
