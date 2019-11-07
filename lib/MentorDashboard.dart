@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'Feed.dart';
+import 'Messages.dart';
+import 'Profile.dart';
+
 class MentorDashboard extends StatefulWidget{
   MentorDashboardState createState() => MentorDashboardState();
 }
@@ -7,13 +11,15 @@ class MentorDashboard extends StatefulWidget{
 class MentorDashboardState extends State<MentorDashboard>{
   int _currentIndex = 0;
   final List<Widget> _children = [
+    Feed(),
     PlaceholderWidget(Colors.white),
-    PlaceholderWidget(Colors.deepOrange),
-    PlaceholderWidget(Colors.green)
+    Messages(),
+    Profile(isMentee: false,)
   ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped, // new
         currentIndex: _currentIndex,

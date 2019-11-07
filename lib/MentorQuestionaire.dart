@@ -167,6 +167,7 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                             right: 16,
                                           ),
                                           child: TextField(
+                                            controller: jobController,
                                             decoration: InputDecoration(
                                                 contentPadding: EdgeInsets.all(16),
                                                 hintText: "Job Title",
@@ -178,7 +179,7 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                         Padding(
                                           padding: EdgeInsets.all(16),
                                           child: TextField(
-                                            obscureText: true,
+                                            controller: companyController,
                                             decoration: InputDecoration(
                                               contentPadding: EdgeInsets.all(16),
                                               hintText: "Company Name",

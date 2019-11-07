@@ -152,7 +152,25 @@ class LoginState extends State<Login>{
           ),),
 
 
+              new Container(
+                width: double.infinity,
+                child: new Padding(
+                  padding: EdgeInsets.only(left: 16, top: 10, right: 16, bottom: 32),
+                  child: RaisedButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(10.0)
+                    ),
+                    padding: EdgeInsets.all(16),
+                    color: Colors.indigoAccent,
+                    onPressed: ()=>signIn(emailController.text, passwordController.text) ,
+                    child: Text("Login",
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),),
 
+
+                  ),),),
 
 
 
@@ -187,7 +205,7 @@ class LoginState extends State<Login>{
     AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(
         email: email, password: password);
     FirebaseUser user = result.user;
-    getMentor(user.uid);
+    getUser();
   }
 
   onLogin(){
@@ -228,8 +246,8 @@ class LoginState extends State<Login>{
     var mentor = await FirebaseDatabase.instance.reference().child("Mentors").child(id).child("is_mentor");
     mentor.once().then((snapshot) => {
       print(snapshot.value),
-      if(snapshot.value == false){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => MenteeDashboard())),
+      if(snapshot.value == true){
+        Navigator.push(context, MaterialPageRoute(builder: (context) => MentorDashboard())),
       } else{
         signout(),
         setState((){
