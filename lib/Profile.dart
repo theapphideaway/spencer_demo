@@ -6,6 +6,8 @@ import 'package:flutter/widgets.dart';
 
 import 'Login.dart';
 import 'MenteePlans.dart';
+import 'MentorEducation.dart';
+import 'MentorIndustries.dart';
 
 class Profile extends StatefulWidget {
   final bool isMentee;
@@ -21,12 +23,13 @@ class ProfileState extends State<Profile> {
   bool isWork = true;
   bool isSchool = false;
   bool isMilitary = false;
+  int _experienceValue = 0;
   int _certaintyValue = 0;
   String firstName = "a";
   String lastName = "a";
   String email = "a";
   String bio = "a";
-  var plan = "a";
+  String plan = "a";
   String planLabel;
   String labelOne = "a";
   String detailOne = "a";
@@ -42,7 +45,7 @@ class ProfileState extends State<Profile> {
   String detailSix = "a";
   String labelSeven = "a";
   String detailSeven = "a";
-  String certainty;
+  String certainty = "N/A";
   TextEditingController bioController = TextEditingController();
   TextEditingController planController = TextEditingController();
   TextEditingController detailOneController = TextEditingController();
@@ -211,7 +214,7 @@ class ProfileState extends State<Profile> {
                                     onTap: isMentee ? menteePlans : () {},
                                     controller: planController,
                                     decoration: InputDecoration(
-                                      suffixIcon: Icon(Icons.arrow_drop_down),
+                                      suffixIcon: !isMentee? null: Icon(Icons.arrow_drop_down),
                                       contentPadding: EdgeInsets.all(16),
                                       border: OutlineInputBorder(),
                                     ),
@@ -298,10 +301,12 @@ class ProfileState extends State<Profile> {
                                 child: Container(
                                   width: double.infinity,
                                   child: TextField(
+                                    onTap: mentorIndustry,
                                     controller: detailTwoController,
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.all(16),
                                       border: OutlineInputBorder(),
+                                      suffixIcon: !isMentee? Icon(Icons.arrow_drop_down): null,
                                     ),
                                   ),
                                 )),
@@ -333,7 +338,9 @@ class ProfileState extends State<Profile> {
                                           left: 32,
                                           right: 16,
                                         ),
-                                        child: Row(
+                                        child:
+
+                                        Row(
                                           children: <Widget>[
                                             Text(detailThree,
                                                 style: TextStyle(fontSize: 24)),
@@ -348,13 +355,52 @@ class ProfileState extends State<Profile> {
                                             bottom: 16),
                                         child: Container(
                                           width: double.infinity,
-                                          child: TextField(
-                                            controller: detailThreeController,
-                                            decoration: InputDecoration(
-                                              contentPadding:
-                                                  EdgeInsets.all(16),
-                                              border: OutlineInputBorder(),
-                                            ),
+                                          child: new Row(
+                                            children: <Widget>[
+                                              Expanded(child: Container(),),
+                                              new Padding(
+                                                  padding: EdgeInsets.only(left: 0, right: 0),
+                                                  child: Radio(
+                                                    value: 0,
+                                                    groupValue: _experienceValue,
+                                                    onChanged: _handleExperienceValueChange,
+                                                  )),
+                                              new Text(
+                                                "1-4",
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              Expanded(child: Container(),),
+                                              new Padding(
+                                                  padding: EdgeInsets.only(left: 0, right: 0),
+                                                  child: Radio(
+                                                    value: 1,
+                                                    groupValue: _experienceValue,
+                                                    onChanged: _handleExperienceValueChange,
+                                                  )),
+                                              new Text(
+                                                "5-9",
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              Expanded(child: Container(),),
+                                              new Padding(
+                                                  padding: EdgeInsets.only(left: 0, right: 0),
+                                                  child: Radio(
+                                                    value: 2,
+                                                    groupValue: _experienceValue,
+                                                    onChanged: _handleExperienceValueChange,
+                                                  )),
+                                              new Text(
+                                                "10+",
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              Expanded(child: Container(),),
+                                            ],
                                           ),
                                         )),
                                 Padding(
@@ -397,11 +443,13 @@ class ProfileState extends State<Profile> {
                                         child: Container(
                                           width: double.infinity,
                                           child: TextField(
+                                            onTap: ()=>mentorEducation(),
                                             controller: detailFourController,
                                             decoration: InputDecoration(
                                               contentPadding:
                                                   EdgeInsets.all(16),
                                               border: OutlineInputBorder(),
+                                              suffixIcon: !isMentee? Icon(Icons.arrow_drop_down): null,
                                             ),
                                           ),
                                         )),
@@ -808,10 +856,71 @@ class ProfileState extends State<Profile> {
                 {updateMentee(user.uid)}
               else
                 {
-                  //updateMentor(id);
+                  updateMentor(user.uid)
                 }
             }
         });
+  }
+
+  updateMentor(String id)async {
+    await FirebaseDatabase.instance
+        .reference()
+        .child("Mentors")
+        .child(id)
+        .update({"bio": bioController.text});
+    await FirebaseDatabase.instance
+        .reference()
+        .child("Mentors")
+        .child(id)
+        .update({"job_title": planController.text});
+    await FirebaseDatabase.instance
+        .reference()
+        .child("Mentors")
+        .child(id)
+        .update({"company_name": detailOneController.text});
+    await FirebaseDatabase.instance
+        .reference()
+        .child("Mentors")
+        .child(id)
+        .update({"industry": detailTwoController.text});
+
+    if(_experienceValue == 0){
+      await FirebaseDatabase.instance
+          .reference()
+          .child("Mentors")
+          .child(id)
+          .update({"experience": "1-4"});
+    }
+    if(_experienceValue == 1){
+      await FirebaseDatabase.instance
+          .reference()
+          .child("Mentors")
+          .child(id)
+          .update({"experience": "5-9"});
+    }
+    if(_experienceValue == 2){
+      await FirebaseDatabase.instance
+          .reference()
+          .child("Mentors")
+          .child(id)
+          .update({"experience": "10+"});
+    }
+
+    await FirebaseDatabase.instance
+        .reference()
+        .child("Mentors")
+        .child(id)
+        .update({"education": detailFourController.text});
+    await FirebaseDatabase.instance
+        .reference()
+        .child("Mentors")
+        .child(id)
+        .update({"school_name": detailFiveController.text});
+    setState(() {
+      isEditing = false;
+      getUser();
+    });
+
   }
 
   updateMentee(String id) async {
@@ -1221,5 +1330,74 @@ class ProfileState extends State<Profile> {
     await FirebaseAuth.instance.signOut();
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (BuildContext context) => Login()));
+  }
+
+  mentorIndustry() async {
+    if (!isMentee){
+      final type = await Navigator.of(context).push(PageRouteBuilder(
+        opaque: false,
+        pageBuilder: (BuildContext context, Animation<double> animation,
+            Animation<double> secondaryAnimation) {
+          return MentorIndustries();
+        },
+        transitionsBuilder: (BuildContext context, Animation<double> animation,
+            Animation<double> secondaryAnimation, Widget child) {
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0, 1),
+              end: Offset.zero,
+            ).animate(animation),
+            child: child,
+          );
+        },
+      ));
+      setState(() {
+        detailTwoController.text = type;
+      });
+    }
+  }
+
+  mentorEducation() async {
+    if(!isMentee){
+      final type = await Navigator.of(context).push(PageRouteBuilder(
+        opaque: false,
+        pageBuilder: (BuildContext context, Animation<double> animation,
+            Animation<double> secondaryAnimation) {
+          return MentorEducation();
+        },
+        transitionsBuilder: (BuildContext context, Animation<double> animation,
+            Animation<double> secondaryAnimation, Widget child) {
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0, 1),
+              end: Offset.zero,
+            ).animate(animation),
+            child: child,
+          );
+        },
+      ));
+
+      setState(() {
+        detailFourController.text = type;
+      });
+    }
+
+  }
+
+  void _handleExperienceValueChange(int value) {
+    setState(() {
+      _experienceValue = value;
+
+      switch (_experienceValue) {
+        case 0:
+          break;
+        case 1:
+          break;
+        case 2:
+          break;
+        case 3:
+          break;
+      }
+    });
   }
 }
