@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'Login.dart';
 import 'MenteePlans.dart';
@@ -23,6 +24,7 @@ class ProfileState extends State<Profile> {
   bool isWork = true;
   bool isSchool = false;
   bool isMilitary = false;
+  bool hasProfilePicture = false;
   int _experienceValue = 0;
   int _certaintyValue = 0;
   String firstName = "a";
@@ -46,6 +48,7 @@ class ProfileState extends State<Profile> {
   String labelSeven = "a";
   String detailSeven = "a";
   String certainty = "N/A";
+  var profilePictureUrl;
   TextEditingController bioController = TextEditingController();
   TextEditingController planController = TextEditingController();
   TextEditingController detailOneController = TextEditingController();
@@ -90,11 +93,15 @@ class ProfileState extends State<Profile> {
                           children: <Widget>[
                             Padding(
                               padding: EdgeInsets.only(left: 16, top: 16),
-                              child: Container(
-                                color: Colors.green,
+                              child: GestureDetector(
+                                onTap: getProfilePicture,
+                              child: hasProfilePicture?Image.network(profilePictureUrl,
+                                height: 100,
+                                width: 100,):
+                              Image.asset('assets/default_profile_picture.jpg',
                                 height: 100,
                                 width: 100,
-                              ),
+                              ),)
                             ),
                             Align(
                                 alignment: Alignment.topLeft,
@@ -789,6 +796,7 @@ class ProfileState extends State<Profile> {
                   )));
   }
 
+
   menteePlans() async {
     final type = await Navigator.of(context).push(PageRouteBuilder(
       opaque: false,
@@ -1022,6 +1030,7 @@ class ProfileState extends State<Profile> {
     });
   }
 
+
   getUser() async {
     try {
       await FirebaseAuth.instance.currentUser().then((user) => {
@@ -1057,8 +1066,18 @@ class ProfileState extends State<Profile> {
         .child(id)
         .child("bio");
     bioResponse.once().then((snapshot) => {
+      print(snapshot.value),
+      bio = snapshot.value,
+    });
+    var pictureResponse = await FirebaseDatabase.instance
+        .reference()
+        .child("Mentors")
+        .child(id)
+        .child("profile_picture");
+    pictureResponse.once().then((snapshot) => {
           print(snapshot.value),
-          bio = snapshot.value,
+          profilePictureUrl = snapshot.value,
+      if(profilePictureUrl != null) hasProfilePicture = true
         });
     var firstNameResponse = await FirebaseDatabase.instance
         .reference()
@@ -1172,6 +1191,17 @@ class ProfileState extends State<Profile> {
     await FirebaseAuth.instance
         .currentUser()
         .then((user) => {email = user.email});
+
+    var pictureResponse = await FirebaseDatabase.instance
+        .reference()
+        .child("Mentees")
+        .child(id)
+        .child("profile_picture");
+    pictureResponse.once().then((snapshot) => {
+      print(snapshot.value),
+      profilePictureUrl = snapshot.value,
+      if(profilePictureUrl != null) hasProfilePicture = true
+    });
 
     var bioResponse = await FirebaseDatabase.instance
         .reference()
@@ -1381,7 +1411,6 @@ class ProfileState extends State<Profile> {
         detailFourController.text = type;
       });
     }
-
   }
 
   void _handleExperienceValueChange(int value) {
@@ -1398,6 +1427,14 @@ class ProfileState extends State<Profile> {
         case 3:
           break;
       }
+    });
+  }
+
+  getProfilePicture()async {
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      profilePictureUrl = image.toString();
     });
   }
 }
