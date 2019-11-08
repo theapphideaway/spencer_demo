@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "723668210377",
+    "firebase_url": "https://wayahead-2ca20.firebaseio.com",
+    "project_id": "wayahead-2ca20",
+    "storage_bucket": "wayahead-2ca20.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:723668210377:android:45a8ea8d050e8ae8c3f318",
+        "android_client_info": {
+          "package_name": "io.wayahead.way_ahead"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "723668210377-1jp7s6kpueeu6ce9ghocl0imsenfdpfu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmzpvinksDaRQrcUtZp7jN2FXJyNeejkw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "723668210377-1jp7s6kpueeu6ce9ghocl0imsenfdpfu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "723668210377-m42i97t425s8f5hrdienobd5f0puldna.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "io.wayahead.wayAhead"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

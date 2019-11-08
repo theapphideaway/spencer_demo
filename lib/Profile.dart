@@ -81,590 +81,484 @@ class ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SafeArea(
-            child: isLoading
-                ? Container(
-                    color: Colors.white,
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        valueColor:
-                            new AlwaysStoppedAnimation<Color>(Colors.blue[800]),
-                      ),
-                    ),
-                  )
-                : SingleChildScrollView(
-                    child: Column(
+        body: isLoading
+            ? Container(
+                color: Colors.white,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    valueColor:
+                        new AlwaysStoppedAnimation<Color>(Colors.blue[800]),
+                  ),
+                ),
+              )
+            : SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    Stack(
                       children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Padding(
-                                padding: EdgeInsets.only(left: 16, top: 16),
-                                child: GestureDetector(
-                                  onTap: getProfilePicture,
-                                  child: profilePictureUrl != null ? Image.memory(profilePictureUrl,
-                                          width: 100,
-                                          height: 100,
-                                          fit: BoxFit.cover)
-                                      : Image.asset(
-                                          'assets/default_profile_picture.jpg',
-                                          height: 100,
-                                          width: 100,
-                                        ),
-                                )),
-                            Align(
-                                alignment: Alignment.topLeft,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          left: 16, bottom: 8, right: 16),
-                                      child: Text(
-                                        firstName + " " + lastName,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 28),
-                                      ),
-                                    ),
-                                    Row(
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 16),
-                                          child: Text(
-                                            email,
-                                            textAlign: TextAlign.left,
+                        Column(children: <Widget>[
+                          GestureDetector(
+                              onTap: getProfilePicture,
+                              child: profilePictureUrl != null
+                                  ? Container(
+                                  height: 450,
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image: MemoryImage(
+                                            profilePictureUrl,
                                           ),
-                                        ),
-                                        Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 16),
-                                            child: FlatButton(
-                                              onPressed:
-                                                  isEditing ? onSave : onEdit,
-                                              color: Colors.blue[800],
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    new BorderRadius.circular(
-                                                        20.0),
-                                              ),
-                                              child: isEditing
-                                                  ? Text(
-                                                      "Save",
-                                                      style: TextStyle(
-                                                          fontSize: 18,
-                                                          color: Colors.white),
-                                                    )
-                                                  : Text(
-                                                      "Edit",
-                                                      style: TextStyle(
-                                                          fontSize: 18,
-                                                          color: Colors.white),
-                                                    ),
-                                            ))
-                                      ],
-                                    ),
-                                  ],
-                                ))
-                          ],
+                                          fit: BoxFit.cover,
+                                          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.4), BlendMode.colorBurn))))
+                                  : Image.asset(
+                                'assets/default_profile_picture.jpg',
+                                width: double.infinity,
+                                height: 400,
+                              )),
+                          GestureDetector(
+                            child: Container(
+                              color: Colors.blue[800],
+                              width: double.infinity,
+                              height: 60,
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Row(children: <Widget>[
+                                  Expanded(child: Container()),
+                                  Icon(Icons.add, color: Colors.white,),
+                                  Text(" MENTOR ME", style: TextStyle(color: Colors.white, fontSize: 18)),
+                                  Expanded(child: Container()),
+                                ],)
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: 60,
+                            width: double.infinity,
+                            child: Row(children: <Widget>[
+
+                            ],),
+                          )
+                        ],),
+
+                        Column(children: <Widget>[
+                          Padding(
+                              padding: EdgeInsets.only(top: 350),
+                              child: Center(child: Text(firstName + " " + lastName, style: TextStyle(color: Colors.grey[200], fontSize: 40),),
+                              )),
+                          Padding(
+                              padding: EdgeInsets.only(top: 8),
+                              child: Center(child: Text(plan + "at " + detailOne, style: TextStyle(color: Colors.grey[200], fontSize: 24),),
+                              )),
+
+                          Padding(
+                            padding: EdgeInsets.only(left: 16, top: 40),
+                              child:Row(children: <Widget>[
+                            GestureDetector(
+                                onTap: getProfilePicture,
+                                child: profilePictureUrl != null
+                                    ? Container(
+                                    height: 80,
+                                    width: 80,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16),
+                                        image: DecorationImage(
+                                          image: MemoryImage(
+                                            profilePictureUrl,
+                                          ),
+                                          fit: BoxFit.cover,)))
+                                    : Image.asset(
+                                  'assets/default_profile_picture.jpg',
+                                  width: 80,
+                                  height: 80,
+                                )),
+                            Expanded(child: Container(),)
+                          ],))
+
+                        ],)
+                      ],
+                    ),
+
+                    !isEditing
+                        ? Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 32, vertical: 32),
+                            child: Text(
+                              bio,
+                              style: TextStyle(fontSize: 18),
+                            ))
+                        : Padding(
+                            padding: EdgeInsets.all(16),
+                            child: TextField(
+                              controller: bioController,
+                              keyboardType: TextInputType.multiline,
+                              maxLines: 100,
+                              minLines: 10,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(16),
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                          ),
+                    Padding(
+                        padding: EdgeInsets.only(
+                          left: 16,
+                          top: 16,
+                          right: 16,
                         ),
-                        !isEditing
-                            ? Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 32, vertical: 32),
-                                child: Text(
-                                  bio,
-                                  style: TextStyle(fontSize: 18),
-                                ))
-                            : Padding(
-                                padding: EdgeInsets.all(16),
-                                child: TextField(
-                                  controller: bioController,
-                                  keyboardType: TextInputType.multiline,
-                                  maxLines: 100,
-                                  minLines: 10,
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.all(16),
-                                    border: OutlineInputBorder(),
-                                  ),
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              isMentee ? "Plan: " : "Job Title: ",
+                              style: TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.bold),
+                            ),
+                            Expanded(child: Container())
+                          ],
+                        )),
+                    !isEditing
+                        ? Padding(
+                            padding: EdgeInsets.only(
+                              top: 8,
+                              left: 32,
+                              right: 16,
+                            ),
+                            child: Row(
+                              children: <Widget>[
+                                Text(plan, style: TextStyle(fontSize: 24)),
+                                Expanded(child: Container())
+                              ],
+                            ))
+                        : Padding(
+                            padding: EdgeInsets.only(
+                                left: 16, top: 16, right: 16, bottom: 16),
+                            child: Container(
+                              width: double.infinity,
+                              child: TextField(
+                                onTap: isMentee ? menteePlans : () {},
+                                controller: planController,
+                                decoration: InputDecoration(
+                                  suffixIcon: !isMentee
+                                      ? null
+                                      : Icon(Icons.arrow_drop_down),
+                                  contentPadding: EdgeInsets.all(16),
+                                  border: OutlineInputBorder(),
                                 ),
                               ),
-                        Padding(
+                            )),
+                    Padding(
+                        padding: EdgeInsets.only(
+                          left: 16,
+                          top: 32,
+                          right: 16,
+                        ),
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              labelOne,
+                              style: TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.bold),
+                            ),
+                            Expanded(child: Container())
+                          ],
+                        )),
+                    !isEditing
+                        ? Padding(
                             padding: EdgeInsets.only(
-                              left: 16,
-                              top: 16,
+                              top: 8,
+                              left: 32,
                               right: 16,
                             ),
                             child: Row(
                               children: <Widget>[
-                                Text(
-                                  isMentee ? "Plan: " : "Job Title: ",
-                                  style: TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold),
-                                ),
+                                Text(detailOne, style: TextStyle(fontSize: 24)),
                                 Expanded(child: Container())
                               ],
-                            )),
-                        !isEditing
-                            ? Padding(
-                                padding: EdgeInsets.only(
-                                  top: 8,
-                                  left: 32,
-                                  right: 16,
-                                ),
-                                child: Row(
-                                  children: <Widget>[
-                                    Text(plan, style: TextStyle(fontSize: 24)),
-                                    Expanded(child: Container())
-                                  ],
-                                ))
-                            : Padding(
-                                padding: EdgeInsets.only(
-                                    left: 16, top: 16, right: 16, bottom: 16),
-                                child: Container(
-                                  width: double.infinity,
-                                  child: TextField(
-                                    onTap: isMentee ? menteePlans : () {},
-                                    controller: planController,
-                                    decoration: InputDecoration(
-                                      suffixIcon: !isMentee
-                                          ? null
-                                          : Icon(Icons.arrow_drop_down),
-                                      contentPadding: EdgeInsets.all(16),
-                                      border: OutlineInputBorder(),
-                                    ),
-                                  ),
-                                )),
-                        Padding(
+                            ))
+                        : Padding(
                             padding: EdgeInsets.only(
-                              left: 16,
-                              top: 32,
+                                left: 16, top: 16, right: 16, bottom: 16),
+                            child: Container(
+                              width: double.infinity,
+                              child: TextField(
+                                controller: detailOneController,
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.all(16),
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            )),
+                    Padding(
+                        padding: EdgeInsets.only(
+                          left: 16,
+                          top: 32,
+                          right: 16,
+                        ),
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              labelTwo,
+                              style: TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.bold),
+                            ),
+                            Expanded(child: Container())
+                          ],
+                        )),
+                    !isEditing
+                        ? Padding(
+                            padding: EdgeInsets.only(
+                              top: 8,
+                              left: 32,
                               right: 16,
                             ),
                             child: Row(
                               children: <Widget>[
-                                Text(
-                                  labelOne,
-                                  style: TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold),
-                                ),
+                                Text(detailTwo, style: TextStyle(fontSize: 24)),
                                 Expanded(child: Container())
                               ],
-                            )),
-                        !isEditing
-                            ? Padding(
-                                padding: EdgeInsets.only(
-                                  top: 8,
-                                  left: 32,
-                                  right: 16,
-                                ),
-                                child: Row(
-                                  children: <Widget>[
-                                    Text(detailOne,
-                                        style: TextStyle(fontSize: 24)),
-                                    Expanded(child: Container())
-                                  ],
-                                ))
-                            : Padding(
-                                padding: EdgeInsets.only(
-                                    left: 16, top: 16, right: 16, bottom: 16),
-                                child: Container(
-                                  width: double.infinity,
-                                  child: TextField(
-                                    controller: detailOneController,
-                                    decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.all(16),
-                                      border: OutlineInputBorder(),
-                                    ),
-                                  ),
-                                )),
-                        Padding(
+                            ))
+                        : Padding(
                             padding: EdgeInsets.only(
-                              left: 16,
-                              top: 32,
-                              right: 16,
-                            ),
-                            child: Row(
-                              children: <Widget>[
-                                Text(
-                                  labelTwo,
-                                  style: TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold),
+                                left: 16, top: 16, right: 16, bottom: 16),
+                            child: Container(
+                              width: double.infinity,
+                              child: TextField(
+                                onTap: mentorIndustry,
+                                controller: detailTwoController,
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.all(16),
+                                  border: OutlineInputBorder(),
+                                  suffixIcon: !isMentee
+                                      ? Icon(Icons.arrow_drop_down)
+                                      : null,
                                 ),
-                                Expanded(child: Container())
-                              ],
+                              ),
                             )),
-                        !isEditing
-                            ? Padding(
+                    Visibility(
+                        visible: !isMentee,
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
                                 padding: EdgeInsets.only(
-                                  top: 8,
-                                  left: 32,
+                                  left: 16,
+                                  top: 32,
                                   right: 16,
                                 ),
                                 child: Row(
                                   children: <Widget>[
-                                    Text(detailTwo,
-                                        style: TextStyle(fontSize: 24)),
+                                    Text(
+                                      labelThree,
+                                      style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                     Expanded(child: Container())
                                   ],
-                                ))
-                            : Padding(
-                                padding: EdgeInsets.only(
-                                    left: 16, top: 16, right: 16, bottom: 16),
-                                child: Container(
-                                  width: double.infinity,
-                                  child: TextField(
-                                    onTap: mentorIndustry,
-                                    controller: detailTwoController,
-                                    decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.all(16),
-                                      border: OutlineInputBorder(),
-                                      suffixIcon: !isMentee
-                                          ? Icon(Icons.arrow_drop_down)
-                                          : null,
-                                    ),
-                                  ),
                                 )),
-                        Visibility(
-                            visible: !isMentee,
-                            child: Column(
-                              children: <Widget>[
-                                Padding(
+                            !isEditing
+                                ? Padding(
                                     padding: EdgeInsets.only(
-                                      left: 16,
-                                      top: 32,
+                                      top: 8,
+                                      left: 32,
                                       right: 16,
                                     ),
                                     child: Row(
                                       children: <Widget>[
-                                        Text(
-                                          labelThree,
-                                          style: TextStyle(
-                                              fontSize: 24,
-                                              fontWeight: FontWeight.bold),
-                                        ),
+                                        Text(detailThree + "years",
+                                            style: TextStyle(fontSize: 24)),
                                         Expanded(child: Container())
                                       ],
-                                    )),
-                                !isEditing
-                                    ? Padding(
-                                        padding: EdgeInsets.only(
-                                          top: 8,
-                                          left: 32,
-                                          right: 16,
-                                        ),
-                                        child: Row(
-                                          children: <Widget>[
-                                            Text(detailThree + "years",
-                                                style: TextStyle(fontSize: 24)),
-                                            Expanded(child: Container())
-                                          ],
-                                        ))
-                                    : Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 16,
-                                            top: 16,
-                                            right: 16,
-                                            bottom: 16),
-                                        child: Container(
-                                          width: double.infinity,
-                                          child: new Row(
-                                            children: <Widget>[
-                                              Expanded(
-                                                child: Container(),
-                                              ),
-                                              new Padding(
-                                                  padding: EdgeInsets.only(
-                                                      left: 0, right: 0),
-                                                  child: Radio(
-                                                    value: 0,
-                                                    groupValue:
-                                                        _experienceValue,
-                                                    onChanged:
-                                                        _handleExperienceValueChange,
-                                                  )),
-                                              new Text(
-                                                "1-4",
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Container(),
-                                              ),
-                                              new Padding(
-                                                  padding: EdgeInsets.only(
-                                                      left: 0, right: 0),
-                                                  child: Radio(
-                                                    value: 1,
-                                                    groupValue:
-                                                        _experienceValue,
-                                                    onChanged:
-                                                        _handleExperienceValueChange,
-                                                  )),
-                                              new Text(
-                                                "5-9",
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Container(),
-                                              ),
-                                              new Padding(
-                                                  padding: EdgeInsets.only(
-                                                      left: 0, right: 0),
-                                                  child: Radio(
-                                                    value: 2,
-                                                    groupValue:
-                                                        _experienceValue,
-                                                    onChanged:
-                                                        _handleExperienceValueChange,
-                                                  )),
-                                              new Text(
-                                                "10+",
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Container(),
-                                              ),
-                                            ],
+                                    ))
+                                : Padding(
+                                    padding: EdgeInsets.only(
+                                        left: 16,
+                                        top: 16,
+                                        right: 16,
+                                        bottom: 16),
+                                    child: Container(
+                                      width: double.infinity,
+                                      child: new Row(
+                                        children: <Widget>[
+                                          Expanded(
+                                            child: Container(),
                                           ),
-                                        )),
-                                Padding(
-                                    padding: EdgeInsets.only(
-                                      left: 16,
-                                      top: 32,
-                                      right: 16,
-                                    ),
-                                    child: Row(
-                                      children: <Widget>[
-                                        Text(
-                                          labelFour,
-                                          style: TextStyle(
-                                              fontSize: 24,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        Expanded(child: Container())
-                                      ],
-                                    )),
-                                !isEditing
-                                    ? Padding(
-                                        padding: EdgeInsets.only(
-                                          top: 8,
-                                          left: 32,
-                                          right: 16,
-                                        ),
-                                        child: Row(
-                                          children: <Widget>[
-                                            Text(detailFour,
-                                                style: TextStyle(fontSize: 24)),
-                                            Expanded(child: Container())
-                                          ],
-                                        ))
-                                    : Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 16,
-                                            top: 16,
-                                            right: 16,
-                                            bottom: 16),
-                                        child: Container(
-                                          width: double.infinity,
-                                          child: TextField(
-                                            onTap: () => mentorEducation(),
-                                            controller: detailFourController,
-                                            decoration: InputDecoration(
-                                              contentPadding:
-                                                  EdgeInsets.all(16),
-                                              border: OutlineInputBorder(),
-                                              suffixIcon: !isMentee
-                                                  ? Icon(Icons.arrow_drop_down)
-                                                  : null,
+                                          new Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 0, right: 0),
+                                              child: Radio(
+                                                value: 0,
+                                                groupValue: _experienceValue,
+                                                onChanged:
+                                                    _handleExperienceValueChange,
+                                              )),
+                                          new Text(
+                                            "1-4",
+                                            style: TextStyle(
+                                              color: Colors.black,
                                             ),
                                           ),
-                                        )),
-                                Padding(
+                                          Expanded(
+                                            child: Container(),
+                                          ),
+                                          new Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 0, right: 0),
+                                              child: Radio(
+                                                value: 1,
+                                                groupValue: _experienceValue,
+                                                onChanged:
+                                                    _handleExperienceValueChange,
+                                              )),
+                                          new Text(
+                                            "5-9",
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Container(),
+                                          ),
+                                          new Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 0, right: 0),
+                                              child: Radio(
+                                                value: 2,
+                                                groupValue: _experienceValue,
+                                                onChanged:
+                                                    _handleExperienceValueChange,
+                                              )),
+                                          new Text(
+                                            "10+",
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Container(),
+                                          ),
+                                        ],
+                                      ),
+                                    )),
+                            Padding(
+                                padding: EdgeInsets.only(
+                                  left: 16,
+                                  top: 32,
+                                  right: 16,
+                                ),
+                                child: Row(
+                                  children: <Widget>[
+                                    Text(
+                                      labelFour,
+                                      style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Expanded(child: Container())
+                                  ],
+                                )),
+                            !isEditing
+                                ? Padding(
                                     padding: EdgeInsets.only(
-                                      left: 16,
-                                      top: 32,
+                                      top: 8,
+                                      left: 32,
                                       right: 16,
                                     ),
                                     child: Row(
                                       children: <Widget>[
-                                        Text(
-                                          labelFive,
-                                          style: TextStyle(
-                                              fontSize: 24,
-                                              fontWeight: FontWeight.bold),
-                                        ),
+                                        Text(detailFour,
+                                            style: TextStyle(fontSize: 24)),
                                         Expanded(child: Container())
                                       ],
-                                    )),
-                                !isEditing
-                                    ? Padding(
-                                        padding: EdgeInsets.only(
-                                          top: 8,
-                                          left: 32,
-                                          right: 16,
+                                    ))
+                                : Padding(
+                                    padding: EdgeInsets.only(
+                                        left: 16,
+                                        top: 16,
+                                        right: 16,
+                                        bottom: 16),
+                                    child: Container(
+                                      width: double.infinity,
+                                      child: TextField(
+                                        onTap: () => mentorEducation(),
+                                        controller: detailFourController,
+                                        decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.all(16),
+                                          border: OutlineInputBorder(),
+                                          suffixIcon: !isMentee
+                                              ? Icon(Icons.arrow_drop_down)
+                                              : null,
                                         ),
-                                        child: Row(
-                                          children: <Widget>[
-                                            Text(detailFive,
-                                                style: TextStyle(fontSize: 24)),
-                                            Expanded(child: Container())
-                                          ],
-                                        ))
-                                    : Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 16,
-                                            top: 16,
-                                            right: 16,
-                                            bottom: 16),
-                                        child: Container(
-                                          width: double.infinity,
-                                          child: TextField(
-                                            controller: detailFiveController,
-                                            decoration: InputDecoration(
-                                              contentPadding:
-                                                  EdgeInsets.all(16),
-                                              border: OutlineInputBorder(),
-                                            ),
+                                      ),
+                                    )),
+                            Padding(
+                                padding: EdgeInsets.only(
+                                  left: 16,
+                                  top: 32,
+                                  right: 16,
+                                ),
+                                child: Row(
+                                  children: <Widget>[
+                                    Text(
+                                      labelFive,
+                                      style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Expanded(child: Container())
+                                  ],
+                                )),
+                            !isEditing
+                                ? Padding(
+                                    padding: EdgeInsets.only(
+                                      top: 8,
+                                      left: 32,
+                                      right: 16,
+                                    ),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Text(detailFive,
+                                            style: TextStyle(fontSize: 24)),
+                                        Expanded(child: Container())
+                                      ],
+                                    ))
+                                : Padding(
+                                    padding: EdgeInsets.only(
+                                        left: 16,
+                                        top: 16,
+                                        right: 16,
+                                        bottom: 16),
+                                    child: Container(
+                                      width: double.infinity,
+                                      child: TextField(
+                                        controller: detailFiveController,
+                                        decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.all(16),
+                                          border: OutlineInputBorder(),
+                                        ),
+                                      ),
+                                    )),
+                            Visibility(
+                              visible: isMilitary,
+                              child: Column(
+                                children: <Widget>[
+                                  Padding(
+                                      padding: EdgeInsets.only(
+                                        left: 16,
+                                        top: 32,
+                                        right: 16,
+                                      ),
+                                      child: Row(
+                                        children: <Widget>[
+                                          Text(
+                                            labelSix,
+                                            style: TextStyle(
+                                                fontSize: 24,
+                                                fontWeight: FontWeight.bold),
                                           ),
-                                        )),
-                                Visibility(
-                                  visible: isMilitary,
-                                  child: Column(
-                                    children: <Widget>[
-                                      Padding(
-                                          padding: EdgeInsets.only(
-                                            left: 16,
-                                            top: 32,
-                                            right: 16,
-                                          ),
-                                          child: Row(
-                                            children: <Widget>[
-                                              Text(
-                                                labelSix,
-                                                style: TextStyle(
-                                                    fontSize: 24,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              Expanded(child: Container())
-                                            ],
-                                          )),
-                                      !isEditing
-                                          ? Padding(
-                                              padding: EdgeInsets.only(
-                                                top: 8,
-                                                left: 32,
-                                                right: 16,
-                                              ),
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Text(detailSix,
-                                                      style: TextStyle(
-                                                          fontSize: 24)),
-                                                  Expanded(child: Container())
-                                                ],
-                                              ))
-                                          : Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: 16,
-                                                  top: 16,
-                                                  right: 16,
-                                                  bottom: 16),
-                                              child: Container(
-                                                width: double.infinity,
-                                                child: TextField(
-                                                  controller:
-                                                      detailSixController,
-                                                  decoration: InputDecoration(
-                                                    contentPadding:
-                                                        EdgeInsets.all(16),
-                                                    border:
-                                                        OutlineInputBorder(),
-                                                  ),
-                                                ),
-                                              )),
-                                      Padding(
-                                          padding: EdgeInsets.only(
-                                            left: 16,
-                                            top: 32,
-                                            right: 16,
-                                          ),
-                                          child: Row(
-                                            children: <Widget>[
-                                              Text(
-                                                labelSeven,
-                                                style: TextStyle(
-                                                    fontSize: 24,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              Expanded(child: Container())
-                                            ],
-                                          )),
-                                      !isEditing
-                                          ? Padding(
-                                              padding: EdgeInsets.only(
-                                                top: 8,
-                                                left: 32,
-                                                right: 16,
-                                              ),
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Text(detailSeven,
-                                                      style: TextStyle(
-                                                          fontSize: 24)),
-                                                  Expanded(child: Container())
-                                                ],
-                                              ))
-                                          : Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: 16,
-                                                  top: 16,
-                                                  right: 16,
-                                                  bottom: 16),
-                                              child: Container(
-                                                width: double.infinity,
-                                                child: TextField(
-                                                  controller:
-                                                      detailSevenController,
-                                                  decoration: InputDecoration(
-                                                    contentPadding:
-                                                        EdgeInsets.all(16),
-                                                    border:
-                                                        OutlineInputBorder(),
-                                                  ),
-                                                ),
-                                              )),
-                                      Padding(
-                                          padding: EdgeInsets.only(
-                                            left: 16,
-                                            top: 32,
-                                            right: 16,
-                                          ),
-                                          child: Row(
-                                            children: <Widget>[
-                                              Text(
-                                                labelEight,
-                                                style: TextStyle(
-                                                    fontSize: 24,
-                                                    fontWeight:
-                                                    FontWeight.bold),
-                                              ),
-                                              Expanded(child: Container())
-                                            ],
-                                          )),
-                                      !isEditing
-                                          ? Padding(
+                                          Expanded(child: Container())
+                                        ],
+                                      )),
+                                  !isEditing
+                                      ? Padding(
                                           padding: EdgeInsets.only(
                                             top: 8,
                                             left: 32,
@@ -672,13 +566,13 @@ class ProfileState extends State<Profile> {
                                           ),
                                           child: Row(
                                             children: <Widget>[
-                                              Text(detailEight,
-                                                  style: TextStyle(
-                                                      fontSize: 24)),
+                                              Text(detailSix,
+                                                  style:
+                                                      TextStyle(fontSize: 24)),
                                               Expanded(child: Container())
                                             ],
                                           ))
-                                          : Padding(
+                                      : Padding(
                                           padding: EdgeInsets.only(
                                               left: 16,
                                               top: 16,
@@ -687,194 +581,283 @@ class ProfileState extends State<Profile> {
                                           child: Container(
                                             width: double.infinity,
                                             child: TextField(
-                                              controller:
-                                              detailEightController,
+                                              controller: detailSixController,
                                               decoration: InputDecoration(
                                                 contentPadding:
-                                                EdgeInsets.all(16),
-                                                border:
-                                                OutlineInputBorder(),
+                                                    EdgeInsets.all(16),
+                                                border: OutlineInputBorder(),
                                               ),
                                             ),
                                           )),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            )),
-                        Visibility(
-                            visible: isMentee,
-                            child: Column(
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    left: 16,
-                                    top: 32,
-                                    right: 16,
-                                  ),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Row(
+                                  Padding(
+                                      padding: EdgeInsets.only(
+                                        left: 16,
+                                        top: 32,
+                                        right: 16,
+                                      ),
+                                      child: Row(
                                         children: <Widget>[
                                           Text(
-                                            "Certainty: ",
+                                            labelSeven,
                                             style: TextStyle(
                                                 fontSize: 24,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                           Expanded(child: Container())
                                         ],
+                                      )),
+                                  !isEditing
+                                      ? Padding(
+                                          padding: EdgeInsets.only(
+                                            top: 8,
+                                            left: 32,
+                                            right: 16,
+                                          ),
+                                          child: Row(
+                                            children: <Widget>[
+                                              Text(detailSeven,
+                                                  style:
+                                                      TextStyle(fontSize: 24)),
+                                              Expanded(child: Container())
+                                            ],
+                                          ))
+                                      : Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 16,
+                                              top: 16,
+                                              right: 16,
+                                              bottom: 16),
+                                          child: Container(
+                                            width: double.infinity,
+                                            child: TextField(
+                                              controller: detailSevenController,
+                                              decoration: InputDecoration(
+                                                contentPadding:
+                                                    EdgeInsets.all(16),
+                                                border: OutlineInputBorder(),
+                                              ),
+                                            ),
+                                          )),
+                                  Padding(
+                                      padding: EdgeInsets.only(
+                                        left: 16,
+                                        top: 32,
+                                        right: 16,
+                                      ),
+                                      child: Row(
+                                        children: <Widget>[
+                                          Text(
+                                            labelEight,
+                                            style: TextStyle(
+                                                fontSize: 24,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Expanded(child: Container())
+                                        ],
+                                      )),
+                                  !isEditing
+                                      ? Padding(
+                                          padding: EdgeInsets.only(
+                                            top: 8,
+                                            left: 32,
+                                            right: 16,
+                                          ),
+                                          child: Row(
+                                            children: <Widget>[
+                                              Text(detailEight,
+                                                  style:
+                                                      TextStyle(fontSize: 24)),
+                                              Expanded(child: Container())
+                                            ],
+                                          ))
+                                      : Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 16,
+                                              top: 16,
+                                              right: 16,
+                                              bottom: 16),
+                                          child: Container(
+                                            width: double.infinity,
+                                            child: TextField(
+                                              controller: detailEightController,
+                                              decoration: InputDecoration(
+                                                contentPadding:
+                                                    EdgeInsets.all(16),
+                                                border: OutlineInputBorder(),
+                                              ),
+                                            ),
+                                          )),
+                                ],
+                              ),
+                            )
+                          ],
+                        )),
+                    Visibility(
+                        visible: isMentee,
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: 16,
+                                top: 32,
+                                right: 16,
+                              ),
+                              child: Column(
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Text(
+                                        "Certainty: ",
+                                        style: TextStyle(
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Expanded(child: Container())
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 16, top: 8),
+                                    child: Row(
+                                      children: <Widget>[
+                                        !isEditing
+                                            ? Text(certainty,
+                                                style: TextStyle(fontSize: 24))
+                                            : Container(),
+                                        Expanded(child: Container())
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Visibility(
+                                visible: isEditing,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 32, right: 16, bottom: 32),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 0),
+                                        child: new Row(
+                                          children: <Widget>[
+                                            new Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: 0, right: 0),
+                                                child: Radio(
+                                                  value: 0,
+                                                  groupValue: _certaintyValue,
+                                                  onChanged:
+                                                      _handleRadioValueChange,
+                                                )),
+                                            new Text(
+                                              "100% certain",
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                       Padding(
                                         padding:
-                                            EdgeInsets.only(left: 16, top: 8),
-                                        child: Row(
+                                            EdgeInsets.symmetric(vertical: 0),
+                                        child: new Row(
                                           children: <Widget>[
-                                            !isEditing
-                                                ? Text(certainty,
-                                                    style:
-                                                        TextStyle(fontSize: 24))
-                                                : Container(),
-                                            Expanded(child: Container())
+                                            new Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: 0, right: 0),
+                                                child: Radio(
+                                                  value: 1,
+                                                  groupValue: _certaintyValue,
+                                                  onChanged:
+                                                      _handleRadioValueChange,
+                                                )),
+                                            new Text(
+                                              "I have a good idea, but things could change",
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                              ),
+                                            ),
                                           ],
                                         ),
-                                      )
+                                      ),
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 0),
+                                        child: new Row(
+                                          children: <Widget>[
+                                            new Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: 0, right: 0),
+                                                child: Radio(
+                                                  value: 2,
+                                                  groupValue: _certaintyValue,
+                                                  onChanged:
+                                                      _handleRadioValueChange,
+                                                )),
+                                            new Text(
+                                              "Its something I\'m interested in, but who knows",
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 0),
+                                        child: new Row(
+                                          children: <Widget>[
+                                            new Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: 0, right: 0),
+                                                child: Radio(
+                                                  value: 3,
+                                                  groupValue: _certaintyValue,
+                                                  onChanged:
+                                                      _handleRadioValueChange,
+                                                )),
+                                            new Text(
+                                              "I have no clue what I want to do",
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     ],
                                   ),
-                                ),
-                                Visibility(
-                                    visible: isEditing,
-                                    child: Padding(
-                                      padding: EdgeInsets.only(
-                                          left: 32, right: 16, bottom: 32),
-                                      child: Column(
-                                        children: <Widget>[
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 0),
-                                            child: new Row(
-                                              children: <Widget>[
-                                                new Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 0, right: 0),
-                                                    child: Radio(
-                                                      value: 0,
-                                                      groupValue:
-                                                          _certaintyValue,
-                                                      onChanged:
-                                                          _handleRadioValueChange,
-                                                    )),
-                                                new Text(
-                                                  "100% certain",
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 0),
-                                            child: new Row(
-                                              children: <Widget>[
-                                                new Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 0, right: 0),
-                                                    child: Radio(
-                                                      value: 1,
-                                                      groupValue:
-                                                          _certaintyValue,
-                                                      onChanged:
-                                                          _handleRadioValueChange,
-                                                    )),
-                                                new Text(
-                                                  "I have a good idea, but things could change",
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 0),
-                                            child: new Row(
-                                              children: <Widget>[
-                                                new Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 0, right: 0),
-                                                    child: Radio(
-                                                      value: 2,
-                                                      groupValue:
-                                                          _certaintyValue,
-                                                      onChanged:
-                                                          _handleRadioValueChange,
-                                                    )),
-                                                new Text(
-                                                  "Its something I\'m interested in, but who knows",
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 0),
-                                            child: new Row(
-                                              children: <Widget>[
-                                                new Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 0, right: 0),
-                                                    child: Radio(
-                                                      value: 3,
-                                                      groupValue:
-                                                          _certaintyValue,
-                                                      onChanged:
-                                                          _handleRadioValueChange,
-                                                    )),
-                                                new Text(
-                                                  "I have no clue what I want to do",
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )),
-                              ],
-                            )),
-                        new Container(
-                          width: double.infinity,
-                          child: new Padding(
-                            padding: EdgeInsets.only(
-                                left: 16, top: 10, right: 16, bottom: 32),
-                            child: FlatButton(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      new BorderRadius.circular(10.0)),
-                              padding: EdgeInsets.all(16),
-                              color: Colors.transparent,
-                              onPressed: () => {signOut()},
-                              child: Text(
-                                "Log out",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.red,
-                                ),
-                              ),
+                                )),
+                          ],
+                        )),
+                    new Container(
+                      width: double.infinity,
+                      child: new Padding(
+                        padding: EdgeInsets.only(
+                            left: 16, top: 10, right: 16, bottom: 32),
+                        child: FlatButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(10.0)),
+                          padding: EdgeInsets.all(16),
+                          color: Colors.transparent,
+                          onPressed: () => {signOut()},
+                          child: Text(
+                            "Log out",
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.red,
                             ),
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  )));
+                  ],
+                ),
+              ));
   }
 
   menteePlans() async {
@@ -1156,14 +1139,13 @@ class ProfileState extends State<Profile> {
     pictureResponse.once().then((snapshot) => {
           print(snapshot.value),
           temp = snapshot.value,
-          if (temp.toString().length > 200){
-            finalTempString = base64Decode(temp.toString()),
-            profilePictureUrl = finalTempString,
-          }
-          else
+          if (temp.toString().length > 200)
             {
-            profilePictureUrl = null
-            },
+              finalTempString = base64Decode(temp.toString()),
+              profilePictureUrl = finalTempString,
+            }
+          else
+            {profilePictureUrl = null},
         });
     var firstNameResponse = await FirebaseDatabase.instance
         .reference()
@@ -1256,10 +1238,10 @@ class ProfileState extends State<Profile> {
           labelThree = "Experience",
           labelFour = "Education",
           labelFive = "School Name",
-          if (snapshot.value != null || snapshot.value == true || snapshot.value == "true"){
-
-            getMilitaryMentor(id)
-          }
+          if (snapshot.value != null ||
+              snapshot.value == true ||
+              snapshot.value == "true")
+            {getMilitaryMentor(id)}
           else
             {
               labelSix = "Not a Veteran",
@@ -1273,50 +1255,50 @@ class ProfileState extends State<Profile> {
         });
   }
 
-  getMilitaryMentor(String id)async {
+  getMilitaryMentor(String id) async {
     var branchResponse = await FirebaseDatabase.instance
         .reference()
         .child("Mentors")
         .child(id)
         .child("branch");
     branchResponse.once().then((snapshot) => {
-      print(snapshot.value),
-      detailSix = snapshot.value.toString(),
-      labelSix = "Military Branch",
-      detailSixController.text = detailSix,
-      setState(() {
-        isMilitary = true;
-      })
-    });
+          print(snapshot.value),
+          detailSix = snapshot.value.toString(),
+          labelSix = "Military Branch",
+          detailSixController.text = detailSix,
+          setState(() {
+            isMilitary = true;
+          })
+        });
     var occupationResponse = await FirebaseDatabase.instance
         .reference()
         .child("Mentors")
         .child(id)
         .child("military_occupation");
     occupationResponse.once().then((snapshot) => {
-      print(snapshot.value),
-      detailSeven = snapshot.value.toString(),
-      labelSeven = "Military Occupation",
-      detailSevenController.text = detailSeven,
-      setState(() {
-        isMilitary = true;
-        isLoading = false;
-      })
-    });
+          print(snapshot.value),
+          detailSeven = snapshot.value.toString(),
+          labelSeven = "Military Occupation",
+          detailSevenController.text = detailSeven,
+          setState(() {
+            isMilitary = true;
+            isLoading = false;
+          })
+        });
     var yearsServedResponse = await FirebaseDatabase.instance
         .reference()
         .child("Mentors")
         .child(id)
         .child("years_served");
     yearsServedResponse.once().then((snapshot) => {
-      print(snapshot.value),
-      detailEight = snapshot.value.toString(),
-      labelEight = "Years Served",
-      detailEightController.text = detailSeven,
-      setState(() {
-        isMilitary = true;
-      })
-    });
+          print(snapshot.value),
+          detailEight = snapshot.value.toString(),
+          labelEight = "Years Served",
+          detailEightController.text = detailSeven,
+          setState(() {
+            isMilitary = true;
+          })
+        });
   }
 
   getMentee(String id) async {
