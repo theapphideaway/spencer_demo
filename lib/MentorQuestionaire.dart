@@ -778,6 +778,10 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
       mentor.SchoolName = schoolNameController.text;
       validator += 1;
     }
+    if(_hasServed){
+      mentor.IsVeteran = "true";
+      validator += 1;
+    }
     if(militaryBranchController.text.isNotEmpty){
       mentor.MilitaryBranch = militaryBranchController.text;
       validator += 1;
@@ -802,7 +806,9 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
       mentor.Experience = "10+";
       validator += 1;
     }
+
     print(validator);
+    mentor.ProfilePicture = "";
 //    if(validator == 9){
 //      return true;
 //    } else{

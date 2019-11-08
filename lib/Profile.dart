@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
@@ -47,6 +50,8 @@ class ProfileState extends State<Profile> {
   String detailSix = "a";
   String labelSeven = "a";
   String detailSeven = "a";
+  String labelEight = "a";
+  String detailEight = "a";
   String certainty = "N/A";
   var profilePictureUrl;
   TextEditingController bioController = TextEditingController();
@@ -58,6 +63,7 @@ class ProfileState extends State<Profile> {
   TextEditingController detailFiveController = TextEditingController();
   TextEditingController detailSixController = TextEditingController();
   TextEditingController detailSevenController = TextEditingController();
+  TextEditingController detailEightController = TextEditingController();
 
   ProfileState(bool isMentee) {
     this.isMentee = isMentee;
@@ -92,17 +98,19 @@ class ProfileState extends State<Profile> {
                         Row(
                           children: <Widget>[
                             Padding(
-                              padding: EdgeInsets.only(left: 16, top: 16),
-                              child: GestureDetector(
-                                onTap: getProfilePicture,
-                              child: hasProfilePicture?Image.network(profilePictureUrl,
-                                height: 100,
-                                width: 100,):
-                              Image.asset('assets/default_profile_picture.jpg',
-                                height: 100,
-                                width: 100,
-                              ),)
-                            ),
+                                padding: EdgeInsets.only(left: 16, top: 16),
+                                child: GestureDetector(
+                                  onTap: getProfilePicture,
+                                  child: profilePictureUrl != null ? Image.memory(profilePictureUrl,
+                                          width: 100,
+                                          height: 100,
+                                          fit: BoxFit.cover)
+                                      : Image.asset(
+                                          'assets/default_profile_picture.jpg',
+                                          height: 100,
+                                          width: 100,
+                                        ),
+                                )),
                             Align(
                                 alignment: Alignment.topLeft,
                                 child: Column(
@@ -221,7 +229,9 @@ class ProfileState extends State<Profile> {
                                     onTap: isMentee ? menteePlans : () {},
                                     controller: planController,
                                     decoration: InputDecoration(
-                                      suffixIcon: !isMentee? null: Icon(Icons.arrow_drop_down),
+                                      suffixIcon: !isMentee
+                                          ? null
+                                          : Icon(Icons.arrow_drop_down),
                                       contentPadding: EdgeInsets.all(16),
                                       border: OutlineInputBorder(),
                                     ),
@@ -313,7 +323,9 @@ class ProfileState extends State<Profile> {
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.all(16),
                                       border: OutlineInputBorder(),
-                                      suffixIcon: !isMentee? Icon(Icons.arrow_drop_down): null,
+                                      suffixIcon: !isMentee
+                                          ? Icon(Icons.arrow_drop_down)
+                                          : null,
                                     ),
                                   ),
                                 )),
@@ -345,11 +357,9 @@ class ProfileState extends State<Profile> {
                                           left: 32,
                                           right: 16,
                                         ),
-                                        child:
-
-                                        Row(
+                                        child: Row(
                                           children: <Widget>[
-                                            Text(detailThree,
+                                            Text(detailThree + "years",
                                                 style: TextStyle(fontSize: 24)),
                                             Expanded(child: Container())
                                           ],
@@ -364,13 +374,18 @@ class ProfileState extends State<Profile> {
                                           width: double.infinity,
                                           child: new Row(
                                             children: <Widget>[
-                                              Expanded(child: Container(),),
+                                              Expanded(
+                                                child: Container(),
+                                              ),
                                               new Padding(
-                                                  padding: EdgeInsets.only(left: 0, right: 0),
+                                                  padding: EdgeInsets.only(
+                                                      left: 0, right: 0),
                                                   child: Radio(
                                                     value: 0,
-                                                    groupValue: _experienceValue,
-                                                    onChanged: _handleExperienceValueChange,
+                                                    groupValue:
+                                                        _experienceValue,
+                                                    onChanged:
+                                                        _handleExperienceValueChange,
                                                   )),
                                               new Text(
                                                 "1-4",
@@ -378,13 +393,18 @@ class ProfileState extends State<Profile> {
                                                   color: Colors.black,
                                                 ),
                                               ),
-                                              Expanded(child: Container(),),
+                                              Expanded(
+                                                child: Container(),
+                                              ),
                                               new Padding(
-                                                  padding: EdgeInsets.only(left: 0, right: 0),
+                                                  padding: EdgeInsets.only(
+                                                      left: 0, right: 0),
                                                   child: Radio(
                                                     value: 1,
-                                                    groupValue: _experienceValue,
-                                                    onChanged: _handleExperienceValueChange,
+                                                    groupValue:
+                                                        _experienceValue,
+                                                    onChanged:
+                                                        _handleExperienceValueChange,
                                                   )),
                                               new Text(
                                                 "5-9",
@@ -392,13 +412,18 @@ class ProfileState extends State<Profile> {
                                                   color: Colors.black,
                                                 ),
                                               ),
-                                              Expanded(child: Container(),),
+                                              Expanded(
+                                                child: Container(),
+                                              ),
                                               new Padding(
-                                                  padding: EdgeInsets.only(left: 0, right: 0),
+                                                  padding: EdgeInsets.only(
+                                                      left: 0, right: 0),
                                                   child: Radio(
                                                     value: 2,
-                                                    groupValue: _experienceValue,
-                                                    onChanged: _handleExperienceValueChange,
+                                                    groupValue:
+                                                        _experienceValue,
+                                                    onChanged:
+                                                        _handleExperienceValueChange,
                                                   )),
                                               new Text(
                                                 "10+",
@@ -406,7 +431,9 @@ class ProfileState extends State<Profile> {
                                                   color: Colors.black,
                                                 ),
                                               ),
-                                              Expanded(child: Container(),),
+                                              Expanded(
+                                                child: Container(),
+                                              ),
                                             ],
                                           ),
                                         )),
@@ -450,13 +477,15 @@ class ProfileState extends State<Profile> {
                                         child: Container(
                                           width: double.infinity,
                                           child: TextField(
-                                            onTap: ()=>mentorEducation(),
+                                            onTap: () => mentorEducation(),
                                             controller: detailFourController,
                                             decoration: InputDecoration(
                                               contentPadding:
                                                   EdgeInsets.all(16),
                                               border: OutlineInputBorder(),
-                                              suffixIcon: !isMentee? Icon(Icons.arrow_drop_down): null,
+                                              suffixIcon: !isMentee
+                                                  ? Icon(Icons.arrow_drop_down)
+                                                  : null,
                                             ),
                                           ),
                                         )),
@@ -521,7 +550,7 @@ class ProfileState extends State<Profile> {
                                           child: Row(
                                             children: <Widget>[
                                               Text(
-                                                "m",
+                                                labelSix,
                                                 style: TextStyle(
                                                     fontSize: 24,
                                                     fontWeight:
@@ -539,7 +568,7 @@ class ProfileState extends State<Profile> {
                                               ),
                                               child: Row(
                                                 children: <Widget>[
-                                                  Text("m",
+                                                  Text(detailSix,
                                                       style: TextStyle(
                                                           fontSize: 24)),
                                                   Expanded(child: Container())
@@ -573,7 +602,7 @@ class ProfileState extends State<Profile> {
                                           child: Row(
                                             children: <Widget>[
                                               Text(
-                                                "m",
+                                                labelSeven,
                                                 style: TextStyle(
                                                     fontSize: 24,
                                                     fontWeight:
@@ -591,7 +620,7 @@ class ProfileState extends State<Profile> {
                                               ),
                                               child: Row(
                                                 children: <Widget>[
-                                                  Text("m",
+                                                  Text(detailSeven,
                                                       style: TextStyle(
                                                           fontSize: 24)),
                                                   Expanded(child: Container())
@@ -616,6 +645,58 @@ class ProfileState extends State<Profile> {
                                                   ),
                                                 ),
                                               )),
+                                      Padding(
+                                          padding: EdgeInsets.only(
+                                            left: 16,
+                                            top: 32,
+                                            right: 16,
+                                          ),
+                                          child: Row(
+                                            children: <Widget>[
+                                              Text(
+                                                labelEight,
+                                                style: TextStyle(
+                                                    fontSize: 24,
+                                                    fontWeight:
+                                                    FontWeight.bold),
+                                              ),
+                                              Expanded(child: Container())
+                                            ],
+                                          )),
+                                      !isEditing
+                                          ? Padding(
+                                          padding: EdgeInsets.only(
+                                            top: 8,
+                                            left: 32,
+                                            right: 16,
+                                          ),
+                                          child: Row(
+                                            children: <Widget>[
+                                              Text(detailEight,
+                                                  style: TextStyle(
+                                                      fontSize: 24)),
+                                              Expanded(child: Container())
+                                            ],
+                                          ))
+                                          : Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 16,
+                                              top: 16,
+                                              right: 16,
+                                              bottom: 16),
+                                          child: Container(
+                                            width: double.infinity,
+                                            child: TextField(
+                                              controller:
+                                              detailEightController,
+                                              decoration: InputDecoration(
+                                                contentPadding:
+                                                EdgeInsets.all(16),
+                                                border:
+                                                OutlineInputBorder(),
+                                              ),
+                                            ),
+                                          )),
                                     ],
                                   ),
                                 )
@@ -650,7 +731,7 @@ class ProfileState extends State<Profile> {
                                         child: Row(
                                           children: <Widget>[
                                             !isEditing
-                                                ? Text("m",
+                                                ? Text(certainty,
                                                     style:
                                                         TextStyle(fontSize: 24))
                                                 : Container(),
@@ -796,7 +877,6 @@ class ProfileState extends State<Profile> {
                   )));
   }
 
-
   menteePlans() async {
     final type = await Navigator.of(context).push(PageRouteBuilder(
       opaque: false,
@@ -863,14 +943,12 @@ class ProfileState extends State<Profile> {
               if (isMentee)
                 {updateMentee(user.uid)}
               else
-                {
-                  updateMentor(user.uid)
-                }
+                {updateMentor(user.uid)}
             }
         });
   }
 
-  updateMentor(String id)async {
+  updateMentor(String id) async {
     await FirebaseDatabase.instance
         .reference()
         .child("Mentors")
@@ -892,21 +970,21 @@ class ProfileState extends State<Profile> {
         .child(id)
         .update({"industry": detailTwoController.text});
 
-    if(_experienceValue == 0){
+    if (_experienceValue == 0) {
       await FirebaseDatabase.instance
           .reference()
           .child("Mentors")
           .child(id)
           .update({"experience": "1-4"});
     }
-    if(_experienceValue == 1){
+    if (_experienceValue == 1) {
       await FirebaseDatabase.instance
           .reference()
           .child("Mentors")
           .child(id)
           .update({"experience": "5-9"});
     }
-    if(_experienceValue == 2){
+    if (_experienceValue == 2) {
       await FirebaseDatabase.instance
           .reference()
           .child("Mentors")
@@ -928,7 +1006,6 @@ class ProfileState extends State<Profile> {
       isEditing = false;
       getUser();
     });
-
   }
 
   updateMentee(String id) async {
@@ -1030,7 +1107,6 @@ class ProfileState extends State<Profile> {
     });
   }
 
-
   getUser() async {
     try {
       await FirebaseAuth.instance.currentUser().then((user) => {
@@ -1056,6 +1132,8 @@ class ProfileState extends State<Profile> {
   }
 
   getMentor(String id) async {
+    var temp;
+    var finalTempString;
     await FirebaseAuth.instance
         .currentUser()
         .then((user) => {email = user.email});
@@ -1066,9 +1144,10 @@ class ProfileState extends State<Profile> {
         .child(id)
         .child("bio");
     bioResponse.once().then((snapshot) => {
-      print(snapshot.value),
-      bio = snapshot.value,
-    });
+          print(snapshot.value),
+          bio = snapshot.value,
+        });
+
     var pictureResponse = await FirebaseDatabase.instance
         .reference()
         .child("Mentors")
@@ -1076,8 +1155,15 @@ class ProfileState extends State<Profile> {
         .child("profile_picture");
     pictureResponse.once().then((snapshot) => {
           print(snapshot.value),
-          profilePictureUrl = snapshot.value,
-      if(profilePictureUrl != null) hasProfilePicture = true
+          temp = snapshot.value,
+          if (temp.toString().length > 200){
+            finalTempString = base64Decode(temp.toString()),
+            profilePictureUrl = finalTempString,
+          }
+          else
+            {
+            profilePictureUrl = null
+            },
         });
     var firstNameResponse = await FirebaseDatabase.instance
         .reference()
@@ -1132,7 +1218,7 @@ class ProfileState extends State<Profile> {
     experienceResponse.once().then((snapshot) => {
           print(snapshot.value),
           detailThree = snapshot.value,
-      detailThreeController.text = detailThree
+          detailThreeController.text = detailThree
         });
     var educationResponse = await FirebaseDatabase.instance
         .reference()
@@ -1142,7 +1228,7 @@ class ProfileState extends State<Profile> {
     educationResponse.once().then((snapshot) => {
           print(snapshot.value),
           detailFour = snapshot.value,
-      detailFourController.text = detailFour
+          detailFourController.text = detailFour
         });
     var schoolNameResponse = await FirebaseDatabase.instance
         .reference()
@@ -1152,7 +1238,7 @@ class ProfileState extends State<Profile> {
     schoolNameResponse.once().then((snapshot) => {
           print(snapshot.value),
           detailFive = snapshot.value.toString(),
-      detailFiveController.text = detailFive
+          detailFiveController.text = detailFive
         });
 
     var veteranResponse = await FirebaseDatabase.instance
@@ -1163,45 +1249,99 @@ class ProfileState extends State<Profile> {
     veteranResponse.once().then((snapshot) => {
           print(snapshot.value),
           detailSix = snapshot.value,
-      detailSixController.text = detailSix,
+          detailSixController.text = detailSix,
           planLabel = "Job Title: ",
           labelOne = "Company Name",
           labelTwo = "Industry",
           labelThree = "Experience",
           labelFour = "Education",
           labelFive = "School Name",
-          if (detailSix == "true")
-            {
-              labelSix = "Military Veteran",
-            }
+          if (snapshot.value != null || snapshot.value == true || snapshot.value == "true"){
+
+            getMilitaryMentor(id)
+          }
           else
             {
               labelSix = "Not a Veteran",
               detailSix = "O",
               labelSeven = "O",
               detailSeven = "O",
-            },
-          setState(() {
-            isLoading = false;
-          })
+              setState(() {
+                isLoading = false;
+              })
+            }
         });
   }
 
+  getMilitaryMentor(String id)async {
+    var branchResponse = await FirebaseDatabase.instance
+        .reference()
+        .child("Mentors")
+        .child(id)
+        .child("branch");
+    branchResponse.once().then((snapshot) => {
+      print(snapshot.value),
+      detailSix = snapshot.value.toString(),
+      labelSix = "Military Branch",
+      detailSixController.text = detailSix,
+      setState(() {
+        isMilitary = true;
+      })
+    });
+    var occupationResponse = await FirebaseDatabase.instance
+        .reference()
+        .child("Mentors")
+        .child(id)
+        .child("military_occupation");
+    occupationResponse.once().then((snapshot) => {
+      print(snapshot.value),
+      detailSeven = snapshot.value.toString(),
+      labelSeven = "Military Occupation",
+      detailSevenController.text = detailSeven,
+      setState(() {
+        isMilitary = true;
+        isLoading = false;
+      })
+    });
+    var yearsServedResponse = await FirebaseDatabase.instance
+        .reference()
+        .child("Mentors")
+        .child(id)
+        .child("years_served");
+    yearsServedResponse.once().then((snapshot) => {
+      print(snapshot.value),
+      detailEight = snapshot.value.toString(),
+      labelEight = "Years Served",
+      detailEightController.text = detailSeven,
+      setState(() {
+        isMilitary = true;
+      })
+    });
+  }
+
   getMentee(String id) async {
+    var temp;
+    var finalTempString;
     await FirebaseAuth.instance
         .currentUser()
         .then((user) => {email = user.email});
 
     var pictureResponse = await FirebaseDatabase.instance
         .reference()
-        .child("Mentees")
+        .child("Mentors")
         .child(id)
         .child("profile_picture");
     pictureResponse.once().then((snapshot) => {
-      print(snapshot.value),
-      profilePictureUrl = snapshot.value,
-      if(profilePictureUrl != null) hasProfilePicture = true
-    });
+          print(snapshot.value),
+          temp = snapshot.value,
+          if (temp == "N/A" || temp == null)
+            {profilePictureUrl = null}
+          else
+            {
+              finalTempString = base64Decode(temp.toString()),
+              profilePictureUrl = finalTempString,
+            },
+        });
 
     var bioResponse = await FirebaseDatabase.instance
         .reference()
@@ -1230,6 +1370,21 @@ class ProfileState extends State<Profile> {
     lastNameResponse.once().then((snapshot) => {
           print(snapshot.value),
           lastName = snapshot.value,
+        });
+
+    var certaintyResponse = await FirebaseDatabase.instance
+        .reference()
+        .child("Mentees")
+        .child(id)
+        .child("certainty");
+    certaintyResponse.once().then((snapshot) => {
+          print(snapshot.value),
+          if (snapshot.value == 'certain') _certaintyValue = 0,
+          if (snapshot.value == 'mostly certain') _certaintyValue = 1,
+          if (snapshot.value == 'just interested') _certaintyValue = 2,
+          if (snapshot.value == 'no clue') _certaintyValue = 3,
+          certainty =
+              '${snapshot.value[0].toUpperCase()}${snapshot.value.substring(1)}',
         });
 
     var planResponse = await FirebaseDatabase.instance
@@ -1263,16 +1418,6 @@ class ProfileState extends State<Profile> {
       labelTwo = "School Major: ";
       getMenteeEducationInfo(id);
     }
-    var certaintyResponse = await FirebaseDatabase.instance
-        .reference()
-        .child("Mentees")
-        .child(id)
-        .child("certainty");
-    certaintyResponse.once().then((snapshot) => {
-          print(snapshot.value),
-          certainty =
-              '${snapshot.value[0].toUpperCase()}${snapshot.value.substring(1)}',
-        });
   }
 
   getMenteeEducationInfo(String id) async {
@@ -1363,7 +1508,7 @@ class ProfileState extends State<Profile> {
   }
 
   mentorIndustry() async {
-    if (!isMentee){
+    if (!isMentee) {
       final type = await Navigator.of(context).push(PageRouteBuilder(
         opaque: false,
         pageBuilder: (BuildContext context, Animation<double> animation,
@@ -1388,7 +1533,7 @@ class ProfileState extends State<Profile> {
   }
 
   mentorEducation() async {
-    if(!isMentee){
+    if (!isMentee) {
       final type = await Navigator.of(context).push(PageRouteBuilder(
         opaque: false,
         pageBuilder: (BuildContext context, Animation<double> animation,
@@ -1430,11 +1575,34 @@ class ProfileState extends State<Profile> {
     });
   }
 
-  getProfilePicture()async {
+  getProfilePicture() async {
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    await FirebaseAuth.instance
+        .currentUser()
+        .then((user) => {addProfilePicture(user.uid, image)});
+  }
 
+  addProfilePicture(String id, File image) async {
     setState(() {
-      profilePictureUrl = image.toString();
+      isLoading = true;
+    });
+    var imageBytes = image.readAsBytesSync();
+    String base64String = await base64Encode(imageBytes);
+    try {
+      await FirebaseDatabase.instance
+          .reference()
+          .child("Mentors")
+          .child(id)
+          .update({"profile_picture": base64String});
+    } catch (e) {
+      print(e);
+    }
+
+    var temp = await base64Decode(base64String.toString());
+    setState(() {
+      hasProfilePicture = true;
+      profilePictureUrl = temp;
+      isLoading = false;
     });
   }
 }

@@ -527,6 +527,7 @@ class MenteeQuestionaireState extends State<MenteeQuestionaire> {
       mentee.Certainty = "no clue";
       validator += 1;
     }
+    mentee.ProfilePicture = "";
 //    if(validator == 9){
 //      return true;
 //    } else{

@@ -35,7 +35,8 @@ class FirebaseProvider{
       'military_occupation': mentor.MilitaryOccupation,
       'years_served': mentor.YearsServed,
       'still_active': mentor.MilitaryActivity,
-      'is_mentor' : mentor.isMentor
+      'is_mentor' : mentor.isMentor,
+      'profile_picture' : mentor.ProfilePicture
     });
 
     print("Successfully Added Mentor");
@@ -57,7 +58,8 @@ class FirebaseProvider{
       'military_branch': mentee.MilitaryBranch,
       'military_occupation': mentee.MilitaryOccupation,
       'certainty': mentee.Certainty,
-      'is_mentor' : mentee.IsMentor
+      'is_mentor' : mentee.IsMentor,
+      'profile_picture' : mentee.ProfilePicture
     });
 
     print("Successfully Added Mentee");
