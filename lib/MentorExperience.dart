@@ -4,11 +4,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MentorExperience extends StatefulWidget {
-  MentorExperienceState createState() => MentorExperienceState();
+  final int experience;
+  MentorExperience({Key key, @required this.experience});
+  MentorExperienceState createState() => MentorExperienceState(experience);
 }
 
 class MentorExperienceState extends State<MentorExperience> {
-  int _experienceValue = 0;
+  int _experienceValue;
+
+  MentorExperienceState(int experience){
+    _experienceValue = experience;
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(

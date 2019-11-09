@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:way_ahead/MenteeCertainty.dart';
 import 'package:way_ahead/MentorExperience.dart';
 
 import 'Login.dart';
@@ -611,7 +612,7 @@ class ProfileState extends State<Profile> {
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(width: 1, color: Colors.grey[400])),
                   child: GestureDetector(
-                    onTap: () => {},
+                    onTap: () => menteeCertainty(),
                     child: Padding(
                         padding: EdgeInsets.all(8), child: Text(certainty)),
                   )),
@@ -707,7 +708,10 @@ class ProfileState extends State<Profile> {
           else
             {
               if (isMentee)
-                {updateMentees(user.uid, detail)}
+                {
+                  if (detail == "Certainty")
+                    {updateMentees(user.uid, "certainty", value)}
+                  else updateMentees(user.uid, detail)}
               else
                 {
                   if (detail == "Experience")
@@ -734,12 +738,21 @@ class ProfileState extends State<Profile> {
     getUser();
   }
 
-  updateMentees(String id, String field) async {
-    await FirebaseDatabase.instance
-        .reference()
-        .child("Mentees")
-        .child(id)
-        .update({field: _textFieldController.text});
+  updateMentees(String id, String field, [String value]) async {
+    if(value == null){
+      await FirebaseDatabase.instance
+          .reference()
+          .child("Mentees")
+          .child(id)
+          .update({field: _textFieldController.text});
+    } else{
+      await FirebaseDatabase.instance
+          .reference()
+          .child("Mentees")
+          .child(id)
+          .update({field: value});
+    }
+
     getUser();
   }
 
@@ -1377,11 +1390,15 @@ class ProfileState extends State<Profile> {
 
   mentorExperience() async {
     if (!isMentee) {
+      var experienceValue;
+      if(detailThree == "1-4") experienceValue = 0;
+      if(detailThree == "5-9") experienceValue = 1;
+      if(detailThree == "10+") experienceValue = 2;
       final type = await Navigator.of(context).push(PageRouteBuilder(
         opaque: false,
         pageBuilder: (BuildContext context, Animation<double> animation,
             Animation<double> secondaryAnimation) {
-          return MentorExperience();
+          return MentorExperience(experience: experienceValue);
         },
         transitionsBuilder: (BuildContext context, Animation<double> animation,
             Animation<double> secondaryAnimation, Widget child) {
@@ -1399,6 +1416,40 @@ class ProfileState extends State<Profile> {
         setState(() {
           detailThree = type;
           onSave("Experience", type);
+        });
+      }
+    }
+  }
+
+  menteeCertainty() async {
+    if (isMentee) {
+      var certaintyValue;
+      if(certainty == "Certain") certaintyValue = 0;
+      if(certainty == "Mostly certain") certaintyValue = 1;
+      if(certainty == "Just interested") certaintyValue = 2;
+      if(certainty == "No clue") certaintyValue = 3;
+      final type = await Navigator.of(context).push(PageRouteBuilder(
+        opaque: false,
+        pageBuilder: (BuildContext context, Animation<double> animation,
+            Animation<double> secondaryAnimation) {
+          return MenteeCertainty(certaintyValue: certaintyValue,);
+        },
+        transitionsBuilder: (BuildContext context, Animation<double> animation,
+            Animation<double> secondaryAnimation, Widget child) {
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0, 1),
+              end: Offset.zero,
+            ).animate(animation),
+            child: child,
+          );
+        },
+      ));
+
+      if (type != null) {
+        setState(() {
+          detailThree = type;
+          onSave("Certainty", type);
         });
       }
     }
