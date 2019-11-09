@@ -53,6 +53,7 @@ class ProfileState extends State<Profile> {
   String labelEight = "a";
   String detailEight = "a";
   String certainty = "N/A";
+  String phoneNumber;
   var profilePictureUrl;
   TextEditingController bioController = TextEditingController();
   TextEditingController planController = TextEditingController();
@@ -64,6 +65,7 @@ class ProfileState extends State<Profile> {
   TextEditingController detailSixController = TextEditingController();
   TextEditingController detailSevenController = TextEditingController();
   TextEditingController detailEightController = TextEditingController();
+  TextEditingController _textFieldController = TextEditingController();
 
   ProfileState(bool isMentee) {
     this.isMentee = isMentee;
@@ -76,6 +78,45 @@ class ProfileState extends State<Profile> {
     setState(() {
       //isLoading = false;
     });
+  }
+
+  void _showDialog(String detail) {
+    var field;
+    if (detail == "Job Title: ") field = "job_title";
+    if (detail == "bio") field = "bio";
+    if (detail == "Company Name: ") field = "company_name";
+    if (detail == "Industry") field = "industry";
+    if (detail == "Education") field = "education";
+    if (detail == "School") field = "school_name";
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Alert Dialog title"),
+          content: TextField(
+            controller: _textFieldController,
+            decoration: InputDecoration(hintText: "TextField in Dialog"),
+          ),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Save"),
+              onPressed: () {
+                onSave(field);
+                Navigator.pop(context);
+              },
+            ),
+            new FlatButton(
+              child: new Text("Cancel"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -96,92 +137,156 @@ class ProfileState extends State<Profile> {
                   children: <Widget>[
                     Stack(
                       children: <Widget>[
-                        Column(children: <Widget>[
-                          GestureDetector(
-                              onTap: getProfilePicture,
-                              child: profilePictureUrl != null
-                                  ? Container(
-                                  height: 450,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: MemoryImage(
-                                            profilePictureUrl,
-                                          ),
-                                          fit: BoxFit.cover,
-                                          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.4), BlendMode.colorBurn))))
-                                  : Image.asset(
-                                'assets/default_profile_picture.jpg',
-                                width: double.infinity,
-                                height: 400,
-                              )),
-                          GestureDetector(
-                            child: Container(
-                              color: Colors.blue[800],
-                              width: double.infinity,
-                              height: 60,
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: Row(children: <Widget>[
-                                  Expanded(child: Container()),
-                                  Icon(Icons.add, color: Colors.white,),
-                                  Text(" MENTOR ME", style: TextStyle(color: Colors.white, fontSize: 18)),
-                                  Expanded(child: Container()),
-                                ],)
-                              ),
-                            ),
-                          ),
-                          Container(
-                            height: 60,
-                            width: double.infinity,
-                            child: Row(children: <Widget>[
-
-                            ],),
-                          )
-                        ],),
-
-                        Column(children: <Widget>[
-                          Padding(
-                              padding: EdgeInsets.only(top: 350),
-                              child: Center(child: Text(firstName + " " + lastName, style: TextStyle(color: Colors.grey[200], fontSize: 40),),
-                              )),
-                          Padding(
-                              padding: EdgeInsets.only(top: 8),
-                              child: Center(child: Text(plan + "at " + detailOne, style: TextStyle(color: Colors.grey[200], fontSize: 24),),
-                              )),
-
-                          Padding(
-                            padding: EdgeInsets.only(left: 16, top: 40),
-                              child:Row(children: <Widget>[
+                        Column(
+                          children: <Widget>[
                             GestureDetector(
                                 onTap: getProfilePicture,
                                 child: profilePictureUrl != null
                                     ? Container(
-                                    height: 80,
-                                    width: 80,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(16),
-                                        image: DecorationImage(
-                                          image: MemoryImage(
-                                            profilePictureUrl,
-                                          ),
-                                          fit: BoxFit.cover,)))
+                                        height: 470,
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                                image: MemoryImage(
+                                                  profilePictureUrl,
+                                                ),
+                                                fit: BoxFit.cover,
+                                                colorFilter: ColorFilter.mode(
+                                                    Colors.black
+                                                        .withOpacity(0.4),
+                                                    BlendMode.colorBurn))))
                                     : Image.asset(
-                                  'assets/default_profile_picture.jpg',
-                                  width: 80,
-                                  height: 80,
+                                        'assets/default_profile_picture.jpg',
+                                        width: double.infinity,
+                                        height: 400,
+                                      )),
+                            Container(
+                              color: Colors.blue[800],
+                              width: double.infinity,
+                              height: 60,
+                              child: Align(
+                                  alignment: Alignment.center,
+                                  child: FlatButton(
+                                      onPressed: !isEditing
+                                          ? onEdit
+                                          : () => onSave(bio),
+                                      child: Row(
+                                        children: <Widget>[
+                                          Expanded(child: Container()),
+                                          Icon(
+                                            Icons.edit,
+                                            color: Colors.white,
+                                          ),
+                                          !isEditing
+                                              ? Text(" Edit Profile",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 18))
+                                              : Text(" Save Profile",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 18)),
+                                          Expanded(child: Container()),
+                                        ],
+                                      ))),
+                            ),
+                            Container(
+                              height: 60,
+                              width: double.infinity,
+                              child: Row(
+                                children: <Widget>[
+                                  Align(
+                                      alignment: Alignment.bottomLeft,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 32, bottom: 0),
+                                        child: Text(
+                                          "About",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18),
+                                        ),
+                                      )),
+                                  Expanded(child: Container()),
+                                  Text(
+                                    email,
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                  Expanded(child: Container()),
+                                ],
+                              ),
+                            ),
+                            new Divider(
+                              color: Colors.grey,
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: <Widget>[
+                            Padding(
+                                padding: EdgeInsets.only(top: 370),
+                                child: Center(
+                                  child: Text(
+                                    firstName + " " + lastName,
+                                    style: TextStyle(
+                                        color: Colors.grey[200], fontSize: 40),
+                                  ),
                                 )),
-                            Expanded(child: Container(),)
-                          ],))
-
-                        ],)
+                            Padding(
+                              padding: EdgeInsets.only(top: 8),
+                              child: Row(children: <Widget>[
+                                Expanded(
+                                  child: Container(),
+                                ),
+                                Text(plan + "at " + detailOne,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.grey[200],
+                                      fontSize: 18,
+                                    )),
+                                Expanded(
+                                  child: Container(),
+                                ),
+                              ]),
+                            ),
+                            Padding(
+                                padding: EdgeInsets.only(left: 16, top: 34),
+                                child: Row(
+                                  children: <Widget>[
+                                    GestureDetector(
+                                        onTap: getProfilePicture,
+                                        child: profilePictureUrl != null
+                                            ? Container(
+                                                height: 80,
+                                                width: 80,
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            16),
+                                                    image: DecorationImage(
+                                                      image: MemoryImage(
+                                                        profilePictureUrl,
+                                                      ),
+                                                      fit: BoxFit.cover,
+                                                    )))
+                                            : Image.asset(
+                                                'assets/default_profile_picture.jpg',
+                                                width: 80,
+                                                height: 80,
+                                              )),
+                                    Expanded(
+                                      child: Container(),
+                                    )
+                                  ],
+                                ))
+                          ],
+                        )
                       ],
                     ),
-
                     !isEditing
                         ? Padding(
                             padding: EdgeInsets.symmetric(
-                                horizontal: 32, vertical: 32),
+                                horizontal: 32, vertical: 16),
                             child: Text(
                               bio,
                               style: TextStyle(fontSize: 18),
@@ -199,641 +304,106 @@ class ProfileState extends State<Profile> {
                               ),
                             ),
                           ),
-                    Padding(
-                        padding: EdgeInsets.only(
-                          left: 16,
-                          top: 16,
-                          right: 16,
+                    new Row(
+                      children: <Widget>[
+                        new Expanded(
+                          child: new Padding(
+                              padding: EdgeInsets.only(left: 16, right: 8),
+                              child: Divider(
+                                color: Colors.grey,
+                              )),
                         ),
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                              isMentee ? "Plan: " : "Job Title: ",
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
-                            ),
-                            Expanded(child: Container())
-                          ],
-                        )),
-                    !isEditing
-                        ? Padding(
-                            padding: EdgeInsets.only(
-                              top: 8,
-                              left: 32,
-                              right: 16,
-                            ),
-                            child: Row(
-                              children: <Widget>[
-                                Text(plan, style: TextStyle(fontSize: 24)),
-                                Expanded(child: Container())
-                              ],
-                            ))
-                        : Padding(
-                            padding: EdgeInsets.only(
-                                left: 16, top: 16, right: 16, bottom: 16),
-                            child: Container(
-                              width: double.infinity,
-                              child: TextField(
-                                onTap: isMentee ? menteePlans : () {},
-                                controller: planController,
-                                decoration: InputDecoration(
-                                  suffixIcon: !isMentee
-                                      ? null
-                                      : Icon(Icons.arrow_drop_down),
-                                  contentPadding: EdgeInsets.all(16),
-                                  border: OutlineInputBorder(),
-                                ),
-                              ),
-                            )),
-                    Padding(
-                        padding: EdgeInsets.only(
-                          left: 16,
-                          top: 32,
-                          right: 16,
+                        new Text(
+                          "PROFILE DETAILS",
+                          style: TextStyle(
+                            color: Colors.grey,
+                          ),
                         ),
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                              labelOne,
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
-                            ),
-                            Expanded(child: Container())
-                          ],
-                        )),
-                    !isEditing
-                        ? Padding(
-                            padding: EdgeInsets.only(
-                              top: 8,
-                              left: 32,
-                              right: 16,
-                            ),
-                            child: Row(
-                              children: <Widget>[
-                                Text(detailOne, style: TextStyle(fontSize: 24)),
-                                Expanded(child: Container())
-                              ],
-                            ))
-                        : Padding(
-                            padding: EdgeInsets.only(
-                                left: 16, top: 16, right: 16, bottom: 16),
-                            child: Container(
-                              width: double.infinity,
-                              child: TextField(
-                                controller: detailOneController,
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.all(16),
-                                  border: OutlineInputBorder(),
-                                ),
-                              ),
-                            )),
+                        new Expanded(
+                          child: new Padding(
+                              padding: EdgeInsets.only(left: 8, right: 16),
+                              child: Divider(
+                                color: Colors.grey,
+                              )),
+                        )
+                      ],
+                    ),
                     Padding(
-                        padding: EdgeInsets.only(
-                          left: 16,
-                          top: 32,
-                          right: 16,
-                        ),
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                              labelTwo,
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
-                            ),
-                            Expanded(child: Container())
-                          ],
-                        )),
-                    !isEditing
-                        ? Padding(
-                            padding: EdgeInsets.only(
-                              top: 8,
-                              left: 32,
-                              right: 16,
-                            ),
-                            child: Row(
-                              children: <Widget>[
-                                Text(detailTwo, style: TextStyle(fontSize: 24)),
-                                Expanded(child: Container())
-                              ],
-                            ))
-                        : Padding(
-                            padding: EdgeInsets.only(
-                                left: 16, top: 16, right: 16, bottom: 16),
-                            child: Container(
-                              width: double.infinity,
-                              child: TextField(
-                                onTap: mentorIndustry,
-                                controller: detailTwoController,
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.all(16),
-                                  border: OutlineInputBorder(),
-                                  suffixIcon: !isMentee
-                                      ? Icon(Icons.arrow_drop_down)
-                                      : null,
-                                ),
-                              ),
-                            )),
-                    Visibility(
-                        visible: !isMentee,
-                        child: Column(
-                          children: <Widget>[
-                            Padding(
-                                padding: EdgeInsets.only(
-                                  left: 16,
-                                  top: 32,
-                                  right: 16,
-                                ),
-                                child: Row(
-                                  children: <Widget>[
-                                    Text(
-                                      labelThree,
-                                      style: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Expanded(child: Container())
-                                  ],
-                                )),
-                            !isEditing
-                                ? Padding(
-                                    padding: EdgeInsets.only(
-                                      top: 8,
-                                      left: 32,
-                                      right: 16,
-                                    ),
-                                    child: Row(
-                                      children: <Widget>[
-                                        Text(detailThree + "years",
-                                            style: TextStyle(fontSize: 24)),
-                                        Expanded(child: Container())
-                                      ],
-                                    ))
-                                : Padding(
-                                    padding: EdgeInsets.only(
-                                        left: 16,
-                                        top: 16,
-                                        right: 16,
-                                        bottom: 16),
-                                    child: Container(
-                                      width: double.infinity,
-                                      child: new Row(
-                                        children: <Widget>[
-                                          Expanded(
-                                            child: Container(),
-                                          ),
-                                          new Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: 0, right: 0),
-                                              child: Radio(
-                                                value: 0,
-                                                groupValue: _experienceValue,
-                                                onChanged:
-                                                    _handleExperienceValueChange,
-                                              )),
-                                          new Text(
-                                            "1-4",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Container(),
-                                          ),
-                                          new Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: 0, right: 0),
-                                              child: Radio(
-                                                value: 1,
-                                                groupValue: _experienceValue,
-                                                onChanged:
-                                                    _handleExperienceValueChange,
-                                              )),
-                                          new Text(
-                                            "5-9",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Container(),
-                                          ),
-                                          new Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: 0, right: 0),
-                                              child: Radio(
-                                                value: 2,
-                                                groupValue: _experienceValue,
-                                                onChanged:
-                                                    _handleExperienceValueChange,
-                                              )),
-                                          new Text(
-                                            "10+",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Container(),
-                                          ),
-                                        ],
-                                      ),
-                                    )),
-                            Padding(
-                                padding: EdgeInsets.only(
-                                  left: 16,
-                                  top: 32,
-                                  right: 16,
-                                ),
-                                child: Row(
-                                  children: <Widget>[
-                                    Text(
-                                      labelFour,
-                                      style: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Expanded(child: Container())
-                                  ],
-                                )),
-                            !isEditing
-                                ? Padding(
-                                    padding: EdgeInsets.only(
-                                      top: 8,
-                                      left: 32,
-                                      right: 16,
-                                    ),
-                                    child: Row(
-                                      children: <Widget>[
-                                        Text(detailFour,
-                                            style: TextStyle(fontSize: 24)),
-                                        Expanded(child: Container())
-                                      ],
-                                    ))
-                                : Padding(
-                                    padding: EdgeInsets.only(
-                                        left: 16,
-                                        top: 16,
-                                        right: 16,
-                                        bottom: 16),
-                                    child: Container(
-                                      width: double.infinity,
-                                      child: TextField(
-                                        onTap: () => mentorEducation(),
-                                        controller: detailFourController,
-                                        decoration: InputDecoration(
-                                          contentPadding: EdgeInsets.all(16),
-                                          border: OutlineInputBorder(),
-                                          suffixIcon: !isMentee
-                                              ? Icon(Icons.arrow_drop_down)
-                                              : null,
-                                        ),
-                                      ),
-                                    )),
-                            Padding(
-                                padding: EdgeInsets.only(
-                                  left: 16,
-                                  top: 32,
-                                  right: 16,
-                                ),
-                                child: Row(
-                                  children: <Widget>[
-                                    Text(
-                                      labelFive,
-                                      style: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Expanded(child: Container())
-                                  ],
-                                )),
-                            !isEditing
-                                ? Padding(
-                                    padding: EdgeInsets.only(
-                                      top: 8,
-                                      left: 32,
-                                      right: 16,
-                                    ),
-                                    child: Row(
-                                      children: <Widget>[
-                                        Text(detailFive,
-                                            style: TextStyle(fontSize: 24)),
-                                        Expanded(child: Container())
-                                      ],
-                                    ))
-                                : Padding(
-                                    padding: EdgeInsets.only(
-                                        left: 16,
-                                        top: 16,
-                                        right: 16,
-                                        bottom: 16),
-                                    child: Container(
-                                      width: double.infinity,
-                                      child: TextField(
-                                        controller: detailFiveController,
-                                        decoration: InputDecoration(
-                                          contentPadding: EdgeInsets.all(16),
-                                          border: OutlineInputBorder(),
-                                        ),
-                                      ),
-                                    )),
-                            Visibility(
-                              visible: isMilitary,
-                              child: Column(
-                                children: <Widget>[
-                                  Padding(
-                                      padding: EdgeInsets.only(
-                                        left: 16,
-                                        top: 32,
-                                        right: 16,
-                                      ),
-                                      child: Row(
-                                        children: <Widget>[
-                                          Text(
-                                            labelSix,
-                                            style: TextStyle(
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Expanded(child: Container())
-                                        ],
-                                      )),
-                                  !isEditing
-                                      ? Padding(
-                                          padding: EdgeInsets.only(
-                                            top: 8,
-                                            left: 32,
-                                            right: 16,
-                                          ),
-                                          child: Row(
-                                            children: <Widget>[
-                                              Text(detailSix,
-                                                  style:
-                                                      TextStyle(fontSize: 24)),
-                                              Expanded(child: Container())
-                                            ],
-                                          ))
-                                      : Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 16,
-                                              top: 16,
-                                              right: 16,
-                                              bottom: 16),
-                                          child: Container(
-                                            width: double.infinity,
-                                            child: TextField(
-                                              controller: detailSixController,
-                                              decoration: InputDecoration(
-                                                contentPadding:
-                                                    EdgeInsets.all(16),
-                                                border: OutlineInputBorder(),
-                                              ),
-                                            ),
-                                          )),
-                                  Padding(
-                                      padding: EdgeInsets.only(
-                                        left: 16,
-                                        top: 32,
-                                        right: 16,
-                                      ),
-                                      child: Row(
-                                        children: <Widget>[
-                                          Text(
-                                            labelSeven,
-                                            style: TextStyle(
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Expanded(child: Container())
-                                        ],
-                                      )),
-                                  !isEditing
-                                      ? Padding(
-                                          padding: EdgeInsets.only(
-                                            top: 8,
-                                            left: 32,
-                                            right: 16,
-                                          ),
-                                          child: Row(
-                                            children: <Widget>[
-                                              Text(detailSeven,
-                                                  style:
-                                                      TextStyle(fontSize: 24)),
-                                              Expanded(child: Container())
-                                            ],
-                                          ))
-                                      : Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 16,
-                                              top: 16,
-                                              right: 16,
-                                              bottom: 16),
-                                          child: Container(
-                                            width: double.infinity,
-                                            child: TextField(
-                                              controller: detailSevenController,
-                                              decoration: InputDecoration(
-                                                contentPadding:
-                                                    EdgeInsets.all(16),
-                                                border: OutlineInputBorder(),
-                                              ),
-                                            ),
-                                          )),
-                                  Padding(
-                                      padding: EdgeInsets.only(
-                                        left: 16,
-                                        top: 32,
-                                        right: 16,
-                                      ),
-                                      child: Row(
-                                        children: <Widget>[
-                                          Text(
-                                            labelEight,
-                                            style: TextStyle(
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Expanded(child: Container())
-                                        ],
-                                      )),
-                                  !isEditing
-                                      ? Padding(
-                                          padding: EdgeInsets.only(
-                                            top: 8,
-                                            left: 32,
-                                            right: 16,
-                                          ),
-                                          child: Row(
-                                            children: <Widget>[
-                                              Text(detailEight,
-                                                  style:
-                                                      TextStyle(fontSize: 24)),
-                                              Expanded(child: Container())
-                                            ],
-                                          ))
-                                      : Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 16,
-                                              top: 16,
-                                              right: 16,
-                                              bottom: 16),
-                                          child: Container(
-                                            width: double.infinity,
-                                            child: TextField(
-                                              controller: detailEightController,
-                                              decoration: InputDecoration(
-                                                contentPadding:
-                                                    EdgeInsets.all(16),
-                                                border: OutlineInputBorder(),
-                                              ),
-                                            ),
-                                          )),
-                                ],
-                              ),
-                            )
-                          ],
-                        )),
-                    Visibility(
-                        visible: isMentee,
-                        child: Column(
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: 16,
-                                top: 32,
-                                right: 16,
-                              ),
-                              child: Column(
-                                children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      Text(
-                                        "Certainty: ",
-                                        style: TextStyle(
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Expanded(child: Container())
-                                    ],
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 16, top: 8),
-                                    child: Row(
-                                      children: <Widget>[
-                                        !isEditing
-                                            ? Text(certainty,
-                                                style: TextStyle(fontSize: 24))
-                                            : Container(),
-                                        Expanded(child: Container())
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Visibility(
-                                visible: isEditing,
+                      padding: EdgeInsets.only(top: 16),
+                      child: Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.start,
+                        runSpacing: 5.0,
+                        spacing: 5.0,
+                        children: <Widget>[
+                          Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                      width: 1, color: Colors.grey[400])),
+                              child: GestureDetector(
+                                onTap: () => mentorIndustry(),
                                 child: Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 32, right: 16, bottom: 32),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding:
-                                            EdgeInsets.symmetric(vertical: 0),
-                                        child: new Row(
-                                          children: <Widget>[
-                                            new Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: 0, right: 0),
-                                                child: Radio(
-                                                  value: 0,
-                                                  groupValue: _certaintyValue,
-                                                  onChanged:
-                                                      _handleRadioValueChange,
-                                                )),
-                                            new Text(
-                                              "100% certain",
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            EdgeInsets.symmetric(vertical: 0),
-                                        child: new Row(
-                                          children: <Widget>[
-                                            new Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: 0, right: 0),
-                                                child: Radio(
-                                                  value: 1,
-                                                  groupValue: _certaintyValue,
-                                                  onChanged:
-                                                      _handleRadioValueChange,
-                                                )),
-                                            new Text(
-                                              "I have a good idea, but things could change",
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            EdgeInsets.symmetric(vertical: 0),
-                                        child: new Row(
-                                          children: <Widget>[
-                                            new Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: 0, right: 0),
-                                                child: Radio(
-                                                  value: 2,
-                                                  groupValue: _certaintyValue,
-                                                  onChanged:
-                                                      _handleRadioValueChange,
-                                                )),
-                                            new Text(
-                                              "Its something I\'m interested in, but who knows",
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            EdgeInsets.symmetric(vertical: 0),
-                                        child: new Row(
-                                          children: <Widget>[
-                                            new Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: 0, right: 0),
-                                                child: Radio(
-                                                  value: 3,
-                                                  groupValue: _certaintyValue,
-                                                  onChanged:
-                                                      _handleRadioValueChange,
-                                                )),
-                                            new Text(
-                                              "I have no clue what I want to do",
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )),
-                          ],
-                        )),
+                                    padding: EdgeInsets.all(8),
+                                    child: Text(detailTwo)),
+                              )),
+                          Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                      width: 1, color: Colors.grey[400])),
+                              child: GestureDetector(
+                                onTap: () => mentorIndustry(),
+                                child: Padding(
+                                    padding: EdgeInsets.all(8),
+                                    child: Text(detailThree)),
+                              )),
+                          Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                      width: 1, color: Colors.grey[400])),
+                              child: GestureDetector(
+                                onTap: () => mentorEducation(),
+                                child: Padding(
+                                    padding: EdgeInsets.all(8),
+                                    child: Text(detailFour)),
+                              )),
+                          Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                      width: 1, color: Colors.grey[400])),
+                              child: GestureDetector(
+                                onTap: () => _showDialog("School"),
+                                child: Padding(
+                                    padding: EdgeInsets.all(8),
+                                    child: Text(detailFive)),
+                              )),
+                          Visibility(
+                              visible: labelSix != "Not a Veteran",
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                        width: 1, color: Colors.grey[400])),
+                                child: Padding(
+                                    padding: EdgeInsets.all(8),
+                                    child: Text(detailSix)),
+                              )),
+                          Visibility(
+                              visible: labelSix != "Not a Veteran",
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                        width: 1, color: Colors.grey[400])),
+                                child: Padding(
+                                    padding: EdgeInsets.all(8),
+                                    child: Text(detailSeven)),
+                              )),
+                        ],
+                      ),
+                    ),
                     new Container(
                       width: double.infinity,
                       child: new Padding(
@@ -913,7 +483,8 @@ class ProfileState extends State<Profile> {
     });
   }
 
-  onSave() async {
+  onSave(String detail) async {
+    isLoading = true;
     await FirebaseAuth.instance.currentUser().then((user) => {
           if (user == null)
             {
@@ -926,33 +497,49 @@ class ProfileState extends State<Profile> {
               if (isMentee)
                 {updateMentee(user.uid)}
               else
-                {updateMentor(user.uid)}
+                {updateMentors(user.uid, detail)}
             }
         });
   }
 
-  updateMentor(String id) async {
+  updateMentors(String id, String field) async {
     await FirebaseDatabase.instance
         .reference()
         .child("Mentors")
         .child(id)
-        .update({"bio": bioController.text});
-    await FirebaseDatabase.instance
-        .reference()
-        .child("Mentors")
-        .child(id)
-        .update({"job_title": planController.text});
-    await FirebaseDatabase.instance
-        .reference()
-        .child("Mentors")
-        .child(id)
-        .update({"company_name": detailOneController.text});
-    await FirebaseDatabase.instance
-        .reference()
-        .child("Mentors")
-        .child(id)
-        .update({"industry": detailTwoController.text});
+        .update({field: _textFieldController.text});
+    getUser();
+  }
 
+  updateMentor(String id, String detail, String update) async {
+    if (detail == bioController.text) {
+      await FirebaseDatabase.instance
+          .reference()
+          .child("Mentors")
+          .child(id)
+          .update({"bio": update});
+    }
+    if (detail == planController.text) {
+      await FirebaseDatabase.instance
+          .reference()
+          .child("Mentors")
+          .child(id)
+          .update({"job_title": planController.text});
+    }
+    if (detail == detailOneController.text) {
+      await FirebaseDatabase.instance
+          .reference()
+          .child("Mentors")
+          .child(id)
+          .update({"company_name": detailOneController.text});
+    }
+    if (detail == detailTwoController.text) {
+      await FirebaseDatabase.instance
+          .reference()
+          .child("Mentors")
+          .child(id)
+          .update({"industry": detailTwoController.text});
+    }
     if (_experienceValue == 0) {
       await FirebaseDatabase.instance
           .reference()
@@ -975,21 +562,28 @@ class ProfileState extends State<Profile> {
           .update({"experience": "10+"});
     }
 
-    await FirebaseDatabase.instance
-        .reference()
-        .child("Mentors")
-        .child(id)
-        .update({"education": detailFourController.text});
-    await FirebaseDatabase.instance
-        .reference()
-        .child("Mentors")
-        .child(id)
-        .update({"school_name": detailFiveController.text});
-    setState(() {
-      isEditing = false;
-      getUser();
-    });
+    if (detail == detailFourController.text) {
+      await FirebaseDatabase.instance
+          .reference()
+          .child("Mentors")
+          .child(id)
+          .update({"education": detailFourController.text});
+    }
+    if (detail == detailFiveController.text) {
+      await FirebaseDatabase.instance
+          .reference()
+          .child("Mentors")
+          .child(id)
+          .update({"school_name": detailFiveController.text});
+      setState(() {
+        isEditing = false;
+        isLoading = false;
+        getUser();
+      });
+    }
   }
+
+  updateMentorCompany(String id) async {}
 
   updateMentee(String id) async {
     await FirebaseDatabase.instance
@@ -1157,6 +751,16 @@ class ProfileState extends State<Profile> {
           firstName = snapshot.value,
         });
 
+    var phoneResponse = await FirebaseDatabase.instance
+        .reference()
+        .child("Mentors")
+        .child(id)
+        .child("phone_number");
+    phoneResponse.once().then((snapshot) => {
+          print(snapshot.value),
+          phoneNumber = snapshot.value,
+        });
+
     var lastNameResponse = await FirebaseDatabase.instance
         .reference()
         .child("Mentors")
@@ -1199,7 +803,7 @@ class ProfileState extends State<Profile> {
         .child("experience");
     experienceResponse.once().then((snapshot) => {
           print(snapshot.value),
-          detailThree = snapshot.value,
+          detailThree = snapshot.value + " years",
           detailThreeController.text = detailThree
         });
     var educationResponse = await FirebaseDatabase.instance
@@ -1282,7 +886,6 @@ class ProfileState extends State<Profile> {
           detailSevenController.text = detailSeven,
           setState(() {
             isMilitary = true;
-            isLoading = false;
           })
         });
     var yearsServedResponse = await FirebaseDatabase.instance
@@ -1509,7 +1112,8 @@ class ProfileState extends State<Profile> {
         },
       ));
       setState(() {
-        detailTwoController.text = type;
+        detailTwo = type;
+        onSave("Industry");
       });
     }
   }
@@ -1535,7 +1139,8 @@ class ProfileState extends State<Profile> {
       ));
 
       setState(() {
-        detailFourController.text = type;
+        detailFour = type;
+        onSave("Education");
       });
     }
   }
