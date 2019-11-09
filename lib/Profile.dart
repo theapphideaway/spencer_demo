@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:way_ahead/MentorExperience.dart';
 
 import 'Login.dart';
 import 'MenteePlans.dart';
@@ -88,16 +89,49 @@ class ProfileState extends State<Profile> {
     if (detail == "Industry") field = "industry";
     if (detail == "Education") field = "education";
     if (detail == "School") field = "school_name";
+    if (detail == "Experience") field = "experience";
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: detail == "School"? Text("Edit School Name"):Text("Edit "),
+          content: TextField(
+            controller: _textFieldController,
+            decoration: InputDecoration(hintText: "TextField in Dialog"),
+          ),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Save"),
+              onPressed: () {
+                onSave(field);
+                Navigator.pop(context);
+              },
+            ),
+            new FlatButton(
+              child: new Text("Cancel"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  void _showExperience() {
+    var field;
     showDialog(
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
           title: new Text("Alert Dialog title"),
-          content: TextField(
-            controller: _textFieldController,
-            decoration: InputDecoration(hintText: "TextField in Dialog"),
-          ),
+          content: Padding(
+              padding: EdgeInsets.all(16),
+              ),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
@@ -173,19 +207,10 @@ class ProfileState extends State<Profile> {
                                       child: Row(
                                         children: <Widget>[
                                           Expanded(child: Container()),
-                                          Icon(
-                                            Icons.edit,
-                                            color: Colors.white,
-                                          ),
-                                          !isEditing
-                                              ? Text(" Edit Profile",
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 18))
-                                              : Text(" Save Profile",
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 18)),
+                                          Text("My Profile",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 18)),
                                           Expanded(child: Container()),
                                         ],
                                       ))),
@@ -287,10 +312,15 @@ class ProfileState extends State<Profile> {
                         ? Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal: 32, vertical: 16),
-                            child: Text(
+                            child: GestureDetector(
+                              onTap: () => {setState((){
+                                isEditing = true;
+                                bioController.text = bio;
+                              })},
+                                child:Text(
                               bio,
                               style: TextStyle(fontSize: 18),
-                            ))
+                            )))
                         : Padding(
                             padding: EdgeInsets.all(16),
                             child: TextField(
@@ -304,6 +334,23 @@ class ProfileState extends State<Profile> {
                               ),
                             ),
                           ),
+                    Visibility(
+                      visible: isEditing,
+                      child: Row(children: <Widget>[
+                        FlatButton(
+                          onPressed: ()=> {setState((){
+                            isEditing = false;
+    })},
+                          child: Text("Cancel", style: TextStyle(color: Colors.red),)),
+                        Expanded(child: Container()),
+                        FlatButton(
+                            onPressed: ()=> {setState((){
+                              isEditing = false;
+                              onSave("bio", bioController.text);
+                            })},
+                            child: Text("Done", style: TextStyle(color: Colors.blue),)),
+                      ],),
+                    ),
                     new Row(
                       children: <Widget>[
                         new Expanded(
@@ -352,7 +399,7 @@ class ProfileState extends State<Profile> {
                                   border: Border.all(
                                       width: 1, color: Colors.grey[400])),
                               child: GestureDetector(
-                                onTap: () => mentorIndustry(),
+                                onTap: () => mentorExperience(),
                                 child: Padding(
                                     padding: EdgeInsets.all(8),
                                     child: Text(detailThree)),
@@ -483,7 +530,7 @@ class ProfileState extends State<Profile> {
     });
   }
 
-  onSave(String detail) async {
+  onSave(String detail, [String value]) async {
     isLoading = true;
     await FirebaseAuth.instance.currentUser().then((user) => {
           if (user == null)
@@ -496,8 +543,19 @@ class ProfileState extends State<Profile> {
             {
               if (isMentee)
                 {updateMentee(user.uid)}
-              else
-                {updateMentors(user.uid, detail)}
+              else {
+                if(detail == "Experience"){
+                  updateMentorFromModal(user.uid, "experience", value)
+                } else if(detail == "Education"){
+                  updateMentorFromModal(user.uid, "education", value)
+                }else if(detail == "Industry"){
+                  updateMentorFromModal(user.uid, "industry", value)
+                }else if(detail == "bio"){
+                  updateMentorFromModal(user.uid, "bio", value)
+                }else
+                updateMentors(user.uid, detail)
+
+              }
             }
         });
   }
@@ -508,6 +566,15 @@ class ProfileState extends State<Profile> {
         .child("Mentors")
         .child(id)
         .update({field: _textFieldController.text});
+    getUser();
+  }
+
+  updateMentorFromModal(String id, String field, String value)async {
+    await FirebaseDatabase.instance
+        .reference()
+        .child("Mentors")
+        .child(id)
+        .update({field: value});
     getUser();
   }
 
@@ -1113,7 +1180,7 @@ class ProfileState extends State<Profile> {
       ));
       setState(() {
         detailTwo = type;
-        onSave("Industry");
+        onSave("Industry", type);
       });
     }
   }
@@ -1140,27 +1207,39 @@ class ProfileState extends State<Profile> {
 
       setState(() {
         detailFour = type;
-        onSave("Education");
+        onSave("Education", type);
       });
     }
   }
 
-  void _handleExperienceValueChange(int value) {
-    setState(() {
-      _experienceValue = value;
+  mentorExperience() async {
+    if (!isMentee) {
+      final type = await Navigator.of(context).push(PageRouteBuilder(
+        opaque: false,
+        pageBuilder: (BuildContext context, Animation<double> animation,
+            Animation<double> secondaryAnimation) {
+          return MentorExperience();
+        },
+        transitionsBuilder: (BuildContext context, Animation<double> animation,
+            Animation<double> secondaryAnimation, Widget child) {
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0, 1),
+              end: Offset.zero,
+            ).animate(animation),
+            child: child,
+          );
+        },
+      ));
 
-      switch (_experienceValue) {
-        case 0:
-          break;
-        case 1:
-          break;
-        case 2:
-          break;
-        case 3:
-          break;
-      }
-    });
+      setState(() {
+        detailThree = type;
+        onSave("Experience", type);
+      });
+    }
   }
+
+
 
   getProfilePicture() async {
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
