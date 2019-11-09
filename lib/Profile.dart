@@ -25,7 +25,7 @@ class ProfileState extends State<Profile> {
   bool isMentee;
   bool isLoading = true;
   bool isEditing = false;
-  bool isWork = true;
+  bool isWork = false;
   bool isSchool = false;
   bool isMilitary = false;
   bool hasProfilePicture = false;
@@ -55,6 +55,7 @@ class ProfileState extends State<Profile> {
   String detailEight = "a";
   String certainty = "N/A";
   String phoneNumber;
+  String preposition;
   var profilePictureUrl;
   TextEditingController bioController = TextEditingController();
   TextEditingController planController = TextEditingController();
@@ -83,30 +84,95 @@ class ProfileState extends State<Profile> {
 
   void _showDialog(String detail) {
     var field;
-    if (detail == "Job Title: ") field = "job_title";
-    if (detail == "bio") field = "bio";
-    if (detail == "Company Name: ") field = "company_name";
-    if (detail == "Industry") field = "industry";
-    if (detail == "Education") field = "education";
-    if (detail == "School") field = "school_name";
-    if (detail == "Experience") field = "experience";
+    if (detail == "Job") {
+      field = "job_title";
+      _textFieldController.text = plan;
+    }
+    if (detail == "Company") {
+      field = "company_name";
+      _textFieldController.text = detailOne;
+    }
+    if (detail == "School") {
+      field = "school_name";
+      _textFieldController.text = detailFive;
+    }
+    if (detail == "Military Branch") {
+      field = "branch";
+      _textFieldController.text = detailSix;
+    }
+    if (detail == "Military Occupation") {
+      field = "military_occupation";
+      _textFieldController.text = detailSeven;
+    }
+
+//    plan == "Straight To Work"?_showDialog("MenteeCompany"):
+//    plan == "Trade School" || plan == "College"?_showDialog("MenteeSchoolMajor"):
+//    plan == "Military"?_showDialog("MenteeMilitaryOccupation")
+//    plan == "Straight To Work"?_showDialog("MenteeJob"):
+//    plan == "Trade School" || plan == "College"?_showDialog("MenteeSchoolName"):
+//    plan == "Military"?_showDialog("MenteeMilitaryBranch")
+
+    if (detail == "MenteeJob") {
+      field = "job";
+      _textFieldController.text = detailOne;
+    }
+    if (detail == "MenteeCompany") {
+      field = "company";
+      _textFieldController.text = detailTwo;
+    }
+    if (detail == "MenteeSchoolName") {
+      field = "school_name";
+      _textFieldController.text = detailOne;
+    }
+    if (detail == "MenteeSchoolMajor") {
+      field = "school_major";
+      _textFieldController.text = detailTwo;
+    }
+    if (detail == "MenteeMilitaryBranch") {
+      field = "branch";
+      _textFieldController.text = detailOne;
+    }
+    if (detail == "MenteeMilitaryOccupation") {
+      field = "military_occupation";
+      _textFieldController.text = detailTwo;
+    }
+
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: detail == "School"? Text("Edit School Name"):Text("Edit "),
+          title: detail == "Job"
+              ? Text("Edit Job Title")
+              : detail == "Company"
+                  ? Text("Edit Company Name")
+                  : detail == "School"
+                      ? Text("Edit School Name")
+                      : detail == "Military Branch"
+                          ? Text("Edit Military Branch")
+                          : detail == "Military Occupation"
+                              ? Text("Edit Military Occupation")
+                              : Text("Edit "),
           content: TextField(
             controller: _textFieldController,
-            decoration: InputDecoration(hintText: "TextField in Dialog"),
+            decoration: InputDecoration(
+                hintText: detail == "School" ? "TextField in Dialog" : ""),
           ),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
               child: new Text("Save"),
               onPressed: () {
-                onSave(field);
-                Navigator.pop(context);
+                if (_textFieldController.text.isNotEmpty) {
+                  onSave(field);
+                  Navigator.pop(context);
+                  setState(() {
+                    isLoading = true;
+                  });
+                } else {
+                  Navigator.pop(context);
+                }
               },
             ),
             new FlatButton(
@@ -130,8 +196,8 @@ class ProfileState extends State<Profile> {
         return AlertDialog(
           title: new Text("Alert Dialog title"),
           content: Padding(
-              padding: EdgeInsets.all(16),
-              ),
+            padding: EdgeInsets.all(16),
+          ),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
@@ -173,27 +239,24 @@ class ProfileState extends State<Profile> {
                       children: <Widget>[
                         Column(
                           children: <Widget>[
-                            GestureDetector(
-                                onTap: getProfilePicture,
-                                child: profilePictureUrl != null
-                                    ? Container(
-                                        height: 470,
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                                image: MemoryImage(
-                                                  profilePictureUrl,
-                                                ),
-                                                fit: BoxFit.cover,
-                                                colorFilter: ColorFilter.mode(
-                                                    Colors.black
-                                                        .withOpacity(0.4),
-                                                    BlendMode.colorBurn))))
-                                    : Image.asset(
-                                        'assets/default_profile_picture.jpg',
-                                        width: double.infinity,
-                                        height: 400,
-                                      )),
+                            profilePictureUrl != null
+                                ? Container(
+                                    height: 470,
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: MemoryImage(
+                                              profilePictureUrl,
+                                            ),
+                                            fit: BoxFit.cover,
+                                            colorFilter: ColorFilter.mode(
+                                                Colors.black.withOpacity(0.4),
+                                                BlendMode.colorBurn))))
+                                : Image.asset(
+                                    'assets/default_profile_picture.jpg',
+                                    width: double.infinity,
+                                    height: 400,
+                                  ),
                             Container(
                               color: Colors.blue[800],
                               width: double.infinity,
@@ -216,34 +279,67 @@ class ProfileState extends State<Profile> {
                                       ))),
                             ),
                             Container(
-                              height: 60,
-                              width: double.infinity,
-                              child: Row(
-                                children: <Widget>[
-                                  Align(
-                                      alignment: Alignment.bottomLeft,
-                                      child: Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 32, bottom: 0),
-                                        child: Text(
-                                          "About",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18),
+                                height: 600,
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 32),
+                                  child: DefaultTabController(
+                                    length: 4,
+                                    child: new Scaffold(
+                                      appBar: new PreferredSize(
+                                        preferredSize:
+                                            Size.fromHeight(kToolbarHeight),
+                                        child: new Container(
+                                          child: new TabBar(
+                                            indicatorColor: Colors.black,
+                                            tabs: [
+                                              Tab(
+                                                  child: Text(
+                                                "About",
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )),
+                                              Tab(
+                                                  child: Text(
+                                                "Activity",
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )),
+                                              Tab(
+                                                  child: Text(
+                                                "Badges",
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )),
+                                              Tab(
+                                                  child: Text(
+                                                "Posts",
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ))
+                                            ],
+                                          ),
                                         ),
-                                      )),
-                                  Expanded(child: Container()),
-                                  Text(
-                                    email,
-                                    style: TextStyle(fontSize: 18),
+                                      ),
+                                      body: TabBarView(
+                                        children: [
+                                          aboutMe(),
+                                          Center(child: Text("Coming Soon")),
+                                          Center(child: Text("Coming Soon")),
+                                          Center(child: Text("Coming Soon"))
+                                        ],
+                                      ),
+                                    ),
                                   ),
-                                  Expanded(child: Container()),
-                                ],
-                              ),
-                            ),
-                            new Divider(
-                              color: Colors.grey,
-                            ),
+                                )),
                           ],
                         ),
                         Column(
@@ -263,12 +359,30 @@ class ProfileState extends State<Profile> {
                                 Expanded(
                                   child: Container(),
                                 ),
-                                Text(plan + "at " + detailOne,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.grey[200],
-                                      fontSize: 18,
-                                    )),
+                                GestureDetector(
+                                    onTap: () => _showDialog("Job"),
+                                    child: Text(plan,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.grey[200],
+                                          fontSize: 18,
+                                        ))),
+                                Padding(
+                                    padding: EdgeInsets.only(left: 5,right: 5),
+                                    child: Text(preposition,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.grey[200],
+                                          fontSize: 18,
+                                        ))),
+                                GestureDetector(
+                                    onTap: () => _showDialog("Company"),
+                                    child: Text(detailOne,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.grey[200],
+                                          fontSize: 18,
+                                        ))),
                                 Expanded(
                                   child: Container(),
                                 ),
@@ -299,182 +413,233 @@ class ProfileState extends State<Profile> {
                                                 width: 80,
                                                 height: 80,
                                               )),
-                                    Expanded(
-                                      child: Container(),
-                                    )
                                   ],
                                 ))
                           ],
                         )
                       ],
                     ),
-                    !isEditing
-                        ? Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 32, vertical: 16),
-                            child: GestureDetector(
-                              onTap: () => {setState((){
-                                isEditing = true;
-                                bioController.text = bio;
-                              })},
-                                child:Text(
-                              bio,
-                              style: TextStyle(fontSize: 18),
-                            )))
-                        : Padding(
-                            padding: EdgeInsets.all(16),
-                            child: TextField(
-                              controller: bioController,
-                              keyboardType: TextInputType.multiline,
-                              maxLines: 100,
-                              minLines: 10,
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.all(16),
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                          ),
-                    Visibility(
-                      visible: isEditing,
-                      child: Row(children: <Widget>[
-                        FlatButton(
-                          onPressed: ()=> {setState((){
-                            isEditing = false;
-    })},
-                          child: Text("Cancel", style: TextStyle(color: Colors.red),)),
-                        Expanded(child: Container()),
-                        FlatButton(
-                            onPressed: ()=> {setState((){
-                              isEditing = false;
-                              onSave("bio", bioController.text);
-                            })},
-                            child: Text("Done", style: TextStyle(color: Colors.blue),)),
-                      ],),
-                    ),
-                    new Row(
-                      children: <Widget>[
-                        new Expanded(
-                          child: new Padding(
-                              padding: EdgeInsets.only(left: 16, right: 8),
-                              child: Divider(
-                                color: Colors.grey,
-                              )),
-                        ),
-                        new Text(
-                          "PROFILE DETAILS",
-                          style: TextStyle(
-                            color: Colors.grey,
-                          ),
-                        ),
-                        new Expanded(
-                          child: new Padding(
-                              padding: EdgeInsets.only(left: 8, right: 16),
-                              child: Divider(
-                                color: Colors.grey,
-                              )),
-                        )
-                      ],
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 16),
-                      child: Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.start,
-                        runSpacing: 5.0,
-                        spacing: 5.0,
-                        children: <Widget>[
-                          Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                      width: 1, color: Colors.grey[400])),
-                              child: GestureDetector(
-                                onTap: () => mentorIndustry(),
-                                child: Padding(
-                                    padding: EdgeInsets.all(8),
-                                    child: Text(detailTwo)),
-                              )),
-                          Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                      width: 1, color: Colors.grey[400])),
-                              child: GestureDetector(
-                                onTap: () => mentorExperience(),
-                                child: Padding(
-                                    padding: EdgeInsets.all(8),
-                                    child: Text(detailThree)),
-                              )),
-                          Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                      width: 1, color: Colors.grey[400])),
-                              child: GestureDetector(
-                                onTap: () => mentorEducation(),
-                                child: Padding(
-                                    padding: EdgeInsets.all(8),
-                                    child: Text(detailFour)),
-                              )),
-                          Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                      width: 1, color: Colors.grey[400])),
-                              child: GestureDetector(
-                                onTap: () => _showDialog("School"),
-                                child: Padding(
-                                    padding: EdgeInsets.all(8),
-                                    child: Text(detailFive)),
-                              )),
-                          Visibility(
-                              visible: labelSix != "Not a Veteran",
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(
-                                        width: 1, color: Colors.grey[400])),
-                                child: Padding(
-                                    padding: EdgeInsets.all(8),
-                                    child: Text(detailSix)),
-                              )),
-                          Visibility(
-                              visible: labelSix != "Not a Veteran",
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(
-                                        width: 1, color: Colors.grey[400])),
-                                child: Padding(
-                                    padding: EdgeInsets.all(8),
-                                    child: Text(detailSeven)),
-                              )),
-                        ],
-                      ),
-                    ),
-                    new Container(
-                      width: double.infinity,
-                      child: new Padding(
-                        padding: EdgeInsets.only(
-                            left: 16, top: 10, right: 16, bottom: 32),
-                        child: FlatButton(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(10.0)),
-                          padding: EdgeInsets.all(16),
-                          color: Colors.transparent,
-                          onPressed: () => {signOut()},
-                          child: Text(
-                            "Log out",
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.red,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ));
+  }
+
+  Widget aboutMe() {
+    return Column(
+      children: <Widget>[
+        !isEditing
+            ? Padding(
+                padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                child: GestureDetector(
+                    onTap: () => {
+                          setState(() {
+                            isEditing = true;
+                            bioController.text = bio;
+                          })
+                        },
+                    child: Text(
+                      bio,
+                      style: TextStyle(fontSize: 18),
+                    )))
+            : Padding(
+                padding: EdgeInsets.all(16),
+                child: TextField(
+                  controller: bioController,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: 100,
+                  minLines: 10,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(16),
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+        Visibility(
+          visible: isEditing,
+          child: Row(
+            children: <Widget>[
+              FlatButton(
+                  onPressed: () => {
+                        setState(() {
+                          isEditing = false;
+                        })
+                      },
+                  child: Text(
+                    "Cancel",
+                    style: TextStyle(color: Colors.red),
+                  )),
+              Expanded(child: Container()),
+              FlatButton(
+                  onPressed: () => {
+                        setState(() {
+                          isEditing = false;
+                          onSave("bio", bioController.text);
+                        })
+                      },
+                  child: Text(
+                    "Done",
+                    style: TextStyle(color: Colors.blue),
+                  )),
+            ],
+          ),
+        ),
+        new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new Padding(
+                  padding: EdgeInsets.only(left: 16, right: 8),
+                  child: Divider(
+                    color: Colors.grey,
+                  )),
+            ),
+            new Text(
+              "PROFILE DETAILS",
+              style: TextStyle(
+                color: Colors.grey,
+              ),
+            ),
+            new Expanded(
+              child: new Padding(
+                  padding: EdgeInsets.only(left: 8, right: 16),
+                  child: Divider(
+                    color: Colors.grey,
+                  )),
+            )
+          ],
+        ),
+        Padding(
+          padding: EdgeInsets.only(top: 16),
+          child: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.start,
+            runSpacing: 5.0,
+            spacing: 5.0,
+            children: !isMentee?<Widget>[
+              Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(width: 1, color: Colors.grey[400])),
+                  child: GestureDetector(
+                    onTap: () => mentorIndustry(),
+                    child: Padding(
+                        padding: EdgeInsets.all(8), child: Text(detailTwo)),
+                  )),
+              Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(width: 1, color: Colors.grey[400])),
+                  child: GestureDetector(
+                    onTap: () => mentorExperience(),
+                    child: Padding(
+                        padding: EdgeInsets.all(8), child: Text(detailThree)),
+                  )),
+              Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(width: 1, color: Colors.grey[400])),
+                  child: GestureDetector(
+                    onTap: () => mentorEducation(),
+                    child: Padding(
+                        padding: EdgeInsets.all(8), child: Text(detailFour)),
+                  )),
+              Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(width: 1, color: Colors.grey[400])),
+                  child: GestureDetector(
+                    onTap: () => _showDialog("School"),
+                    child: Padding(
+                        padding: EdgeInsets.all(8), child: Text(detailFive)),
+                  )),
+              Visibility(
+                  visible: labelSix != "Not a Veteran",
+                  child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          border:
+                              Border.all(width: 1, color: Colors.grey[400])),
+                      child: GestureDetector(
+                        onTap: () => _showDialog("Military Branch"),
+                        child: Padding(
+                            padding: EdgeInsets.all(8), child: Text(detailSix)),
+                      ))),
+              Visibility(
+                visible: labelSix != "Not a Veteran",
+                child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(width: 1, color: Colors.grey[400])),
+                    child: GestureDetector(
+                      onTap: () => _showDialog("Military Occupation"),
+                      child: Padding(
+                          padding: EdgeInsets.all(8), child: Text(detailSeven)),
+                    )),
+              )
+            ]:<Widget>[
+              Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(width: 1, color: Colors.grey[400])),
+                  child: GestureDetector(
+                    onTap: () => _showDialog("Plan"),
+                    child: Padding(
+                        padding: EdgeInsets.all(8), child: Text(plan)),
+                  )),
+              Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(width: 1, color: Colors.grey[400])),
+                  child: GestureDetector(
+                    onTap: () => plan == "Straight To Work"?_showDialog("MenteeJob"):
+                    plan == "Trade School" || plan == "College"?_showDialog("MenteeSchoolName"):
+                    plan == "Military"?_showDialog("MenteeMilitaryBranch"): {},
+                    child: Padding(
+                        padding: EdgeInsets.all(8), child: Text(detailOne)),
+                  )),
+              Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(width: 1, color: Colors.grey[400])),
+                  child: GestureDetector(
+                    onTap: () => plan == "Straight To Work"?_showDialog("MenteeCompany"):
+                    plan == "Trade School" || plan == "College"?_showDialog("MenteeSchoolMajor"):
+                    plan == "Military"?_showDialog("MenteeMilitaryOccupation"): {},
+                    child: Padding(
+                        padding: EdgeInsets.all(8), child: Text(detailTwo)),
+                  )),
+              Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(width: 1, color: Colors.grey[400])),
+                  child: GestureDetector(
+                    onTap: () => {},
+                    child: Padding(
+                        padding: EdgeInsets.all(8), child: Text(certainty)),
+                  )),
+            ],
+          ),
+        ),
+        new Container(
+          width: double.infinity,
+          child: new Padding(
+            padding: EdgeInsets.only(left: 16, top: 32, right: 16, bottom: 32),
+            child: FlatButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(10.0)),
+              padding: EdgeInsets.all(16),
+              color: Colors.transparent,
+              onPressed: () => {signOut()},
+              child: Text(
+                "Log out",
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   menteePlans() async {
@@ -542,20 +707,20 @@ class ProfileState extends State<Profile> {
           else
             {
               if (isMentee)
-                {updateMentee(user.uid)}
-              else {
-                if(detail == "Experience"){
-                  updateMentorFromModal(user.uid, "experience", value)
-                } else if(detail == "Education"){
-                  updateMentorFromModal(user.uid, "education", value)
-                }else if(detail == "Industry"){
-                  updateMentorFromModal(user.uid, "industry", value)
-                }else if(detail == "bio"){
-                  updateMentorFromModal(user.uid, "bio", value)
-                }else
-                updateMentors(user.uid, detail)
-
-              }
+                {updateMentees(user.uid, detail)}
+              else
+                {
+                  if (detail == "Experience")
+                    {updateMentorFromModal(user.uid, "experience", value)}
+                  else if (detail == "Education")
+                    {updateMentorFromModal(user.uid, "education", value)}
+                  else if (detail == "Industry")
+                    {updateMentorFromModal(user.uid, "industry", value)}
+                  else if (detail == "bio")
+                    {updateMentorFromModal(user.uid, "bio", value)}
+                  else
+                    updateMentors(user.uid, detail)
+                }
             }
         });
   }
@@ -569,7 +734,16 @@ class ProfileState extends State<Profile> {
     getUser();
   }
 
-  updateMentorFromModal(String id, String field, String value)async {
+  updateMentees(String id, String field) async {
+    await FirebaseDatabase.instance
+        .reference()
+        .child("Mentees")
+        .child(id)
+        .update({field: _textFieldController.text});
+    getUser();
+  }
+
+  updateMentorFromModal(String id, String field, String value) async {
     await FirebaseDatabase.instance
         .reference()
         .child("Mentors")
@@ -649,8 +823,6 @@ class ProfileState extends State<Profile> {
       });
     }
   }
-
-  updateMentorCompany(String id) async {}
 
   updateMentee(String id) async {
     await FirebaseDatabase.instance
@@ -734,23 +906,6 @@ class ProfileState extends State<Profile> {
     });
   }
 
-  void _handleRadioValueChange(int value) {
-    setState(() {
-      _certaintyValue = value;
-
-      switch (_certaintyValue) {
-        case 0:
-          break;
-        case 1:
-          break;
-        case 2:
-          break;
-        case 3:
-          break;
-      }
-    });
-  }
-
   getUser() async {
     try {
       await FirebaseAuth.instance.currentUser().then((user) => {
@@ -777,6 +932,7 @@ class ProfileState extends State<Profile> {
 
   getMentor(String id) async {
     var temp;
+    preposition = "at";
     var finalTempString;
     await FirebaseAuth.instance
         .currentUser()
@@ -967,6 +1123,7 @@ class ProfileState extends State<Profile> {
           detailEightController.text = detailSeven,
           setState(() {
             isMilitary = true;
+            isLoading = false;
           })
         });
   }
@@ -1057,15 +1214,18 @@ class ProfileState extends State<Profile> {
   getMenteeView(String id) async {
     planLabel = "Plan: ";
     if (plan == "Military") {
+      preposition = "in the";
       labelOne = "Military Branch: ";
       labelTwo = "Military Occupation: ";
       getMenteeMilitaryInfo(id);
     }
     if (plan == "Straight To Work") {
+      preposition = "as a";
       labelOne = "Job Title: ";
       labelTwo = "Company Name: ";
       getMenteeWorkInfo(id);
     } else {
+      preposition = "at";
       labelOne = "School Name: ";
       labelTwo = "School Major: ";
       getMenteeEducationInfo(id);
@@ -1178,10 +1338,12 @@ class ProfileState extends State<Profile> {
           );
         },
       ));
-      setState(() {
-        detailTwo = type;
-        onSave("Industry", type);
-      });
+      if (type != null) {
+        setState(() {
+          detailTwo = type;
+          onSave("Industry", type);
+        });
+      }
     }
   }
 
@@ -1204,11 +1366,12 @@ class ProfileState extends State<Profile> {
           );
         },
       ));
-
-      setState(() {
-        detailFour = type;
-        onSave("Education", type);
-      });
+      if (type != null) {
+        setState(() {
+          detailFour = type;
+          onSave("Education", type);
+        });
+      }
     }
   }
 
@@ -1232,14 +1395,14 @@ class ProfileState extends State<Profile> {
         },
       ));
 
-      setState(() {
-        detailThree = type;
-        onSave("Experience", type);
-      });
+      if (type != null) {
+        setState(() {
+          detailThree = type;
+          onSave("Experience", type);
+        });
+      }
     }
   }
-
-
 
   getProfilePicture() async {
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);

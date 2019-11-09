@@ -12,13 +12,20 @@ class FeedState extends State<Feed>{
       body: SafeArea(
           child: SingleChildScrollView(
               child: Column(children: <Widget>[
-                TextFormField(
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+                  child: Image.asset('assets/wayaheadLogo.png'),
+                ),
+                Padding(
+                    padding: EdgeInsets.all(16),
+                    child: TextFormField(
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.all(16),
+                      hintText: "Search",
                       suffixIcon: Icon(Icons.search),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10))),
-                ),
+                )),
                 Padding(
                   padding: EdgeInsets.all(16),
                   child: new Row(
@@ -85,7 +92,7 @@ class FeedState extends State<Feed>{
                   child: TextField(
                     keyboardType: TextInputType.multiline,
                     maxLines: 100,
-                    minLines: 10,
+                    minLines: 5,
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.all(16),
                       border: OutlineInputBorder(),
@@ -93,7 +100,9 @@ class FeedState extends State<Feed>{
                     ),
                   ),
                 ),
-                Row(children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Row(children: <Widget>[
                   Expanded(child: Container()),
                   FlatButton(
                     shape: RoundedRectangleBorder(
@@ -110,7 +119,7 @@ class FeedState extends State<Feed>{
 
 
                   )
-                ],),
+                ],),)
               ],)
       )),
     );
