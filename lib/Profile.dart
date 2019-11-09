@@ -188,38 +188,6 @@ class ProfileState extends State<Profile> {
     );
   }
 
-  void _showExperience() {
-    var field;
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text("Alert Dialog title"),
-          content: Padding(
-            padding: EdgeInsets.all(16),
-          ),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text("Save"),
-              onPressed: () {
-                onSave(field);
-                Navigator.pop(context);
-              },
-            ),
-            new FlatButton(
-              child: new Text("Cancel"),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            )
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -711,6 +679,8 @@ class ProfileState extends State<Profile> {
                 {
                   if (detail == "Certainty")
                     {updateMentees(user.uid, "certainty", value)}
+                  else if (detail == "bio")
+                    {updateMentees(user.uid, "bio", value)}
                   else updateMentees(user.uid, detail)}
               else
                 {
@@ -1242,6 +1212,10 @@ class ProfileState extends State<Profile> {
       labelOne = "School Name: ";
       labelTwo = "School Major: ";
       getMenteeEducationInfo(id);
+    }
+
+    if(bio.isEmpty){
+      bio = "Tap here to enter a bio";
     }
   }
 

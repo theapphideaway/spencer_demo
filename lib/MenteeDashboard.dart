@@ -14,7 +14,7 @@ class MenteeDashboard extends StatefulWidget{
 class MenteeDashboardState extends State<MenteeDashboard>{
   int _currentIndex = 0;
   final List<Widget> _children = [
-    Feed(),
+    Feed(isMentee: true),
     PlaceholderWidget(Colors.white),
     Messages(),
     Profile(isMentee: true)

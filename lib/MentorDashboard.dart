@@ -11,7 +11,7 @@ class MentorDashboard extends StatefulWidget{
 class MentorDashboardState extends State<MentorDashboard>{
   int _currentIndex = 0;
   final List<Widget> _children = [
-    Feed(),
+    Feed(isMentee: false,),
     PlaceholderWidget(Colors.white),
     Messages(),
     Profile(isMentee: false,)
