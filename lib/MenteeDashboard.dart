@@ -13,6 +13,7 @@ class MenteeDashboard extends StatefulWidget{
 
 class MenteeDashboardState extends State<MenteeDashboard>{
   int _currentIndex = 0;
+  GlobalKey globalKey = new GlobalKey(debugLabel: 'btm_app_bar');
   final List<Widget> _children = [
     Feed(isMentee: true),
     PlaceholderWidget(Colors.white),
@@ -30,6 +31,7 @@ class MenteeDashboardState extends State<MenteeDashboard>{
         unselectedItemColor: Colors.grey,
         unselectedLabelStyle: TextStyle(color: Colors.grey),
         showUnselectedLabels: true,
+        key: globalKey,
         items: [
           BottomNavigationBarItem(
             icon: new Icon(Icons.home),

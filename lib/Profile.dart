@@ -17,12 +17,13 @@ import 'MentorIndustries.dart';
 
 class Profile extends StatefulWidget {
   final bool isMentee;
-
-  Profile({Key key, @required this.isMentee});
-  ProfileState createState() => ProfileState(isMentee);
+  final bool isGuest;
+  Profile({Key key, @required this.isMentee, @optionalTypeArgs this.isGuest});
+  ProfileState createState() => ProfileState(isMentee, isGuest);
 }
 
 class ProfileState extends State<Profile> {
+  bool isGuest = false;
   bool isMentee;
   bool isLoading = true;
   bool isEditing = false;
@@ -70,8 +71,9 @@ class ProfileState extends State<Profile> {
   TextEditingController detailEightController = TextEditingController();
   TextEditingController _textFieldController = TextEditingController();
 
-  ProfileState(bool isMentee) {
+  ProfileState(bool isMentee, [bool isGuest]) {
     this.isMentee = isMentee;
+    if(isGuest != null) this.isGuest = true;
   }
 
   @override
@@ -84,108 +86,102 @@ class ProfileState extends State<Profile> {
   }
 
   void _showDialog(String detail) {
-    var field;
-    if (detail == "Job") {
-      field = "job_title";
-      _textFieldController.text = plan;
-    }
-    if (detail == "Company") {
-      field = "company_name";
-      _textFieldController.text = detailOne;
-    }
-    if (detail == "School") {
-      field = "school_name";
-      _textFieldController.text = detailFive;
-    }
-    if (detail == "Military Branch") {
-      field = "branch";
-      _textFieldController.text = detailSix;
-    }
-    if (detail == "Military Occupation") {
-      field = "military_occupation";
-      _textFieldController.text = detailSeven;
-    }
-
-//    plan == "Straight To Work"?_showDialog("MenteeCompany"):
-//    plan == "Trade School" || plan == "College"?_showDialog("MenteeSchoolMajor"):
-//    plan == "Military"?_showDialog("MenteeMilitaryOccupation")
-//    plan == "Straight To Work"?_showDialog("MenteeJob"):
-//    plan == "Trade School" || plan == "College"?_showDialog("MenteeSchoolName"):
-//    plan == "Military"?_showDialog("MenteeMilitaryBranch")
-
-    if (detail == "MenteeJob") {
-      field = "job";
-      _textFieldController.text = detailOne;
-    }
-    if (detail == "MenteeCompany") {
-      field = "company";
-      _textFieldController.text = detailTwo;
-    }
-    if (detail == "MenteeSchoolName") {
-      field = "school_name";
-      _textFieldController.text = detailOne;
-    }
-    if (detail == "MenteeSchoolMajor") {
-      field = "school_major";
-      _textFieldController.text = detailTwo;
-    }
-    if (detail == "MenteeMilitaryBranch") {
-      field = "branch";
-      _textFieldController.text = detailOne;
-    }
-    if (detail == "MenteeMilitaryOccupation") {
-      field = "military_occupation";
-      _textFieldController.text = detailTwo;
-    }
+    if(!isGuest) {
+      var field;
+      if (detail == "Job") {
+        field = "job_title";
+        _textFieldController.text = plan;
+      }
+      if (detail == "Company") {
+        field = "company_name";
+        _textFieldController.text = detailOne;
+      }
+      if (detail == "School") {
+        field = "school_name";
+        _textFieldController.text = detailFive;
+      }
+      if (detail == "Military Branch") {
+        field = "branch";
+        _textFieldController.text = detailSix;
+      }
+      if (detail == "Military Occupation") {
+        field = "military_occupation";
+        _textFieldController.text = detailSeven;
+      }
+      if (detail == "MenteeJob") {
+        field = "job";
+        _textFieldController.text = detailOne;
+      }
+      if (detail == "MenteeCompany") {
+        field = "company";
+        _textFieldController.text = detailTwo;
+      }
+      if (detail == "MenteeSchoolName") {
+        field = "school_name";
+        _textFieldController.text = detailOne;
+      }
+      if (detail == "MenteeSchoolMajor") {
+        field = "school_major";
+        _textFieldController.text = detailTwo;
+      }
+      if (detail == "MenteeMilitaryBranch") {
+        field = "branch";
+        _textFieldController.text = detailOne;
+      }
+      if (detail == "MenteeMilitaryOccupation") {
+        field = "military_occupation";
+        _textFieldController.text = detailTwo;
+      }
 
 
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: detail == "Job"
-              ? Text("Edit Job Title")
-              : detail == "Company"
-                  ? Text("Edit Company Name")
-                  : detail == "School"
-                      ? Text("Edit School Name")
-                      : detail == "Military Branch"
-                          ? Text("Edit Military Branch")
-                          : detail == "Military Occupation"
-                              ? Text("Edit Military Occupation")
-                              : Text("Edit "),
-          content: TextField(
-            controller: _textFieldController,
-            decoration: InputDecoration(
-                hintText: detail == "School" ? "TextField in Dialog" : ""),
-          ),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text("Save"),
-              onPressed: () {
-                if (_textFieldController.text.isNotEmpty) {
-                  onSave(field);
-                  Navigator.pop(context);
-                  setState(() {
-                    isLoading = true;
-                  });
-                } else {
-                  Navigator.pop(context);
-                }
-              },
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return AlertDialog(
+            title: detail == "Job"
+                ? Text("Edit Job Title")
+                : detail == "Company"
+                ? Text("Edit Company Name")
+                : detail == "School"
+                ? Text("Edit School Name")
+                : detail == "Military Branch"
+                ? Text("Edit Military Branch")
+                : detail == "Military Occupation"
+                ? Text("Edit Military Occupation")
+                : Text("Edit "),
+            content: TextField(
+              controller: _textFieldController,
+              decoration: InputDecoration(
+                  hintText: detail == "School" ? "TextField in Dialog" : ""),
             ),
-            new FlatButton(
-              child: new Text("Cancel"),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            )
-          ],
-        );
-      },
-    );
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              new FlatButton(
+                child: new Text("Save"),
+                onPressed: () {
+                  if (_textFieldController.text.isNotEmpty) {
+                    onSave(field);
+                    Navigator.pop(context);
+                    setState(() {
+                      isLoading = true;
+                    });
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              new FlatButton(
+                child: new Text("Cancel"),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -233,13 +229,12 @@ class ProfileState extends State<Profile> {
                               child: Align(
                                   alignment: Alignment.center,
                                   child: FlatButton(
-                                      onPressed: !isEditing
-                                          ? onEdit
-                                          : () => onSave(bio),
+                                    splashColor: Colors.transparent,
+                                      onPressed: ()=>{},
                                       child: Row(
                                         children: <Widget>[
                                           Expanded(child: Container()),
-                                          Text("My Profile",
+                                          Text(!isGuest?"My Profile": isMentee? "Mentor Me": "Mentee",
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 18)),
@@ -402,8 +397,10 @@ class ProfileState extends State<Profile> {
                 child: GestureDetector(
                     onTap: () => {
                           setState(() {
-                            isEditing = true;
-                            bioController.text = bio;
+                            if(!isGuest) {
+                              isEditing = true;
+                              bioController.text = bio;
+                            }
                           })
                         },
                     child: Text(
@@ -587,7 +584,9 @@ class ProfileState extends State<Profile> {
             ],
           ),
         ),
-        new Container(
+        Visibility(
+          visible: !isGuest,
+        child: new Container(
           width: double.infinity,
           child: new Padding(
             padding: EdgeInsets.only(left: 16, top: 32, right: 16, bottom: 32),
@@ -607,6 +606,7 @@ class ProfileState extends State<Profile> {
             ),
           ),
         ),
+        )
       ],
     );
   }
@@ -1120,7 +1120,7 @@ class ProfileState extends State<Profile> {
 
     var pictureResponse = await FirebaseDatabase.instance
         .reference()
-        .child("Mentors")
+        .child("Mentees")
         .child(id)
         .child("profile_picture");
     pictureResponse.once().then((snapshot) => {
@@ -1307,7 +1307,7 @@ class ProfileState extends State<Profile> {
   }
 
   mentorIndustry() async {
-    if (!isMentee) {
+    if (!isMentee&& !isGuest) {
       final type = await Navigator.of(context).push(PageRouteBuilder(
         opaque: false,
         pageBuilder: (BuildContext context, Animation<double> animation,
@@ -1335,7 +1335,7 @@ class ProfileState extends State<Profile> {
   }
 
   mentorEducation() async {
-    if (!isMentee) {
+    if (!isMentee&& !isGuest) {
       final type = await Navigator.of(context).push(PageRouteBuilder(
         opaque: false,
         pageBuilder: (BuildContext context, Animation<double> animation,
@@ -1363,7 +1363,7 @@ class ProfileState extends State<Profile> {
   }
 
   mentorExperience() async {
-    if (!isMentee) {
+    if (!isMentee && !isGuest) {
       var experienceValue;
       if(detailThree == "1-4") experienceValue = 0;
       if(detailThree == "5-9") experienceValue = 1;
@@ -1396,7 +1396,7 @@ class ProfileState extends State<Profile> {
   }
 
   menteeCertainty() async {
-    if (isMentee) {
+    if (isMentee && !isGuest) {
       var certaintyValue;
       if(certainty == "Certain") certaintyValue = 0;
       if(certainty == "Mostly certain") certaintyValue = 1;
@@ -1430,13 +1430,21 @@ class ProfileState extends State<Profile> {
   }
 
   getProfilePicture() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
-    await FirebaseAuth.instance
-        .currentUser()
-        .then((user) => {addProfilePicture(user.uid, image)});
+    if(!isGuest) {
+      var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+      await FirebaseAuth.instance
+          .currentUser()
+          .then((user) => {addProfilePicture(user.uid, image)});
+    }
   }
 
   addProfilePicture(String id, File image) async {
+    var tableName;
+    if(isMentee){
+      tableName = "Mentees";
+    } else{
+      tableName = "Mentors";
+    }
     setState(() {
       isLoading = true;
     });
@@ -1445,7 +1453,7 @@ class ProfileState extends State<Profile> {
     try {
       await FirebaseDatabase.instance
           .reference()
-          .child("Mentors")
+          .child(tableName)
           .child(id)
           .update({"profile_picture": base64String});
     } catch (e) {
