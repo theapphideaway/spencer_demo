@@ -9,17 +9,24 @@ import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:way_ahead/MenteeCertainty.dart';
 import 'package:way_ahead/MentorExperience.dart';
+import 'package:way_ahead/Services/FirebaseProvider.dart';
 
+import 'Chat.dart';
 import 'Login.dart';
 import 'MenteePlans.dart';
 import 'MentorEducation.dart';
 import 'MentorIndustries.dart';
+import 'Model/Mentee.dart';
+import 'Model/Mentor.dart';
 
 class Profile extends StatefulWidget {
   final bool isMentee;
   final bool isGuest;
-  Profile({Key key, @required this.isMentee, @optionalTypeArgs this.isGuest});
-  ProfileState createState() => ProfileState(isMentee, isGuest);
+  final Mentee mentee;
+  final Mentor mentor;
+  Profile({Key key, @required this.isMentee, @optionalTypeArgs this.isGuest,
+    @optionalTypeArgs this.mentee,@optionalTypeArgs this.mentor});
+  ProfileState createState() => ProfileState(isMentee, isGuest, mentee, mentor);
 }
 
 class ProfileState extends State<Profile> {
@@ -33,6 +40,7 @@ class ProfileState extends State<Profile> {
   bool hasProfilePicture = false;
   int _experienceValue = 0;
   int _certaintyValue = 0;
+  String userId;
   String firstName = "a";
   String lastName = "a";
   String email = "a";
@@ -70,10 +78,14 @@ class ProfileState extends State<Profile> {
   TextEditingController detailSevenController = TextEditingController();
   TextEditingController detailEightController = TextEditingController();
   TextEditingController _textFieldController = TextEditingController();
+  Mentee mentee;
+  Mentor mentor;
 
-  ProfileState(bool isMentee, [bool isGuest]) {
+  ProfileState(bool isMentee, [bool isGuest, Mentee mentee, Mentor mentor] ) {
     this.isMentee = isMentee;
     if(isGuest != null) this.isGuest = true;
+    if(mentee != null) this.mentee = mentee;
+    if(mentor != null) this.mentor = mentor;
   }
 
   @override
@@ -230,7 +242,9 @@ class ProfileState extends State<Profile> {
                                   alignment: Alignment.center,
                                   child: FlatButton(
                                     splashColor: Colors.transparent,
-                                      onPressed: ()=>{},
+                                      onPressed: isGuest && isMentee? ()=>Navigator.push(context,
+                                          MaterialPageRoute(builder: (context) => Chat(isMentee: isMentee, recieverId: mentor != null? mentor.Key: mentee.Key,))):
+                                  ()=>{},
                                       child: Row(
                                         children: <Widget>[
                                           Expanded(child: Container()),
@@ -892,6 +906,7 @@ class ProfileState extends State<Profile> {
   getUser() async {
     try {
       await FirebaseAuth.instance.currentUser().then((user) => {
+         userId = user.uid,
             if (user == null)
               {
                 setState(() {
@@ -902,11 +917,13 @@ class ProfileState extends State<Profile> {
               {
                 if (isMentee)
                   {
-                    getMentee(user.uid),
+                    if(mentor != null)getMentor(mentor.Key)
+                    else getMentee(user.uid),
                   }
                 else
                   {
-                    getMentor(user.uid),
+                    if(mentee != null) getMentee(mentee.Key)
+                    else getMentor(user.uid),
                   }
               }
           });
@@ -1467,4 +1484,5 @@ class ProfileState extends State<Profile> {
       isLoading = false;
     });
   }
+
 }

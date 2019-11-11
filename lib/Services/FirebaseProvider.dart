@@ -64,4 +64,41 @@ class FirebaseProvider{
 
     print("Successfully Added Mentee");
   }
+
+  initiateChat(String sender, String text, String chatId, bool isMentee, String senderId, String receiverId, String messageKey){
+    sendMessage(sender, text, chatId, messageKey);
+    addChatToSender(isMentee, senderId, chatId, receiverId);
+    addChatToReceiver(isMentee, receiverId, chatId, senderId);
+  }
+
+  sendMessage(String sender, String text, String chatId, String messageKey){
+
+    FirebaseDatabase.instance.reference().child('Messages').child(chatId).child(messageKey)
+        .set({
+      'sender': sender,
+      'text': text
+    });
+
+    print("Successfully Added Chat");
+  }
+
+  addChatToSender(bool isMentee, String senderId, String chatId, String receiverId){
+    var tableName;
+    if(isMentee == true) tableName = "Mentees";
+    else tableName = "Mentors";
+
+    FirebaseDatabase.instance.reference().child(tableName).child(senderId).child("Messages")
+        .set({
+      receiverId: chatId
+    });
+  }
+  addChatToReceiver(bool isMentee, String receiverId, String chatId, String senderId){
+    var tableName;
+    if(!isMentee == true) tableName = "Mentees";
+    else tableName = "Mentors";
+    FirebaseDatabase.instance.reference().child(tableName).child(receiverId).child("Messages")
+        .set({
+      senderId: chatId
+    });
+  }
 }

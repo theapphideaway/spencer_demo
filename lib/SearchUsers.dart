@@ -21,6 +21,7 @@ class SearchUsersState extends State<SearchUsers> {
   bool isMentee;
   bool isLoading = true;
   bool isProfileSelected = false;
+  int globalIndex = 0;
   var picture;
   String tableName;
   List<Mentor> mentors = new List<Mentor>();
@@ -85,19 +86,21 @@ class SearchUsersState extends State<SearchUsers> {
                 !isProfileSelected? Container(
                     height: 700,
                     child: ListView.builder(
-                      itemCount: isMentee? mentees.length: mentors.length,
+                      itemCount: !isMentee? mentees.length: mentors.length,
                       itemBuilder: (context, index) {
                         return ListTile(
                           onTap: ()=>setState((){
+                            globalIndex = index;
                             isProfileSelected = true;
                           }),
-                          title: Text(isMentee? mentees[index].FirstName + " " +mentees[index].LastName:
+                          title: Text(!isMentee? mentees[index].FirstName + " " +mentees[index].LastName:
                           mentors[index].FirstName + " " +mentors[index].LastName),
                         );
                       },
                     )): Container(
                   height: 700,
-                    child: Profile(isMentee: isMentee,isGuest: true,))
+                    child: !isMentee? Profile(isMentee: isMentee,isGuest: true, mentee: mentees[globalIndex]):
+                    Profile(isMentee: isMentee,isGuest: true, mentor: mentors[globalIndex]))
               ],
             ),),
       ),
@@ -113,7 +116,7 @@ class SearchUsersState extends State<SearchUsers> {
       temps = snapshot.value,
       temps.forEach((key, value) {
         var person;
-        if (isMentee) person = new Mentee();
+        if (!isMentee) person = new Mentee();
         else person = new Mentor();
         print(key);
         person.Key = key;
@@ -122,8 +125,8 @@ class SearchUsersState extends State<SearchUsers> {
           if (key == "first_name" && value != null) person.FirstName = value;
           if (key == "last_name"&& value != null) person.LastName = value;
         });
-        if (isMentee&& person.FirstName != null) mentees.add(person);
-        if(!isMentee && person.FirstName != null) mentors.add(person);
+        if (!isMentee&& person.FirstName != null) mentees.add(person);
+        if(isMentee && person.FirstName != null) mentors.add(person);
       }),
       setState((){
         isLoading = false;
