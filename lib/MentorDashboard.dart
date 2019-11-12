@@ -13,7 +13,7 @@ class MentorDashboardState extends State<MentorDashboard>{
   final List<Widget> _children = [
     Feed(isMentee: false,),
     PlaceholderWidget(Colors.white),
-    Messages(),
+    Messages(isMentee: false),
     Profile(isMentee: false,)
   ];
   @override

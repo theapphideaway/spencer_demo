@@ -5,69 +5,131 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:way_ahead/Model/Message.dart';
 import 'package:way_ahead/Services/FirebaseProvider.dart';
 
 class Chat extends StatefulWidget {
   final String recieverId;
   final bool isMentee;
-  Chat({Key key, @required this.recieverId, @required this.isMentee});
-  ChatState createState() => ChatState(recieverId, isMentee);
+  final String chatId;
+  final String name;
+  Chat(
+      {Key key,
+      @required this.recieverId,
+      @required this.isMentee,
+      @optionalTypeArgs this.chatId,
+      @required this.name});
+  ChatState createState() => ChatState(recieverId, isMentee, chatId, name);
 }
 
 class ChatState extends State<Chat> {
   TextEditingController textController = new TextEditingController();
   var messages = new List<String>();
+  var senders = new List<String>();
   String chatId;
   String messageKey;
   String userId;
+  String email;
   String receiverId;
   bool isMentee;
   bool isInChat = false;
   String latestValue;
+  String name;
 
-  ChatState(String receiverId, bool isMentee) {
+  ChatState(String receiverId, bool isMentee, String chatId, String name) {
     var randomTwo = Random.secure();
+    var random = Random.secure();
     messageKey = randomTwo.nextInt(100000000).toString();
     this.isMentee = isMentee;
     this.receiverId = receiverId;
+    if (name != null) this.name = name;
+    this.name = name;
+    if (chatId == null) {
+      chatId = random.nextInt(100000000).toString();
+    } else {
+      this.chatId = chatId;
+    }
     getUserId();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          iconTheme: IconThemeData(
+            color: Colors.blue[800], //change your color here
+          ),
+          title: Text(
+            name,
+            style: TextStyle(color: Colors.blue[800]),
+          ),
+          backgroundColor: Colors.white,
+        ),
         body: SafeArea(
             child: SingleChildScrollView(
                 child: Center(
                     child: Column(
-      children: <Widget>[
-        TextField(
-          controller: textController,
-          decoration: InputDecoration(hintText: "Send a message"),
-        ),
-        Padding(
-          padding: EdgeInsets.all(16),
-          child: Center(
-              child: GestureDetector(
-            onTap: prepareMessage,
-            child: Text(
-              "Send",
-              style: TextStyle(fontSize: 18, color: Colors.blue),
+          children: <Widget>[
+            TextField(
+              controller: textController,
+              decoration: InputDecoration(hintText: "Send a message"),
             ),
-          )),
-        ),
-        Container(
-            height: 700,
-            child: ListView.builder(
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(messages[index]),
-                );
-              },
-            )),
-      ],
-    )))));
+            Padding(
+              padding: EdgeInsets.all(16),
+              child: Center(
+                  child: GestureDetector(
+                onTap: prepareMessage,
+                child: Text(
+                  "Send",
+                  style: TextStyle(fontSize: 18, color: Colors.blue),
+                ),
+              )),
+            ),
+            Container(
+                height: 700,
+                child: ListView.builder(
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                        title: Align(
+                            alignment: senders[index] == email
+                                ? Alignment.centerRight
+                                : Alignment.centerLeft,
+                            child: senders[index] == email
+                                ? Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(16),
+                                          bottomLeft: Radius.circular(16),
+                                          bottomRight: Radius.circular(16)),
+                                      color: Colors.blue[800],
+                                    ),
+                                    child: Padding(
+                                        padding: EdgeInsets.all(8),
+                                        child: Text(
+                                          messages[index],
+                                          style: TextStyle(color: Colors.white),
+                                        )),
+                                  )
+                                : Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                          topRight: Radius.circular(16),
+                                          bottomLeft: Radius.circular(16),
+                                          bottomRight: Radius.circular(16)),
+                                      color: Colors.blue[800],
+                                    ),
+                                    child: Padding(
+                                        padding: EdgeInsets.all(8),
+                                        child: Text(
+                                          messages[index],
+                                          style: TextStyle(color: Colors.white),
+                                        )),
+                                  )));
+                  },
+                )),
+          ],
+        )))));
   }
 
   prepareMessage() async {
@@ -101,7 +163,11 @@ class ChatState extends State<Chat> {
 
   getUserId() async {
     await FirebaseAuth.instance.currentUser().then((user) => {
-          if (user == null) {} else {userId = user.uid, tempGetChat()}
+          email = user.email,
+          if (user == null)
+            {}
+          else
+            {userId = user.uid, getLastestValue(), getMessages()}
         });
   }
 
@@ -116,8 +182,13 @@ class ChatState extends State<Chat> {
     userResponse.onChildAdded.listen((item) {
       print(item.snapshot.value);
       String message;
+      String sender;
       item.snapshot.value.forEach((key, value) {
         print(value);
+        if (key == "sender") {
+          sender = value;
+          senders.add(sender);
+        }
         if (key == "text") {
           message = value;
           messages.add(message);
@@ -149,8 +220,6 @@ class ChatState extends State<Chat> {
                 if (key == partnerId.toString()) {
                   chatId = value.toString();
                 }
-                getLastestValue();
-                getMessages();
               }),
             },
           if (chatId == null) {chatId = random.nextInt(100000000).toString()},
@@ -167,8 +236,10 @@ class ChatState extends State<Chat> {
 
       await userResponse.once().then((item) {
         print(item.value);
-        if(item.value == null) latestValue = "0";
-        else latestValue = item.value.toString();
+        if (item.value == null)
+          latestValue = "0";
+        else
+          latestValue = item.value.toString();
       });
     } catch (e) {
       latestValue = "0";

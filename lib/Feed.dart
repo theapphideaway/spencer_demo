@@ -25,60 +25,6 @@ class FeedState extends State<Feed> {
   String name;
   List<Post> posts = new List<Post>();
 
-  var europeanCountries = [
-    'Albania',
-    'Andorra',
-    'Armenia',
-    'Austria',
-    'Azerbaijan',
-    'Belarus',
-    'Belgium',
-    'Bosnia and Herzegovina',
-    'Bulgaria',
-    'Croatia',
-    'Cyprus',
-    'Czech Republic',
-    'Denmark',
-    'Estonia',
-    'Finland',
-    'France',
-    'Georgia',
-    'Germany',
-    'Greece',
-    'Hungary',
-    'Iceland',
-    'Ireland',
-    'Italy',
-    'Kazakhstan',
-    'Kosovo',
-    'Latvia',
-    'Liechtenstein',
-    'Lithuania',
-    'Luxembourg',
-    'Macedonia',
-    'Malta',
-    'Moldova',
-    'Monaco',
-    'Montenegro',
-    'Netherlands',
-    'Norway',
-    'Poland',
-    'Portugal',
-    'Romania',
-    'Russia',
-    'San Marino',
-    'Serbia',
-    'Slovakia',
-    'Slovenia',
-    'Spain',
-    'Sweden',
-    'Switzerland',
-    'Turkey',
-    'Ukraine',
-    'United Kingdom',
-    'Vatican City'
-  ];
-
   FeedState(bool isMentee) {
     this.isMentee = isMentee;
     getUser();
@@ -425,7 +371,6 @@ class FeedState extends State<Feed> {
 
   getPosts() async {
     Map<dynamic, dynamic> temps;
-    europeanCountries = [];
     Post post = new Post();
     var bioResponse =
         await FirebaseDatabase.instance.reference().child("Posts");

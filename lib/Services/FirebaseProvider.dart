@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:way_ahead/Model/BasicChatUser.dart';
 import 'package:way_ahead/Model/Mentee.dart';
 import 'package:way_ahead/Model/Mentor.dart';
 
@@ -8,6 +10,14 @@ class FirebaseProvider{
   FirebaseProvider._();
 
   static final FirebaseProvider firebaseProvider = FirebaseProvider._();
+
+  Future<String> getUserId()async {
+    var id;
+    await FirebaseAuth.instance.currentUser().then((user) =>{
+      id = user.uid
+    });
+    return id;
+  }
 
   Future<String> signUp(String email, String password)async {
     AuthResult result = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
@@ -100,5 +110,68 @@ class FirebaseProvider{
         .set({
       senderId: chatId
     });
+  }
+
+  Future<Map<String, String>> getMessages(bool isMentee, String userId)async {
+    var tableName;
+    Map<String, String> conversations = new Map<String, String> ();
+    if(isMentee) tableName = "Mentees";
+    else tableName = "Mentors";
+    var chatIdResponse = await FirebaseDatabase.instance.reference().child(tableName).child(userId).child("Messages");
+    await chatIdResponse.once().then((snapshot) => {
+      print(snapshot.value),
+      if (snapshot.value != null)
+        {
+          snapshot.value.forEach((key, value) {
+            conversations[key] = value;
+          }),
+
+        },
+
+    });
+    return conversations;
+  }
+
+  Future<BasicChatUser> getUserInfoBasic(bool isMentee, String id, String chatId)async {
+    var basicUser = BasicChatUser();
+    var temp;
+    var tableName;
+    if(isMentee) tableName = "Mentees";
+    else tableName = "Mentors";
+    var firstNameResponse = await FirebaseDatabase.instance
+        .reference()
+        .child(tableName)
+        .child(id)
+        .child("first_name");
+    await firstNameResponse.once().then((snapshot) => {
+      print(snapshot.value),
+      basicUser.firstName = snapshot.value,
+    });
+    var lastNameResponse = await FirebaseDatabase.instance
+        .reference()
+        .child(tableName)
+        .child(id)
+        .child("last_name");
+    await lastNameResponse.once().then((snapshot) => {
+    print(snapshot.value),
+    basicUser.lastName = snapshot.value,
+    });
+    var pictureResponse = await FirebaseDatabase.instance
+        .reference()
+        .child(tableName)
+        .child(id)
+        .child("profile_picture");
+    await pictureResponse.once().then((snapshot) => {
+    print(snapshot.value),
+      temp = snapshot.value,
+      if (temp.toString().length > 200)
+        {
+          basicUser.profilePicture =  base64Decode(temp.toString()),
+        }
+    });
+    basicUser.userId = id;
+    basicUser.chatId = chatId;
+
+    return basicUser;
   }
 }

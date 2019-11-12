@@ -243,7 +243,12 @@ class ProfileState extends State<Profile> {
                                   child: FlatButton(
                                     splashColor: Colors.transparent,
                                       onPressed: isGuest && isMentee? ()=>Navigator.push(context,
-                                          MaterialPageRoute(builder: (context) => Chat(isMentee: isMentee, recieverId: mentor != null? mentor.Key: mentee.Key,))):
+                                          MaterialPageRoute(builder: (context) =>
+                                              Chat(isMentee: isMentee,
+                                                recieverId: mentor != null?
+                                                mentor.Key: mentee.Key,
+                                              name: mentor != null? mentor.FirstName + " " +mentor.LastName:
+                                              mentee.FirstName + " " +mentee.LastName))):
                                   ()=>{},
                                       child: Row(
                                         children: <Widget>[

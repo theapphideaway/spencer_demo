@@ -17,7 +17,7 @@ class MenteeDashboardState extends State<MenteeDashboard>{
   final List<Widget> _children = [
     Feed(isMentee: true),
     PlaceholderWidget(Colors.white),
-    Messages(),
+    Messages(isMentee: true),
     Profile(isMentee: true)
   ];
   @override
