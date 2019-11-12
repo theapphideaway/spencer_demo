@@ -35,9 +35,8 @@ class FeedState extends State<Feed> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-          child: SingleChildScrollView(
-              child: isLoading
-                  ? Container(
+          child: isLoading
+                  ? Center(child: Container(
                       color: Colors.white,
                       child: Center(
                         child: CircularProgressIndicator(
@@ -45,8 +44,9 @@ class FeedState extends State<Feed> {
                               Colors.blue[800]),
                         ),
                       ),
-                    )
-                  : Column(
+                    ))
+                  : SingleChildScrollView(
+              child: Column(
                       children: <Widget>[
                         Row(
                           children: <Widget>[
