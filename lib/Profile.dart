@@ -41,14 +41,14 @@ class ProfileState extends State<Profile> {
   int _experienceValue = 0;
   int _certaintyValue = 0;
   String userId;
-  String firstName = "a";
-  String lastName = "a";
-  String email = "a";
-  String bio = "a";
-  String plan = "a";
+  String firstName = "firstName";
+  String lastName = "lastName";
+  String email = "email";
+  String bio = "bio";
+  String plan = "plan";
   String planLabel;
-  String labelOne = "a";
-  String detailOne = "a";
+  String labelOne = "labelOne";
+  String detailOne = "detailOne";
   String labelTwo = "a";
   String detailTwo = "a";
   String labelThree = "a";
@@ -199,6 +199,16 @@ class ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          iconTheme: IconThemeData(
+            color: Colors.blue[800], //change your color here
+          ),
+          title: Text(
+            isMentee && isGuest || !isMentee && !isGuest? "Mentor": "Mentee",
+            style: TextStyle(color: Colors.blue[800]),
+          ),
+          backgroundColor: Colors.white,
+        ),
         body: isLoading
             ? Container(
                 color: Colors.white,
@@ -508,6 +518,9 @@ class ProfileState extends State<Profile> {
                     child: Padding(
                         padding: EdgeInsets.all(8), child: Text(detailTwo)),
                   )),
+    Visibility(
+    visible: isMentee && isGuest || !isMentee && !isGuest,
+    child:
               Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
@@ -516,7 +529,10 @@ class ProfileState extends State<Profile> {
                     onTap: () => mentorExperience(),
                     child: Padding(
                         padding: EdgeInsets.all(8), child: Text(detailThree)),
-                  )),
+                  ))),
+    Visibility(
+    visible: isMentee && isGuest || !isMentee && !isGuest,
+    child:
               Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
@@ -525,8 +541,10 @@ class ProfileState extends State<Profile> {
                     onTap: () => mentorEducation(),
                     child: Padding(
                         padding: EdgeInsets.all(8), child: Text(detailFour)),
-                  )),
-              Container(
+                  ))),
+    Visibility(
+      visible: isMentee && isGuest || !isMentee && !isGuest,
+              child:Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(width: 1, color: Colors.grey[400])),
@@ -534,9 +552,9 @@ class ProfileState extends State<Profile> {
                     onTap: () => _showDialog("School"),
                     child: Padding(
                         padding: EdgeInsets.all(8), child: Text(detailFive)),
-                  )),
+                  ))),
               Visibility(
-                  visible: labelSix != "Not a Veteran",
+                  visible: labelSix != "Not a Veteran" && (isMentee && isGuest) || (!isMentee && !isGuest),
                   child: Container(
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
@@ -548,7 +566,7 @@ class ProfileState extends State<Profile> {
                             padding: EdgeInsets.all(8), child: Text(detailSix)),
                       ))),
               Visibility(
-                visible: labelSix != "Not a Veteran",
+                visible: labelSix != "Not a Veteran"&& (isMentee && isGuest) || (!isMentee && !isGuest),
                 child: Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),

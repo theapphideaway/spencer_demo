@@ -50,7 +50,6 @@ class SearchUsersState extends State<SearchUsers> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      backgroundColor: Colors.black.withOpacity(0.30),
       body: isLoading
           ? Container(
         color: Colors.white,
@@ -62,28 +61,9 @@ class SearchUsersState extends State<SearchUsers> {
         ),
       )
           : SingleChildScrollView(child: Padding(
-        padding: EdgeInsets.only(top: 80),
-        child: Container(
-            decoration: new BoxDecoration(
-                color: Colors.white,
-                borderRadius: new BorderRadius.only(
-                    topLeft: const Radius.circular(10.0),
-                    topRight: const Radius.circular(10.0))),
-            child: Column(
-              children: <Widget>[
-                Row(children: <Widget>[
-                  FlatButton(
-                      onPressed: () => {Navigator.pop(context)},
-                      child: Icon(Icons.clear)),
-                  Expanded(child: Container(),),
-                ],),
-                Padding(padding: EdgeInsets.all(16),
-                    child: TextField(
-                      controller: textController,
-                      decoration: InputDecoration(border: InputBorder.none, hintText: "Search For First Names Only"),
-                    )),
-
-                !isProfileSelected? Container(
+        padding: EdgeInsets.only(top: 0),
+        child: Column(
+              children: <Widget>[Container(
                     height: 700,
                     child: ListView.builder(
                       itemCount: !isMentee? mentees.length: mentors.length,
@@ -91,20 +71,20 @@ class SearchUsersState extends State<SearchUsers> {
                         return ListTile(
                           onTap: ()=>setState((){
                             globalIndex = index;
-                            isProfileSelected = true;
+                            Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                            !isMentee? Profile(isMentee: isMentee,isGuest: true, mentee: mentees[globalIndex]):
+                            Profile(isMentee: isMentee,isGuest: true, mentor: mentors[globalIndex])));
+
                           }),
                           title: Text(!isMentee? mentees[index].FirstName + " " +mentees[index].LastName:
                           mentors[index].FirstName + " " +mentors[index].LastName),
                         );
                       },
-                    )): Container(
-                  height: 700,
-                    child: !isMentee? Profile(isMentee: isMentee,isGuest: true, mentee: mentees[globalIndex]):
-                    Profile(isMentee: isMentee,isGuest: true, mentor: mentors[globalIndex]))
+                    ))
               ],
             ),),
       ),
-    ));
+    );
   }
 
   searchUser()async {
