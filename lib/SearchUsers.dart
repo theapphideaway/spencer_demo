@@ -24,7 +24,7 @@ class SearchUsersState extends State<SearchUsers> {
   bool isProfileSelected = false;
   int globalIndex = 0;
   var picture;
-  var pictures = List<dynamic>();
+  var pictures = List<Uint8List>();
   String tableName;
   List<Mentor> mentors = new List<Mentor>();
   List<Mentee> mentees = new List<Mentee>();
@@ -99,7 +99,7 @@ class SearchUsersState extends State<SearchUsers> {
                                             height: 40,
                                           )),
                         Text(!isMentee? mentees[index].FirstName + " " +mentees[index].LastName:
-                          mentors[index].FirstName + " " +mentors[index].LastName),
+                          mentors[index].FirstName + " " +mentors[index].LastName, style: TextStyle(fontSize: 18),),
 
                                     ]))));
 
@@ -141,10 +141,12 @@ class SearchUsersState extends State<SearchUsers> {
         person.Key = key;
         value.forEach((key, value) {
           print(value);
+          var picture;
           if (key == "first_name" && value != null) person.FirstName = value;
           if (key == "last_name"&& value != null) person.LastName = value;
           if (key == "profile_picture"&& value != null){
-          pictures.add(value);
+            picture = base64Decode(value.toString());
+          pictures.add(picture);
           };
         });
         if (!isMentee&& person.FirstName != null) mentees.add(person);

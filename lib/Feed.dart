@@ -290,6 +290,14 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
                                                       ),
                                                     ),
                                                   ),
+                                                  Row(children: <Widget>[
+                                                    Padding(
+                                                      padding: EdgeInsets.symmetric(horizontal: 16),
+                                                      child: Icon(Icons.message, color: Colors.blue[800],),
+                                                    ),
+                                                    Text("Comment", style: TextStyle(color: Colors.blue[800],
+                                                    fontSize: 18),)
+                                                  ],)
                                                 ],
                                               )));
                                     }))
