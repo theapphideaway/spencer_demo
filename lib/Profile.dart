@@ -199,7 +199,7 @@ class ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
+         appBar: isGuest?AppBar(
           iconTheme: IconThemeData(
             color: Colors.blue[800], //change your color here
           ),
@@ -208,7 +208,7 @@ class ProfileState extends State<Profile> {
             style: TextStyle(color: Colors.blue[800]),
           ),
           backgroundColor: Colors.white,
-        ),
+        ): null,
         body: isLoading
             ? Container(
                 color: Colors.white,
@@ -554,7 +554,7 @@ class ProfileState extends State<Profile> {
                         padding: EdgeInsets.all(8), child: Text(detailFive)),
                   ))),
               Visibility(
-                  visible: labelSix != "Not a Veteran" && (isMentee && isGuest) || (!isMentee && !isGuest),
+                  visible: labelSix != "Not a Veteran" ,
                   child: Container(
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
@@ -566,7 +566,7 @@ class ProfileState extends State<Profile> {
                             padding: EdgeInsets.all(8), child: Text(detailSix)),
                       ))),
               Visibility(
-                visible: labelSix != "Not a Veteran"&& (isMentee && isGuest) || (!isMentee && !isGuest),
+                visible: labelSix != "Not a Veteran",
                 child: Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
