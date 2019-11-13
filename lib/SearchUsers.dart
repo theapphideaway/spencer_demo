@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
@@ -23,10 +24,11 @@ class SearchUsersState extends State<SearchUsers> {
   bool isProfileSelected = false;
   int globalIndex = 0;
   var picture;
+  var pictures = List<dynamic>();
   String tableName;
   List<Mentor> mentors = new List<Mentor>();
   List<Mentee> mentees = new List<Mentee>();
-  TextEditingController textController = new TextEditingController();
+  TextEditingController searchController = new TextEditingController();
 
   SearchUsersState(bool isMentee){
     this.isMentee = isMentee;
@@ -68,17 +70,54 @@ class SearchUsersState extends State<SearchUsers> {
                     child: ListView.builder(
                       itemCount: !isMentee? mentees.length: mentors.length,
                       itemBuilder: (context, index) {
-                        return ListTile(
-                          onTap: ()=>setState((){
-                            globalIndex = index;
+                        return GestureDetector(
+                            onTap: ()=> {globalIndex = index,
                             Navigator.push(context, MaterialPageRoute(builder: (context) =>
                             !isMentee? Profile(isMentee: isMentee,isGuest: true, mentee: mentees[globalIndex]):
-                            Profile(isMentee: isMentee,isGuest: true, mentor: mentors[globalIndex])));
-
-                          }),
-                          title: Text(!isMentee? mentees[index].FirstName + " " +mentees[index].LastName:
+                            Profile(isMentee: isMentee,isGuest: true, mentor: mentors[globalIndex])))},
+                            child: Card(
+                                child: Padding(
+                                    padding: EdgeInsets.all(16),
+                                    child:Row(children: <Widget>[
+                                      Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 16),
+                                          child: pictures[index] != null
+                                              ? Container(
+                                              height: 45,
+                                              width: 45,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                  BorderRadius.circular(30),
+                                                  image: DecorationImage(
+                                                    image: MemoryImage(pictures[index]
+                                                    ),
+                                                    fit: BoxFit.cover,
+                                                  )))
+                                              : Image.asset(
+                                            'assets/default_profile_picture.jpg',
+                                            width: 40,
+                                            height: 40,
+                                          )),
+                        Text(!isMentee? mentees[index].FirstName + " " +mentees[index].LastName:
                           mentors[index].FirstName + " " +mentors[index].LastName),
-                        );
+
+                                    ]))));
+
+
+
+
+
+//                          ListTile(
+//                          onTap: ()=>setState((){
+//                            globalIndex = index;
+//                            Navigator.push(context, MaterialPageRoute(builder: (context) =>
+//                            !isMentee? Profile(isMentee: isMentee,isGuest: true, mentee: mentees[globalIndex]):
+//                            Profile(isMentee: isMentee,isGuest: true, mentor: mentors[globalIndex])));
+//
+//                          }),
+//                          title: Text(!isMentee? mentees[index].FirstName + " " +mentees[index].LastName:
+//                          mentors[index].FirstName + " " +mentors[index].LastName),
+//                        );
                       },
                     ))
               ],
@@ -104,6 +143,9 @@ class SearchUsersState extends State<SearchUsers> {
           print(value);
           if (key == "first_name" && value != null) person.FirstName = value;
           if (key == "last_name"&& value != null) person.LastName = value;
+          if (key == "profile_picture"&& value != null){
+          pictures.add(value);
+          };
         });
         if (!isMentee&& person.FirstName != null) mentees.add(person);
         if(isMentee && person.FirstName != null) mentors.add(person);
