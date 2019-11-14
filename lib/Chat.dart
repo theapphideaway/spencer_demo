@@ -66,70 +66,80 @@ class ChatState extends State<Chat> {
           backgroundColor: Colors.white,
         ),
         body: SafeArea(
-            child: SingleChildScrollView(
-                child: Center(
                     child: Column(
           children: <Widget>[
-            TextField(
-              controller: textController,
-              decoration: InputDecoration(hintText: "Send a message"),
-            ),
-            Padding(
-              padding: EdgeInsets.all(16),
-              child: Center(
-                  child: GestureDetector(
-                onTap: prepareMessage,
-                child: Text(
-                  "Send",
-                  style: TextStyle(fontSize: 18, color: Colors.blue),
-                ),
-              )),
-            ),
-            Container(
-                height: 700,
+            Expanded(
                 child: ListView.builder(
+                  shrinkWrap: true,
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
-                    return ListTile(
+                    return
+                      ListTile(
                         title: Align(
                             alignment: senders[index] == email
                                 ? Alignment.centerRight
                                 : Alignment.centerLeft,
                             child: senders[index] == email
                                 ? Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(16),
-                                          bottomLeft: Radius.circular(16),
-                                          bottomRight: Radius.circular(16)),
-                                      color: Colors.blue[800],
-                                    ),
-                                    child: Padding(
-                                        padding: EdgeInsets.all(8),
-                                        child: Text(
-                                          messages[index],
-                                          style: TextStyle(color: Colors.white),
-                                        )),
-                                  )
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(16),
+                                    bottomLeft: Radius.circular(16),
+                                    bottomRight: Radius.circular(16)),
+                                color: Colors.blue[800],
+                              ),
+                              child: Padding(
+                                  padding: EdgeInsets.all(8),
+                                  child: Text(
+                                    messages[index],
+                                    style: TextStyle(color: Colors.white),
+                                  )),
+                            )
                                 : Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                          topRight: Radius.circular(16),
-                                          bottomLeft: Radius.circular(16),
-                                          bottomRight: Radius.circular(16)),
-                                      color: Colors.blue[800],
-                                    ),
-                                    child: Padding(
-                                        padding: EdgeInsets.all(8),
-                                        child: Text(
-                                          messages[index],
-                                          style: TextStyle(color: Colors.white),
-                                        )),
-                                  )));
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(16),
+                                    bottomLeft: Radius.circular(16),
+                                    bottomRight: Radius.circular(16)),
+                                color: Colors.blue[300],
+                              ),
+                              child: Padding(
+                                  padding: EdgeInsets.all(8),
+                                  child: Text(
+                                    messages[index],
+                                    style: TextStyle(color: Colors.white),
+                                  )),
+                            ))
+                    );
                   },
                 )),
+
+            Container(
+              height: 50,
+              child: Row(children: <Widget>[
+                Flexible(child:
+                TextField(
+                  controller: textController,
+                  decoration: InputDecoration(hintText: "Send a message",
+                  focusColor: Colors.blue[800]),
+                )),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child:
+                Icon(Icons.send, color: Colors.blue[800]),)
+                ],),
+            ),
+
+
+
+
+
+
+
+
+
           ],
-        )))));
+        )));
   }
 
   prepareMessage() async {

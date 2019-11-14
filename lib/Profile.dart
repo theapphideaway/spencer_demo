@@ -226,7 +226,7 @@ class ProfileState extends State<Profile> {
                       children: <Widget>[
                         Column(
                           children: <Widget>[
-                            profilePictureUrl != null
+                            profilePictureUrl.toString().length > 200
                                 ? Container(
                                     height: 470,
                                     width: double.infinity,
@@ -239,11 +239,18 @@ class ProfileState extends State<Profile> {
                                             colorFilter: ColorFilter.mode(
                                                 Colors.black.withOpacity(0.4),
                                                 BlendMode.colorBurn))))
-                                : Image.asset(
-                                    'assets/default_profile_picture.jpg',
-                                    width: double.infinity,
-                                    height: 400,
-                                  ),
+                                : Container(
+                                height: 470,
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                    BorderRadius.circular(
+                                        16),
+                                    image: DecorationImage(
+                                      image: AssetImage(
+                                        'assets/DefaultProfilePicture.png',
+                                      ),
+                                      fit: BoxFit.cover,
+                                    ))),
                             Container(
                               color: Colors.blue[800],
                               width: double.infinity,
@@ -387,7 +394,7 @@ class ProfileState extends State<Profile> {
                                   children: <Widget>[
                                     GestureDetector(
                                         onTap: getProfilePicture,
-                                        child: profilePictureUrl != null
+                                        child: profilePictureUrl.toString().length > 200
                                             ? Container(
                                                 height: 80,
                                                 width: 80,
@@ -401,11 +408,20 @@ class ProfileState extends State<Profile> {
                                                       ),
                                                       fit: BoxFit.cover,
                                                     )))
-                                            : Image.asset(
-                                                'assets/default_profile_picture.jpg',
-                                                width: 80,
-                                                height: 80,
-                                              )),
+                                            :Container(
+                                            height: 80,
+                                            width: 80,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    16),
+                                                image: DecorationImage(
+                                                  image: AssetImage(
+                                                'assets/DefaultProfilePicture.png',
+                                              ),
+                                                  fit: BoxFit.cover,
+                                                ))))
+//                                            :
                                   ],
                                 ))
                           ],

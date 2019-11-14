@@ -89,7 +89,6 @@ class CreateMenteeState extends State<CreateMentee> {
           padding: EdgeInsets.all(16),
           child: TextField(
             controller: phoneNumberController,
-            obscureText: true,
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(16),
               hintText: "Phone Number",
@@ -128,7 +127,6 @@ class CreateMenteeState extends State<CreateMentee> {
           padding: EdgeInsets.all(16),
           child: TextField(
             controller: bioController,
-            obscureText: true,
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(16),
               hintText: "Write your bio here...",

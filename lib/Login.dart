@@ -161,7 +161,7 @@ class LoginState extends State<Login>{
                         borderRadius: new BorderRadius.circular(10.0)
                     ),
                     padding: EdgeInsets.all(16),
-                    color: Colors.indigoAccent,
+                    color: Colors.blue[800],
                     onPressed: ()=>signIn(emailController.text, passwordController.text) ,
                     child: Text("Login",
                       style: TextStyle(

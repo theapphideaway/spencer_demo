@@ -49,8 +49,11 @@ class NewPostState extends State<NewPost> {
                 ],),
                 Padding(padding: EdgeInsets.all(16),
                 child: TextField(
+                  keyboardType: TextInputType.multiline,
                   controller: textController,
-                  decoration: InputDecoration(border: InputBorder.none, hintText: "Whats on your mind?"),
+                  decoration: InputDecoration(border: InputBorder.none,
+                      hintText: "Whats on your mind?",
+                  ),
                 ))
 
 

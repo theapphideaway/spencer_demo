@@ -66,6 +66,7 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       body: SafeArea(
           child: isLoading
               ? Center(
@@ -141,6 +142,7 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
                                 ))),
                       ],
                     ),
+
                     Stack(
                       children: <Widget>[
                         Column(
@@ -164,21 +166,22 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
                                                   fit: BoxFit.cover,
                                                 )))
                                         : Image.asset(
-                                            'assets/default_profile_picture.jpg',
+                                            'assets/DefaultProfilePicture.png',
                                             width: 40,
                                             height: 40,
                                           )),
-                                GestureDetector(
+                                Expanded(child: GestureDetector(
                                   onTap: preparePost,
                                   child: Padding(
                                     padding:
-                                        EdgeInsets.symmetric(horizontal: 0),
+                                    EdgeInsets.symmetric(horizontal: 0),
                                     child: Text(
                                       "Whats on your mind? ",
                                       style: TextStyle(fontSize: 16),
                                     ),
                                   ),
-                                ),
+                                ),)
+
                               ],
                             ),
                             Padding(
@@ -303,14 +306,16 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
                                     }))
                           ],
                         ),
-                        Positioned.fill(child: AnimatedOpacity(
+                        Visibility(
+                          visible: isSearching,
+                        child: Positioned.fill(child: AnimatedOpacity(
                           opacity: !isSearching?0.0: 1.0,
     duration: Duration(milliseconds: 200),
                           child: Container(
                             color: Colors.white,
                             child: SearchUsers(isMentee: isMentee,),
                           ),)
-                        ),
+                        ),)
                       ],
                     )
                   ],
