@@ -73,8 +73,8 @@ class SearchUsersState extends State<SearchUsers> {
                         return GestureDetector(
                             onTap: ()=> {globalIndex = index,
                             Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                            !isMentee? Profile(isMentee: isMentee,isGuest: true, mentee: mentees[globalIndex]):
-                            Profile(isMentee: isMentee,isGuest: true, mentor: mentors[globalIndex])))},
+                            !isMentee? Profile(isMentee: isMentee,isGuest: true, mentee: mentees[globalIndex], isGuestMentee: !isMentee,):
+                            Profile(isMentee: isMentee,isGuest: true, mentor: mentors[globalIndex], isGuestMentee: !isMentee,)))},
                             child: Card(
                                 child: Padding(
                                     padding: EdgeInsets.all(16),
@@ -156,25 +156,5 @@ class SearchUsersState extends State<SearchUsers> {
         isLoading = false;
       })
     });
-  }
-
-  selectUser()async {
-    await Navigator.of(context).push(PageRouteBuilder(
-      opaque: false,
-      pageBuilder: (BuildContext context, Animation<double> animation,
-          Animation<double> secondaryAnimation) {
-        return Profile(isMentee: isMentee,);
-      },
-      transitionsBuilder: (BuildContext context, Animation<double> animation,
-          Animation<double> secondaryAnimation, Widget child) {
-        return SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(0, 1),
-            end: Offset.zero,
-          ).animate(animation),
-          child: child,
-        );
-      },
-    ));
   }
 }

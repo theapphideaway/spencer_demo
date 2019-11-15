@@ -1,5 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:way_ahead/CreateMentee.dart';
 import 'package:way_ahead/CreateMentor.dart';
 import 'package:way_ahead/Services/FirebaseProvider.dart';
@@ -13,7 +19,9 @@ class SignUp extends StatefulWidget {
 }
 
 class SignUpState extends State<SignUp> {
+  var profilePicture;
   int _radioValue = 0;
+  bool isLoading = false;
   Mentor mentor = new Mentor();
   Mentee mentee = new Mentee();
   TextEditingController emailController = new TextEditingController();
@@ -38,7 +46,7 @@ class SignUpState extends State<SignUp> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SafeArea(
-            child: SingleChildScrollView(
+            child: !isLoading? SingleChildScrollView(
                 child: Container(
                     child: Column(
       children: <Widget>[
@@ -63,6 +71,41 @@ class SignUpState extends State<SignUp> {
               style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
             ),
           ),
+        ),
+
+
+        Padding(
+          padding: EdgeInsets.only(bottom: 32),
+          child: GestureDetector(
+            onTap: getProfilePicture,
+              child: Container(
+              child: Stack(children: <Widget>[
+            Container(
+                height: 150,
+                width: 150,
+                decoration: BoxDecoration(
+                    borderRadius:
+                    BorderRadius.circular(
+                        100),
+                    image: DecorationImage(
+                      image: profilePicture == null?AssetImage(
+                        'assets/DefaultProfilePicture.png',
+                      ): FileImage(profilePicture),
+                      fit: BoxFit.cover,
+                    ))),
+                  Positioned(
+                    bottom: 7,
+                    right: 7,
+                    child: Container(decoration: BoxDecoration(
+                      color: Colors.white,
+                        borderRadius:
+                        BorderRadius.circular(
+                            100),),
+                      child: Icon(Icons.camera_alt, size: 35,),),
+                  )
+
+          ],))),
+
         ),
         new Row(
           children: <Widget>[
@@ -264,7 +307,9 @@ class SignUpState extends State<SignUp> {
             ),
           ),
         ),
-        new Row(
+        Padding(
+          padding: EdgeInsets.only(bottom: 32),
+            child: new Row(
           children: <Widget>[
             Expanded(child: Container()),
             new Text(
@@ -278,27 +323,48 @@ class SignUpState extends State<SignUp> {
               child: Text(
                 "Login",
                 style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
               ),
             ),
             Expanded(child: Container()),
           ],
-        )
+        ))
+
       ],
-    )))));
+    ))): Container(
+      color: Colors.white,
+      child: Center(
+        child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue[800]),
+        ),
+      ),
+    )));
   }
 
   startQuestionaire()async {
     if(_radioValue == 0){
       if(emailController.text != null && passwordController.text != null){
         mentee.Id = await FirebaseProvider.firebaseProvider.signUp(emailController.text, passwordController.text);
+        addProfilePicture(mentee.Id, "Mentees", mentee);
         Navigator.push(context, MaterialPageRoute(builder: (context) => CreateMentee(mentee: mentee)));
       }
     }else{
       if(emailController.text != null && passwordController.text != null){
        mentor.id = await FirebaseProvider.firebaseProvider.signUp(emailController.text, passwordController.text);
+       addProfilePicture(mentee.Id, "Mentees", null, mentor);
        Navigator.push(context, MaterialPageRoute(builder: (context) => CreateMentor(mentor: mentor,)));
       }
     }
+  }
+
+  getProfilePicture() async {
+      profilePicture = await ImagePicker.pickImage(source: ImageSource.gallery);
+  }
+
+  addProfilePicture(String id, String tableName,[Mentee mentee, Mentor mentor]) async {
+    var imageBytes = profilePicture.readAsBytesSync();
+      mentee.ProfilePicture = await base64Encode(imageBytes);
+    mentor.ProfilePicture = await base64Encode(imageBytes);
+
   }
 }

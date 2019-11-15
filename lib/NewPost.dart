@@ -5,23 +5,32 @@ import 'dart:typed_data';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:way_ahead/Services/FirebaseProvider.dart';
 
 class NewPost extends StatefulWidget {
   final String name;
+  final bool isMentee;
+  final String id;
   final dynamic picture;
-  NewPost({Key key, @required this.name, @required this.picture});
-  NewPostState createState() => NewPostState(name, picture);
+  NewPost({Key key, @required this.name, @required this.picture,
+    @required this.id, @required this.isMentee});
+  NewPostState createState() => NewPostState(name, picture, id, isMentee);
+
 }
 
 
 class NewPostState extends State<NewPost> {
   String name;
+  String id;
   var picture;
+  bool isMentee;
   TextEditingController textController = new TextEditingController();
 
-  NewPostState(String name, var picture){
+  NewPostState(String name, var picture, String id, bool isMentee){
     this.name = name;
+    this.id = id;
     this.picture = picture;
+    this.isMentee = isMentee;
   }
 
   @override
@@ -36,7 +45,9 @@ class NewPostState extends State<NewPost> {
                 borderRadius: new BorderRadius.only(
                     topLeft: const Radius.circular(10.0),
                     topRight: const Radius.circular(10.0))),
-            child: Column(
+            child: Container(
+                color: Colors.white,
+                child: Column(
               children: <Widget>[
                 Row(children: <Widget>[
                   FlatButton(
@@ -49,6 +60,8 @@ class NewPostState extends State<NewPost> {
                 ],),
                 Padding(padding: EdgeInsets.all(16),
                 child: TextField(
+                  minLines: 10,
+                  maxLines: 20,
                   keyboardType: TextInputType.multiline,
                   controller: textController,
                   decoration: InputDecoration(border: InputBorder.none,
@@ -58,7 +71,7 @@ class NewPostState extends State<NewPost> {
 
 
               ],
-            )),
+            ))),
       ),
     );
   }
@@ -73,8 +86,10 @@ class NewPostState extends State<NewPost> {
         .child(value.toString()).
         set({"content": textController.text,
       "name": name,
-      "user_picture": picture.toString()
+      "user_picture": picture.toString(),
+      "id": id,
+      "isMentee": isMentee
     });
-    Navigator.pop(context);
+    Navigator.pop(context, true);
   }
 }

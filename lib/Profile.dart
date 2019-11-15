@@ -24,9 +24,10 @@ class Profile extends StatefulWidget {
   final bool isGuest;
   final Mentee mentee;
   final Mentor mentor;
+  final bool isGuestMentee;
   Profile({Key key, @required this.isMentee, @optionalTypeArgs this.isGuest,
-    @optionalTypeArgs this.mentee,@optionalTypeArgs this.mentor});
-  ProfileState createState() => ProfileState(isMentee, isGuest, mentee, mentor);
+    @optionalTypeArgs this.mentee,@optionalTypeArgs this.mentor, @optionalTypeArgs this.isGuestMentee});
+  ProfileState createState() => ProfileState(isMentee, isGuest, mentee, mentor, isGuestMentee);
 }
 
 class ProfileState extends State<Profile> {
@@ -80,12 +81,14 @@ class ProfileState extends State<Profile> {
   TextEditingController _textFieldController = TextEditingController();
   Mentee mentee;
   Mentor mentor;
+  bool isGuestMentee;
 
-  ProfileState(bool isMentee, [bool isGuest, Mentee mentee, Mentor mentor] ) {
+  ProfileState(bool isMentee, [bool isGuest, Mentee mentee, Mentor mentor, bool isGuestMentee] ) {
     this.isMentee = isMentee;
     if(isGuest != null) this.isGuest = true;
     if(mentee != null) this.mentee = mentee;
     if(mentor != null) this.mentor = mentor;
+    this.isGuestMentee = isGuestMentee;
   }
 
   @override
@@ -204,7 +207,7 @@ class ProfileState extends State<Profile> {
             color: Colors.blue[800], //change your color here
           ),
           title: Text(
-            isMentee && isGuest || !isMentee && !isGuest? "Mentor": "Mentee",
+            !isGuestMentee?"Mentor": "Mentee",
             style: TextStyle(color: Colors.blue[800]),
           ),
           backgroundColor: Colors.white,
@@ -270,7 +273,7 @@ class ProfileState extends State<Profile> {
                                       child: Row(
                                         children: <Widget>[
                                           Expanded(child: Container()),
-                                          Text(!isGuest?"My Profile": isMentee? "Mentor Me": "Mentee",
+                                          Text(!isGuest?"My Profile": !isGuestMentee? "Mentor Me": "Mentee",
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 18)),
@@ -954,15 +957,22 @@ class ProfileState extends State<Profile> {
               }
             else
               {
-                if (isMentee)
+                if (isMentee && isGuest == false)
                   {
-                    if(mentor != null)getMentor(mentor.Key)
-                    else getMentee(user.uid),
-                  }
-                else
+                    getMentee(user.uid),
+                  },
+
+                if (!isMentee && isGuest == false)
                   {
-                    if(mentee != null) getMentee(mentee.Key)
-                    else getMentor(user.uid),
+                    getMentor(user.uid),
+                  },
+                if (isGuest == true)
+                  {
+                    if(isGuestMentee){
+                      getMentee(mentee.Key)
+                    } else{
+                      getMentor(mentor.Key)
+                    }
                   }
               }
           });

@@ -6,8 +6,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:way_ahead/SearchUsers.dart';
 
+import 'Model/Mentee.dart';
+import 'Model/Mentor.dart';
 import 'Model/Post.dart';
 import 'NewPost.dart';
+import 'Profile.dart';
 
 class Feed extends StatefulWidget {
   final bool isMentee;
@@ -30,6 +33,8 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
   String industry;
   String userId;
   String name;
+  var mentee = new Mentee();
+  var mentor = new Mentor();
   List<Post> posts = new List<Post>();
   AnimationController animationController;
   Animation<double> animation;
@@ -227,7 +232,9 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
                                                   bottom: 24),
                                               child: Column(
                                                 children: <Widget>[
-                                                  Row(
+                                                  GestureDetector(
+                                                    onTap: ()=> goToProfile(posts[index].id, posts[index].isMentee),
+                                                    child: Row(
                                                     children: <Widget>[
                                                       posts[index].picture !=
                                                               null
@@ -273,7 +280,7 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
                                                         ),
                                                       ),
                                                     ],
-                                                  ),
+                                                  ),),
                                                   Padding(
                                                     padding:
                                                         EdgeInsets.symmetric(
@@ -321,6 +328,31 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
                   ],
                 ))),
     );
+  }
+
+  goToProfile(String id, String isProfileMentee)async {
+    var tableName;
+    bool profileMentee = isProfileMentee == "true";
+    if(profileMentee) {
+      mentee.Key = id;
+      tableName = "Mentees";
+    }
+    else {
+      mentor.Key = id;
+      tableName = "Mentors";
+    }
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => profileMentee
+                ? Profile(
+                isMentee: isMentee, isGuest: true, mentee: mentee, isGuestMentee: profileMentee,)
+                : Profile(
+                isMentee: isMentee,
+                isGuest: true,
+                mentor: mentor,
+            isGuestMentee: profileMentee,)));
   }
 
   getUser() async {
@@ -446,7 +478,8 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
           Animation<double> secondaryAnimation) {
         return NewPost(
           name: firstName + " " + lastName,
-          picture: profileBytes,
+          picture: profileBytes, id: userId,
+          isMentee: isMentee,
         );
       },
       transitionsBuilder: (BuildContext context, Animation<double> animation,
@@ -472,7 +505,7 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
 
   getPosts() async {
     Map<dynamic, dynamic> temps;
-    Post post = new Post();
+    posts = new List<Post>();
     var bioResponse =
         await FirebaseDatabase.instance.reference().child("Posts");
     bioResponse.once().then((snapshot) => {
@@ -485,6 +518,8 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
               print(value);
               if (key == "name") post.name = value;
               if (key == "content") post.content = value;
+              if (key == "id") post.id = value;
+              if (key == "isMentee") post.isMentee = value.toString();
               if (key == "user_picture") {
                 post.picture = base64Decode(value.toString());
               }
@@ -520,24 +555,5 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
 
 
     });
-
-
-//    await Navigator.of(context).push(PageRouteBuilder(
-//      opaque: false,
-//      pageBuilder: (BuildContext context, Animation<double> animation,
-//          Animation<double> secondaryAnimation) {
-//        return SearchUsers(isMentee: isMentee,);
-//      },
-//      transitionsBuilder: (BuildContext context, Animation<double> animation,
-//          Animation<double> secondaryAnimation, Widget child) {
-//        return SlideTransition(
-//          position: Tween<Offset>(
-//            begin: const Offset(0, 1),
-//            end: Offset.zero,
-//          ).animate(animation),
-//          child: child,
-//        );
-//      },
-//    ));
   }
 }

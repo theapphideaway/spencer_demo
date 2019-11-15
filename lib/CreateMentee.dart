@@ -145,7 +145,7 @@ class CreateMenteeState extends State<CreateMentee> {
               shape: RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(10.0)),
               padding: EdgeInsets.all(16),
-              color: Colors.indigoAccent,
+              color: Colors.blue[800],
               onPressed: _next,
               child: Text(
                 "Continue",

@@ -808,7 +808,6 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
     }
 
     print(validator);
-    mentor.ProfilePicture = "";
 //    if(validator == 9){
 //      return true;
 //    } else{
