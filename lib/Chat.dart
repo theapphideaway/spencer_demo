@@ -45,7 +45,7 @@ class ChatState extends State<Chat> {
     if (name != null) this.name = name;
     this.name = name;
     if (chatId == null) {
-      chatId = random.nextInt(100000000).toString();
+      this.chatId = random.nextInt(100000000).toString();
     } else {
       this.chatId = chatId;
     }
@@ -67,70 +67,72 @@ class ChatState extends State<Chat> {
           backgroundColor: Colors.white,
         ),
         body: SafeArea(
-                    child: Column(
+            child: Column(
           children: <Widget>[
             Expanded(
                 child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: messages.length,
-                  itemBuilder: (context, index) {
-                    return
-                      ListTile(
-                        title: Align(
-                            alignment: senders[index] == email
-                                ? Alignment.centerRight
-                                : Alignment.centerLeft,
-                            child: senders[index] == email
-                                ? Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(16),
-                                    bottomLeft: Radius.circular(16),
-                                    bottomRight: Radius.circular(16)),
-                                color: Colors.blue[800],
-                              ),
-                              child: Padding(
-                                  padding: EdgeInsets.all(8),
-                                  child: Text(
-                                    messages[index],
-                                    style: TextStyle(color: Colors.white),
-                                  )),
-                            )
-                                : Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(16),
-                                    bottomLeft: Radius.circular(16),
-                                    bottomRight: Radius.circular(16)),
-                                color: Colors.blue[300],
-                              ),
-                              child: Padding(
-                                  padding: EdgeInsets.all(8),
-                                  child: Text(
-                                    messages[index],
-                                    style: TextStyle(color: Colors.white),
-                                  )),
-                            ))
-                    );
-                  },
-                )),
-
+              shrinkWrap: true,
+              itemCount: messages.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                    title: Align(
+                        alignment: senders[index] == email
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
+                        child: senders[index] == email
+                            ? Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(16),
+                                      bottomLeft: Radius.circular(16),
+                                      bottomRight: Radius.circular(16)),
+                                  color: Colors.blue[800],
+                                ),
+                                child: Padding(
+                                    padding: EdgeInsets.all(8),
+                                    child: Text(
+                                      messages[index],
+                                      style: TextStyle(color: Colors.white),
+                                    )),
+                              )
+                            : Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(16),
+                                      bottomLeft: Radius.circular(16),
+                                      bottomRight: Radius.circular(16)),
+                                  color: Colors.blue[300],
+                                ),
+                                child: Padding(
+                                    padding: EdgeInsets.all(8),
+                                    child: Text(
+                                      messages[index],
+                                      style: TextStyle(color: Colors.white),
+                                    )),
+                              )));
+              },
+            )),
             Container(
               height: 50,
-              child: Row(children: <Widget>[
-                Flexible(child:
-                TextField(
-                  controller: textController,
-                  decoration: InputDecoration(hintText: "Send a message",
-                  focusColor: Colors.blue[800]),
-                )),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child:
-                Icon(Icons.send, color: Colors.blue[800]),)
-                ],),
+              child: Row(
+                children: <Widget>[
+                  Flexible(
+                      child: TextField(
+                        textCapitalization: TextCapitalization.sentences,
+                    controller: textController,
+                    decoration: InputDecoration(
+                        hintText: "Send a message",
+                        focusColor: Colors.blue[800]),
+                  )),
+                  GestureDetector(
+                      onTap: prepareMessage,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: Icon(Icons.send, color: Colors.blue[800]),
+                      ))
+                ],
+              ),
             ),
-
           ],
         )));
   }
@@ -158,9 +160,12 @@ class ChatState extends State<Chat> {
                         .reference()
                         .child("Messages")
                         .child(chatId)
-                        .update({"latest_value": newValue.toString()})
+                        .update({"latest_value": newValue.toString()}).then(
+                            (_) {
+                      textController.text = "";
+                    }),
                   }
-              })
+              }),
         });
   }
 

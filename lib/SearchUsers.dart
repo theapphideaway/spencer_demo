@@ -34,20 +34,8 @@ class SearchUsersState extends State<SearchUsers> {
     this.isMentee = isMentee;
     if(isMentee) tableName = "Mentors";
     else tableName = "Mentees";
-    searchUser();
+    getUsers();
   }
-
-
-
-  var europeanCountries = ['Albania', 'Andorra', 'Armenia', 'Austria',
-    'Azerbaijan', 'Belarus', 'Belgium', 'Bosnia and Herzegovina', 'Bulgaria',
-    'Croatia', 'Cyprus', 'Czech Republic', 'Denmark', 'Estonia', 'Finland',
-    'France', 'Georgia', 'Germany', 'Greece', 'Hungary', 'Iceland', 'Ireland',
-    'Italy', 'Kazakhstan', 'Kosovo', 'Latvia', 'Liechtenstein', 'Lithuania',
-    'Luxembourg', 'Macedonia', 'Malta', 'Moldova', 'Monaco', 'Montenegro',
-    'Netherlands', 'Norway', 'Poland', 'Portugal', 'Romania', 'Russia',
-    'San Marino', 'Serbia', 'Slovakia', 'Slovenia', 'Spain', 'Sweden',
-    'Switzerland', 'Turkey', 'Ukraine', 'United Kingdom', 'Vatican City'];
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +114,7 @@ class SearchUsersState extends State<SearchUsers> {
     );
   }
 
-  searchUser()async {
+  getUsers()async {
     Map<dynamic, dynamic> temps;
     var userResponse =
     await FirebaseDatabase.instance.reference().child(tableName);
@@ -156,5 +144,13 @@ class SearchUsersState extends State<SearchUsers> {
         isLoading = false;
       })
     });
+  }
+
+  searchUsers(){
+    if(!isMentee){
+//      for(var mentee in mentees){
+//        var name =
+//      }
+    }
   }
 }
