@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:splashscreen/splashscreen.dart';
 
 import 'Login.dart';
 
@@ -17,7 +18,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.light,
       ),
-      home: Login(),
-    );
+      home: SplashScreen(
+      seconds: 5,
+      navigateAfterSeconds:Login(),
+    image: new Image.asset('assets/wayaheadLogo.png'),
+    backgroundColor: Colors.blue[800],
+        photoSize: 100,
+        loaderColor: Colors.transparent,
+    ));
   }
 }

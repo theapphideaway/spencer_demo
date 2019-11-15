@@ -355,6 +355,7 @@ class SignUpState extends State<SignUp> {
   }
 
   startQuestionaire()async {
+    isLoading = true;
     if(confirmPasswordController.text == passwordController.text) {
       if (_radioValue == 0) {
         if (emailController.text != null && passwordController.text != null) {
@@ -363,6 +364,7 @@ class SignUpState extends State<SignUp> {
           addProfilePicture(mentee.Id, "Mentees", mentee);
           Navigator.push(context, MaterialPageRoute(
               builder: (context) => CreateMentee(mentee: mentee)));
+          isLoading = false;
         }
       } else {
         if (emailController.text != null && passwordController.text != null) {
@@ -371,6 +373,7 @@ class SignUpState extends State<SignUp> {
           addProfilePicture(mentee.Id, "Mentees", null, mentor);
           Navigator.push(context, MaterialPageRoute(
               builder: (context) => CreateMentor(mentor: mentor,)));
+          isLoading = false;
         }
       }
     } else{
