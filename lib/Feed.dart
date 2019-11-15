@@ -5,6 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart' as prefix0;
 import 'package:way_ahead/CommentPage.dart';
 import 'package:way_ahead/SearchUsers.dart';
 
@@ -70,6 +73,9 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
       setState(() {
         isSearchLoading = true;
         searchUsers();
+        if(searchController.text == ""){
+          getUsers();
+        }
       });
     });
     animation = Tween<double>(
@@ -82,6 +88,8 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    FlutterStatusbarcolor.setStatusBarColor(Colors.white);
+    FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
     return Scaffold(
 
       body: SafeArea(
@@ -348,12 +356,10 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
                                   ),
                                 ),
                               )
-                                  : SingleChildScrollView(child: Padding(
+                                  : Padding(
                                 padding: EdgeInsets.only(top: 0),
                                 child: Column(
-                                  children: <Widget>[Container(
-                                      height: 700,
-                                      child: ListView.builder(
+                                  children: <Widget>[Expanded(child: ListView.builder(
                                         itemCount: !isMentee? mentees.length: mentors.length,
                                         itemBuilder: (context, index) {
                                           return GestureDetector(
@@ -367,7 +373,7 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
                                                       child:Row(children: <Widget>[
                                                         Padding(
                                                             padding: EdgeInsets.symmetric(horizontal: 16),
-                                                            child: pictures[index] != null
+                                                            child: mentees[index].ProfilePicture != null || mentors[index].ProfilePicture != null
                                                                 ? Container(
                                                                 height: 45,
                                                                 width: 45,
@@ -375,12 +381,12 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
                                                                     borderRadius:
                                                                     BorderRadius.circular(30),
                                                                     image: DecorationImage(
-                                                                      image: MemoryImage(pictures[index]
+                                                                      image: MemoryImage(!isMentee? mentees[index].ProfilePicture: mentors[index].ProfilePicture
                                                                       ),
                                                                       fit: BoxFit.cover,
                                                                     )))
                                                                 : Image.asset(
-                                                              'assets/default_profile_picture.jpg',
+                                                              'assets/DefaultProfilePicture.png',
                                                               width: 40,
                                                               height: 40,
                                                             )),
@@ -396,7 +402,7 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
                               ),
                             )
                           ),)
-                        ),)
+                        ),
                       ],
                     )
                   ],
@@ -637,6 +643,8 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
   }
 
   getUsers()async {
+    mentors = new List<Mentor>();
+    mentees = new List<Mentee>();
     var searchTableName;
     if(isMentee) searchTableName = "Mentors";
     else searchTableName = "Mentees";
@@ -659,7 +667,7 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
           if (key == "last_name"&& value != null) person.LastName = value;
           if (key == "profile_picture"&& value != null){
             picture = base64Decode(value.toString());
-            pictures.add(picture);
+            person.ProfilePicture = picture;
           };
         });
         if (!isMentee&& person.FirstName != null) mentees.add(person);

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'Login.dart';
 
-void main() => runApp(MyApp());
+void main() => {
+      SystemChrome.setSystemUIOverlayStyle(
+          SystemUiOverlayStyle(statusBarColor: Colors.white)),
+      runApp(MyApp())
+    };
 
 class MyApp extends StatelessWidget {
   @override
@@ -11,10 +16,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.light,
-        appBarTheme: AppBarTheme(brightness: Brightness.dark)
       ),
       home: Login(),
     );
   }
 }
-

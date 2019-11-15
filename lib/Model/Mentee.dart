@@ -13,6 +13,6 @@ class Mentee{
   String MilitaryBranch;
   String MilitaryOccupation;
   String Certainty;
-  String ProfilePicture;
+  var ProfilePicture;
   bool IsMentor = false;
 }

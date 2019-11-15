@@ -26,6 +26,7 @@ class SignUpState extends State<SignUp> {
   Mentee mentee = new Mentee();
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
+  TextEditingController confirmPasswordController = new TextEditingController();
 
   void _handleRadioValueChange(int value) {
     setState(() {
@@ -287,6 +288,18 @@ class SignUpState extends State<SignUp> {
             ),
           ),
         ),
+        Padding(
+          padding: EdgeInsets.all(16),
+          child: TextField(
+            controller: confirmPasswordController,
+            obscureText: true,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.all(16),
+              hintText: "Confirm Password",
+              border: OutlineInputBorder(),
+            ),
+          ),
+        ),
         new Container(
           width: double.infinity,
           child: new Padding(
@@ -342,18 +355,29 @@ class SignUpState extends State<SignUp> {
   }
 
   startQuestionaire()async {
-    if(_radioValue == 0){
-      if(emailController.text != null && passwordController.text != null){
-        mentee.Id = await FirebaseProvider.firebaseProvider.signUp(emailController.text, passwordController.text);
-        addProfilePicture(mentee.Id, "Mentees", mentee);
-        Navigator.push(context, MaterialPageRoute(builder: (context) => CreateMentee(mentee: mentee)));
+    if(confirmPasswordController.text == passwordController.text) {
+      if (_radioValue == 0) {
+        if (emailController.text != null && passwordController.text != null) {
+          mentee.Id = await FirebaseProvider.firebaseProvider.signUp(
+              emailController.text, passwordController.text);
+          addProfilePicture(mentee.Id, "Mentees", mentee);
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) => CreateMentee(mentee: mentee)));
+        }
+      } else {
+        if (emailController.text != null && passwordController.text != null) {
+          mentor.id = await FirebaseProvider.firebaseProvider.signUp(
+              emailController.text, passwordController.text);
+          addProfilePicture(mentee.Id, "Mentees", null, mentor);
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) => CreateMentor(mentor: mentor,)));
+        }
       }
-    }else{
-      if(emailController.text != null && passwordController.text != null){
-       mentor.id = await FirebaseProvider.firebaseProvider.signUp(emailController.text, passwordController.text);
-       addProfilePicture(mentee.Id, "Mentees", null, mentor);
-       Navigator.push(context, MaterialPageRoute(builder: (context) => CreateMentor(mentor: mentor,)));
-      }
+    } else{
+      final snackBar = SnackBar(
+      content: Text('Passwords must match', style: TextStyle(fontSize: 18),),
+    );
+      Scaffold.of(context).showSnackBar(snackBar);
     }
   }
 
