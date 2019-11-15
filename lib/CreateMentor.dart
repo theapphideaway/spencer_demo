@@ -63,6 +63,7 @@ class CreateMentorState extends State<CreateMentor> {
                             right: 16,
                           ),
                           child: TextField(
+                            textCapitalization: TextCapitalization.words,
                             controller: firstNameController,
                             decoration: InputDecoration(
                                 contentPadding: EdgeInsets.all(16),
@@ -77,6 +78,7 @@ class CreateMentorState extends State<CreateMentor> {
                             right: 16,
                           ),
                           child: TextField(
+                            textCapitalization: TextCapitalization.words,
                             controller: lastNameController,
                             decoration: InputDecoration(
                                 contentPadding: EdgeInsets.all(16),
@@ -126,6 +128,7 @@ class CreateMentorState extends State<CreateMentor> {
                         Padding(
                           padding: EdgeInsets.all(16),
                           child: TextField(
+                            textCapitalization: TextCapitalization.sentences,
                             controller: bioController,
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.all(16),

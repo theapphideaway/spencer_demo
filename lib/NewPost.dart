@@ -60,6 +60,7 @@ class NewPostState extends State<NewPost> {
                 ],),
                 Padding(padding: EdgeInsets.all(16),
                 child: TextField(
+                  textCapitalization: TextCapitalization.sentences,
                   minLines: 10,
                   maxLines: 20,
                   keyboardType: TextInputType.multiline,
@@ -84,11 +85,13 @@ class NewPostState extends State<NewPost> {
         .reference()
         .child("Posts")
         .child(value.toString()).
-        set({"content": textController.text,
+        set({
+      "post_id":value,
+      "content": textController.text,
       "name": name,
       "user_picture": picture.toString(),
-      "id": id,
-      "isMentee": isMentee
+      "user_id": id,
+      "isMentee": isMentee,
     });
     Navigator.pop(context, true);
   }

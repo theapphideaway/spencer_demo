@@ -56,6 +56,7 @@ class ChatState extends State<Chat> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          brightness: Brightness.light,
           iconTheme: IconThemeData(
             color: Colors.blue[800], //change your color here
           ),
@@ -129,14 +130,6 @@ class ChatState extends State<Chat> {
                 Icon(Icons.send, color: Colors.blue[800]),)
                 ],),
             ),
-
-
-
-
-
-
-
-
 
           ],
         )));

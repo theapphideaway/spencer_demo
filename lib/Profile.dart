@@ -96,7 +96,6 @@ class ProfileState extends State<Profile> {
     getUser();
     super.initState();
     setState(() {
-      //isLoading = false;
     });
   }
 

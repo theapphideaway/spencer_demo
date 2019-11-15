@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:way_ahead/CommentPage.dart';
 import 'package:way_ahead/SearchUsers.dart';
 
 import 'Model/Mentee.dart';
@@ -233,7 +234,7 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
                                               child: Column(
                                                 children: <Widget>[
                                                   GestureDetector(
-                                                    onTap: ()=> goToProfile(posts[index].id, posts[index].isMentee),
+                                                    onTap: ()=> goToProfile(posts[index].userId, posts[index].isMentee),
                                                     child: Row(
                                                     children: <Widget>[
                                                       posts[index].picture !=
@@ -300,14 +301,18 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
                                                       ),
                                                     ),
                                                   ),
-                                                  Row(children: <Widget>[
-                                                    Padding(
-                                                      padding: EdgeInsets.symmetric(horizontal: 16),
-                                                      child: Icon(Icons.message, color: Colors.blue[800],),
-                                                    ),
-                                                    Text("Comment", style: TextStyle(color: Colors.blue[800],
-                                                    fontSize: 18),)
-                                                  ],)
+                                                  GestureDetector(
+                                                    onTap: ()=>goToCommentPage(posts[index]),
+                                                    child: Row(children: <Widget>[
+                                                      Padding(
+                                                        padding: EdgeInsets.symmetric(horizontal: 16),
+                                                        child: Icon(Icons.message, color: Colors.blue[800],),
+                                                      ),
+                                                      Text("Comment", style: TextStyle(color: Colors.blue[800],
+                                                          fontSize: 18),)
+                                                    ],)
+                                                  ),
+
                                                 ],
                                               )));
                                     }))
@@ -330,17 +335,20 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
     );
   }
 
+  goToCommentPage(Post post){
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => CommentPage(post: post,
+              userPicture: profileBytes.toString(),
+              isMentee: isMentee, )
+                ));
+  }
+
+
   goToProfile(String id, String isProfileMentee)async {
-    var tableName;
     bool profileMentee = isProfileMentee == "true";
-    if(profileMentee) {
-      mentee.Key = id;
-      tableName = "Mentees";
-    }
-    else {
-      mentor.Key = id;
-      tableName = "Mentors";
-    }
 
     Navigator.push(
         context,
@@ -516,9 +524,10 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
             print(key);
             value.forEach((key, value) {
               print(value);
+              if (key == "post_id") post.postId = value.toString();
               if (key == "name") post.name = value;
               if (key == "content") post.content = value;
-              if (key == "id") post.id = value;
+              if (key == "user_id") post.userId = value;
               if (key == "isMentee") post.isMentee = value.toString();
               if (key == "user_picture") {
                 post.picture = base64Decode(value.toString());

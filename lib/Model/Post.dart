@@ -1,7 +1,8 @@
 class Post{
+  String postId;
   String name;
   var picture;
   String content;
-  String id;
+  String userId;
   String isMentee;
 }

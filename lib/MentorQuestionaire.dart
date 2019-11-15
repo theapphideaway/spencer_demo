@@ -167,6 +167,7 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                             right: 16,
                                           ),
                                           child: TextField(
+                                            textCapitalization: TextCapitalization.words,
                                             controller: jobController,
                                             decoration: InputDecoration(
                                                 contentPadding: EdgeInsets.all(16),
@@ -179,6 +180,7 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                         Padding(
                                           padding: EdgeInsets.all(16),
                                           child: TextField(
+                                            textCapitalization: TextCapitalization.words,
                                             controller: companyController,
                                             decoration: InputDecoration(
                                               contentPadding: EdgeInsets.all(16),
@@ -383,6 +385,7 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                     Padding(
                                       padding: EdgeInsets.all(16),
                                       child: TextField(
+                                        textCapitalization: TextCapitalization.words,
                                         controller: schoolNameController,
                                         decoration: InputDecoration(
                                           contentPadding: EdgeInsets.all(16),
@@ -526,6 +529,7 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                               right: 16,
                                             ),
                                             child: TextField(
+                                              textCapitalization: TextCapitalization.words,
                                               controller: militaryBranchController,
                                               decoration: InputDecoration(
                                                   contentPadding: EdgeInsets.all(16),
@@ -538,6 +542,7 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                           Padding(
                                             padding: EdgeInsets.all(16),
                                             child: TextField(
+                                              textCapitalization: TextCapitalization.words,
                                               controller: militaryOccupationController,
                                               obscureText: true,
                                               decoration: InputDecoration(

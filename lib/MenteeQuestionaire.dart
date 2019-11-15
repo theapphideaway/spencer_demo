@@ -180,6 +180,7 @@ class MenteeQuestionaireState extends State<MenteeQuestionaire> {
                                 right: 16,
                               ),
                               child: TextField(
+                                textCapitalization: TextCapitalization.words,
                                 controller: isWork? jobController: isSchool? schoolNameController: isMilitary? militaryBranchController:"",
                                 decoration: InputDecoration(
                                     contentPadding: EdgeInsets.all(16),
@@ -192,6 +193,7 @@ class MenteeQuestionaireState extends State<MenteeQuestionaire> {
                             Padding(
                               padding: EdgeInsets.all(16),
                               child: TextField(
+                                textCapitalization: TextCapitalization.words,
                                 controller: isWork? companyController: isSchool? schoolMajorController: isMilitary? militaryOccupationController:"",
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.all(16),

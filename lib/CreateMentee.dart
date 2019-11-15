@@ -64,6 +64,7 @@ class CreateMenteeState extends State<CreateMentee> {
             right: 16,
           ),
           child: TextField(
+            textCapitalization: TextCapitalization.words,
             controller: firstNameController,
             decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(16),
@@ -78,6 +79,7 @@ class CreateMenteeState extends State<CreateMentee> {
             right: 16,
           ),
           child: TextField(
+            textCapitalization: TextCapitalization.words,
             controller: lastNameController,
             decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(16),
@@ -88,6 +90,7 @@ class CreateMenteeState extends State<CreateMentee> {
         Padding(
           padding: EdgeInsets.all(16),
           child: TextField(
+            keyboardType: TextInputType.phone,
             controller: phoneNumberController,
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(16),
@@ -126,6 +129,7 @@ class CreateMenteeState extends State<CreateMentee> {
         Padding(
           padding: EdgeInsets.all(16),
           child: TextField(
+            textCapitalization: TextCapitalization.sentences,
             controller: bioController,
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(16),

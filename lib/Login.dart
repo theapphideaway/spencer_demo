@@ -208,11 +208,6 @@ class LoginState extends State<Login>{
     getUser();
   }
 
-  onLogin(){
-    //TODO Configure android app to firebase
-    //FirebaseProvider.firebaseProvider.addMentor();
-  }
-
   getUser() async {
     try {
       await FirebaseAuth.instance.currentUser().then((user) =>  {
