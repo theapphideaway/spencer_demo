@@ -13,8 +13,9 @@ import 'Profile.dart';
 
 class SearchUsers extends StatefulWidget {
   final bool isMentee;
-  SearchUsers({Key key, @required this.isMentee});
-  SearchUsersState createState() => SearchUsersState(isMentee);
+  final String search;
+  SearchUsers({Key key, @required this.isMentee, @required this.search});
+  SearchUsersState createState() => SearchUsersState(isMentee, search);
 }
 
 
@@ -26,15 +27,21 @@ class SearchUsersState extends State<SearchUsers> {
   var picture;
   var pictures = List<Uint8List>();
   String tableName;
+  String search;
   List<Mentor> mentors = new List<Mentor>();
   List<Mentee> mentees = new List<Mentee>();
-  TextEditingController searchController = new TextEditingController();
 
-  SearchUsersState(bool isMentee){
+  SearchUsersState(bool isMentee, String search){
+    this.search = search;
     this.isMentee = isMentee;
     if(isMentee) tableName = "Mentors";
     else tableName = "Mentees";
-    getUsers();
+  }
+
+  @override
+  void initState() {
+    if(search == null)getUsers();
+    else searchUsers();
   }
 
   @override
@@ -91,21 +98,6 @@ class SearchUsersState extends State<SearchUsers> {
 
                                     ]))));
 
-
-
-
-
-//                          ListTile(
-//                          onTap: ()=>setState((){
-//                            globalIndex = index;
-//                            Navigator.push(context, MaterialPageRoute(builder: (context) =>
-//                            !isMentee? Profile(isMentee: isMentee,isGuest: true, mentee: mentees[globalIndex]):
-//                            Profile(isMentee: isMentee,isGuest: true, mentor: mentors[globalIndex])));
-//
-//                          }),
-//                          title: Text(!isMentee? mentees[index].FirstName + " " +mentees[index].LastName:
-//                          mentors[index].FirstName + " " +mentors[index].LastName),
-//                        );
                       },
                     ))
               ],
@@ -147,10 +139,28 @@ class SearchUsersState extends State<SearchUsers> {
   }
 
   searchUsers(){
+    var newMentees = new List<Mentee>();
+    var newMentors = new List<Mentor>();
     if(!isMentee){
-//      for(var mentee in mentees){
-//        var name =
-//      }
+      for(var mentee in mentees){
+        var name  = mentee.FirstName + " " + mentee.LastName;
+        if (name.contains(search)){
+          newMentees.add(mentee);
+        }
+      }
+      setState(() {
+        mentees = newMentees;
+      });
+    } else{
+      for(var mentor in mentors){
+        var name  = mentor.FirstName + " " + mentor.LastName;
+        if (name.contains(search)){
+          newMentors.add(mentor);
+        }
+      }
+      setState(() {
+        mentors = newMentors;
+      });
     }
   }
 }

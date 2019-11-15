@@ -138,7 +138,6 @@ class ChatState extends State<Chat> {
   }
 
   prepareMessage() async {
-    var randomTwo = Random.secure();
     var newValue;
     await getLastestValue().then((_) => {
           FirebaseAuth.instance.currentUser().then((user) => {

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -15,6 +16,7 @@ import 'Profile.dart';
 
 class Feed extends StatefulWidget {
   final bool isMentee;
+
   Feed({Key key, @required this.isMentee});
   FeedState createState() => FeedState(isMentee);
 }
@@ -31,14 +33,23 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
   bool isLoading = true;
   bool isSearching = false;
   bool isPictureVisible = true;
+  bool isSearchLoading = true;
   String industry;
   String userId;
   String name;
   var mentee = new Mentee();
   var mentor = new Mentor();
+  SearchUsers searchPage;
   List<Post> posts = new List<Post>();
   AnimationController animationController;
   Animation<double> animation;
+  int globalIndex = 0;
+  var picture;
+  var pictures = List<Uint8List>();
+  String tableName;
+  List<Mentor> mentors = new List<Mentor>();
+  List<Mentee> mentees = new List<Mentee>();
+  TextEditingController searchController = new TextEditingController();
 
   FeedState(bool isMentee) {
     this.isMentee = isMentee;
@@ -48,19 +59,19 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    searchPage = new SearchUsers(isMentee: isMentee, search: null);
     animationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 200),
     )..addListener(() => setState(() {}));
 
-//    animationController.addStatusListener((status)=>{
-//      setState((){
-//        if(isSearching){
-//          isPictureVisible = false;
-//        }
-//        if(searchWidth == 40) isPictureVisible = true;
-//      })
-//    });
+
+    searchController.addListener((){
+      setState(() {
+        isSearchLoading = true;
+        searchUsers();
+      });
+    });
     animation = Tween<double>(
       begin: !isSearching?0.0: 1.0,
       end: !isSearching?1.0: 0.0,
@@ -128,6 +139,7 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
                                                   padding: EdgeInsets.symmetric(
                                                       horizontal: 8),
                                                   child: TextField(
+                                                    controller: searchController,
                                                     style:
                                                         TextStyle(fontSize: 22),
                                                     decoration: InputDecoration(
@@ -325,7 +337,64 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
     duration: Duration(milliseconds: 200),
                           child: Container(
                             color: Colors.white,
-                            child: SearchUsers(isMentee: isMentee,),
+                            child: Scaffold(
+                              body: isSearchLoading
+                                  ? Container(
+                                color: Colors.white,
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    valueColor: new AlwaysStoppedAnimation<Color>(
+                                        Colors.blue[800]),
+                                  ),
+                                ),
+                              )
+                                  : SingleChildScrollView(child: Padding(
+                                padding: EdgeInsets.only(top: 0),
+                                child: Column(
+                                  children: <Widget>[Container(
+                                      height: 700,
+                                      child: ListView.builder(
+                                        itemCount: !isMentee? mentees.length: mentors.length,
+                                        itemBuilder: (context, index) {
+                                          return GestureDetector(
+                                              onTap: ()=> {globalIndex = index,
+                                                Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                                                !isMentee? Profile(isMentee: isMentee,isGuest: true, mentee: mentees[globalIndex], isGuestMentee: !isMentee,):
+                                                Profile(isMentee: isMentee,isGuest: true, mentor: mentors[globalIndex], isGuestMentee: !isMentee,)))},
+                                              child: Card(
+                                                  child: Padding(
+                                                      padding: EdgeInsets.all(16),
+                                                      child:Row(children: <Widget>[
+                                                        Padding(
+                                                            padding: EdgeInsets.symmetric(horizontal: 16),
+                                                            child: pictures[index] != null
+                                                                ? Container(
+                                                                height: 45,
+                                                                width: 45,
+                                                                decoration: BoxDecoration(
+                                                                    borderRadius:
+                                                                    BorderRadius.circular(30),
+                                                                    image: DecorationImage(
+                                                                      image: MemoryImage(pictures[index]
+                                                                      ),
+                                                                      fit: BoxFit.cover,
+                                                                    )))
+                                                                : Image.asset(
+                                                              'assets/default_profile_picture.jpg',
+                                                              width: 40,
+                                                              height: 40,
+                                                            )),
+                                                        Text(!isMentee? mentees[index].FirstName + " " +mentees[index].LastName:
+                                                        mentors[index].FirstName + " " +mentors[index].LastName, style: TextStyle(fontSize: 18),),
+
+                                                      ]))));
+
+                                        },
+                                      ))
+                                  ],
+                                ),),
+                              ),
+                            )
                           ),)
                         ),)
                       ],
@@ -558,11 +627,75 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
 
       if(isSearching){
         isPictureVisible = false;
+        getUsers();
       } else{
         showAfter();
       }
 
 
     });
+  }
+
+  getUsers()async {
+    var searchTableName;
+    if(isMentee) searchTableName = "Mentors";
+    else searchTableName = "Mentees";
+    Map<dynamic, dynamic> temps;
+    var userResponse =
+    await FirebaseDatabase.instance.reference().child(searchTableName);
+    userResponse.once().then((snapshot) => {
+      print(snapshot.value),
+      temps = snapshot.value,
+      temps.forEach((key, value) {
+        var person;
+        if (!isMentee) person = new Mentee();
+        else person = new Mentor();
+        print(key);
+        person.Key = key;
+        value.forEach((key, value) {
+          print(value);
+          var picture;
+          if (key == "first_name" && value != null) person.FirstName = value;
+          if (key == "last_name"&& value != null) person.LastName = value;
+          if (key == "profile_picture"&& value != null){
+            picture = base64Decode(value.toString());
+            pictures.add(picture);
+          };
+        });
+        if (!isMentee&& person.FirstName != null) mentees.add(person);
+        if(isMentee && person.FirstName != null) mentors.add(person);
+      }),
+      setState((){
+        isSearchLoading = false;
+      })
+    });
+  }
+
+  searchUsers(){
+    var newMentees = new List<Mentee>();
+    var newMentors = new List<Mentor>();
+    if(!isMentee){
+      for(var mentee in mentees){
+        var name  = mentee.FirstName.toLowerCase() + " " + mentee.LastName.toLowerCase();
+        if (name.contains(searchController.text.toLowerCase())){
+          newMentees.add(mentee);
+        }
+      }
+      setState(() {
+        mentees = newMentees;
+        isSearchLoading = false;
+      });
+    } else{
+      for(var mentor in mentors){
+        var name  = mentor.FirstName.toLowerCase() + " " + mentor.LastName.toLowerCase();
+        if (name.contains(searchController.text.toLowerCase())){
+          newMentors.add(mentor);
+        }
+      }
+      setState(() {
+        mentors = newMentors;
+        isSearchLoading = false;
+      });
+    }
   }
 }
