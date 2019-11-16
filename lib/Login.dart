@@ -32,6 +32,7 @@ class LoginState extends State<Login>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
         body: SafeArea(
             child:
             isLoading? Container(

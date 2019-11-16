@@ -15,9 +15,7 @@ class NewPost extends StatefulWidget {
   NewPost({Key key, @required this.name, @required this.picture,
     @required this.id, @required this.isMentee});
   NewPostState createState() => NewPostState(name, picture, id, isMentee);
-
 }
-
 
 class NewPostState extends State<NewPost> {
   String name;
@@ -69,8 +67,6 @@ class NewPostState extends State<NewPost> {
                       hintText: "Whats on your mind?",
                   ),
                 ))
-
-
               ],
             ))),
       ),

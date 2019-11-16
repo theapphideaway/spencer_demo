@@ -57,6 +57,7 @@ class MenteeQuestionaireState extends State<MenteeQuestionaire> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
         body: SafeArea(
             child: SingleChildScrollView(
                 child: Container(

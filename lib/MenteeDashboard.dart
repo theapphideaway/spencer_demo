@@ -23,6 +23,7 @@ class MenteeDashboardState extends State<MenteeDashboard>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped, // new

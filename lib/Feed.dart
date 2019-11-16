@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart' as prefix0;
 import 'package:way_ahead/CommentPage.dart';
-import 'package:way_ahead/SearchUsers.dart';
 
 import 'Model/Mentee.dart';
 import 'Model/Mentor.dart';
@@ -42,7 +41,6 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
   String name;
   var mentee = new Mentee();
   var mentor = new Mentor();
-  SearchUsers searchPage;
   List<Post> posts = new List<Post>();
   AnimationController animationController;
   Animation<double> animation;
@@ -62,7 +60,6 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    searchPage = new SearchUsers(isMentee: isMentee, search: null);
     animationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 200),
@@ -70,6 +67,7 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
 
 
     searchController.addListener((){
+      isSearchLoading = true;
       setState(() {
         isSearchLoading = true;
         searchUsers();
@@ -91,7 +89,7 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
     FlutterStatusbarcolor.setStatusBarColor(Colors.white);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
     return Scaffold(
-
+      backgroundColor: Colors.white,
       body: SafeArea(
           child: isLoading
               ? Center(
@@ -373,7 +371,7 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
                                                       child:Row(children: <Widget>[
                                                         Padding(
                                                             padding: EdgeInsets.symmetric(horizontal: 16),
-                                                            child: mentees[index].ProfilePicture != null || mentors[index].ProfilePicture != null
+                                                            child: mentees[index].ProfilePicture.length > 100
                                                                 ? Container(
                                                                 height: 45,
                                                                 width: 45,
@@ -385,11 +383,19 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
                                                                       ),
                                                                       fit: BoxFit.cover,
                                                                     )))
-                                                                : Image.asset(
-                                                              'assets/DefaultProfilePicture.png',
-                                                              width: 40,
-                                                              height: 40,
-                                                            )),
+                                                                : Container(
+                                                                height: 45,
+                                                                width: 45,
+                                                                decoration: BoxDecoration(
+                                                                    borderRadius:
+                                                                    BorderRadius.circular(
+                                                                        30),
+                                                                    image: DecorationImage(
+                                                                      image: AssetImage(
+                                                                        'assets/DefaultProfilePicture.png',
+                                                                      ),
+                                                                      fit: BoxFit.cover,
+                                                                    )))),
                                                         Text(!isMentee? mentees[index].FirstName + " " +mentees[index].LastName:
                                                         mentors[index].FirstName + " " +mentors[index].LastName, style: TextStyle(fontSize: 18),),
 
@@ -680,9 +686,10 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
   }
 
   searchUsers(){
+    isSearchLoading = true;
     var newMentees = new List<Mentee>();
     var newMentors = new List<Mentor>();
-    if(!isMentee){
+    if(!isMentee ){
       for(var mentee in mentees){
         var name  = mentee.FirstName.toLowerCase() + " " + mentee.LastName.toLowerCase();
         if (name.contains(searchController.text.toLowerCase())){

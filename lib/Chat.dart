@@ -55,6 +55,7 @@ class ChatState extends State<Chat> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           brightness: Brightness.light,
           iconTheme: IconThemeData(

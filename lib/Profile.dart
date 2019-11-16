@@ -201,6 +201,7 @@ class ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
          appBar: isGuest?AppBar(
           iconTheme: IconThemeData(
             color: Colors.blue[800], //change your color here

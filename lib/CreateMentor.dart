@@ -25,6 +25,7 @@ class CreateMentorState extends State<CreateMentor> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
         body: SafeArea(
             child: SingleChildScrollView(
                 child: Container(
