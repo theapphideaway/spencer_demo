@@ -545,7 +545,6 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                             child: TextField(
                                               textCapitalization: TextCapitalization.words,
                                               controller: militaryOccupationController,
-                                              obscureText: true,
                                               decoration: InputDecoration(
                                                 contentPadding: EdgeInsets.all(16),
                                                 hintText: "Military Occupation",
@@ -560,7 +559,6 @@ class MentorQuestionaireState extends State<MentorQuestionaire> {
                                             child: TextField(
                                               controller: yearsServedController,
                                               keyboardType: TextInputType.number,
-                                              obscureText: true,
                                               decoration: InputDecoration(
                                                 contentPadding: EdgeInsets.all(16),
                                                 hintText: "Years Served",

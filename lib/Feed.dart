@@ -371,8 +371,7 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
                                                       child:Row(children: <Widget>[
                                                         Padding(
                                                             padding: EdgeInsets.symmetric(horizontal: 16),
-                                                            child: mentees[index].ProfilePicture.length > 100
-                                                                ? Container(
+                                                            child:Container(
                                                                 height: 45,
                                                                 width: 45,
                                                                 decoration: BoxDecoration(
@@ -383,19 +382,20 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
                                                                       ),
                                                                       fit: BoxFit.cover,
                                                                     )))
-                                                                : Container(
-                                                                height: 45,
-                                                                width: 45,
-                                                                decoration: BoxDecoration(
-                                                                    borderRadius:
-                                                                    BorderRadius.circular(
-                                                                        30),
-                                                                    image: DecorationImage(
-                                                                      image: AssetImage(
-                                                                        'assets/DefaultProfilePicture.png',
-                                                                      ),
-                                                                      fit: BoxFit.cover,
-                                                                    )))),
+//                                                                : Container(
+//                                                                height: 45,
+//                                                                width: 45,
+//                                                                decoration: BoxDecoration(
+//                                                                    borderRadius:
+//                                                                    BorderRadius.circular(
+//                                                                        30),
+//                                                                    image: DecorationImage(
+//                                                                      image: AssetImage(
+//                                                                        'assets/DefaultProfilePicture.png',
+//                                                                      ),
+//                                                                      fit: BoxFit.cover,
+//                                                                    )))
+                                              ),
                                                         Text(!isMentee? mentees[index].FirstName + " " +mentees[index].LastName:
                                                         mentors[index].FirstName + " " +mentors[index].LastName, style: TextStyle(fontSize: 18),),
 
@@ -679,9 +679,11 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
         if (!isMentee&& person.FirstName != null) mentees.add(person);
         if(isMentee && person.FirstName != null) mentors.add(person);
       }),
+
+    }).then((_){
       setState((){
         isSearchLoading = false;
-      })
+      });
     });
   }
 

@@ -289,7 +289,7 @@ class SignUpState extends State<SignUp> {
           ),
         ),
         Padding(
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.only(right: 16, top: 0, left: 16, bottom: 16),
           child: TextField(
             controller: confirmPasswordController,
             obscureText: true,
