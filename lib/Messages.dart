@@ -132,24 +132,34 @@ class MessagesState extends State<Messages>{
   }
 
   getConversations()async {
-    var id = await FirebaseProvider.firebaseProvider.getUserId();
-    usersAndChatIds = await FirebaseProvider.firebaseProvider.getMessages(isMentee, id);
-    getAllUsers(id);
+    try {
+      var id = await FirebaseProvider.firebaseProvider.getUserId();
+      usersAndChatIds =
+      await FirebaseProvider.firebaseProvider.getMessages(isMentee, id);
+      getAllUsers(id);
+    } catch(e){
+      isLoading = false;
+    }
   }
 
   getAllUsers(String id)async {
-    var basicUsers = List<BasicChatUser>();
-    usersAndChatIds.forEach((key, value)async {
-      await FirebaseProvider.firebaseProvider.getUserInfoBasic(!isMentee, key, value).then((user)=>{
-        basicUsers.add(user),
-        print(basicUsers),
-      setState(() {
-      contacts = basicUsers;
-      isLoading = false;
-      })
+    try {
+      var basicUsers = List<BasicChatUser>();
+      usersAndChatIds.forEach((key, value) async {
+        await FirebaseProvider.firebaseProvider.getUserInfoBasic(
+            !isMentee, key, value).then((user) =>
+        {
+          basicUsers.add(user),
+          print(basicUsers),
+          setState(() {
+            contacts = basicUsers;
+            isLoading = false;
+          })
+        });
       });
-
-    });
+    }catch(e){
+      isLoading = false;
+    }
 
   }
 

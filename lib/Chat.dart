@@ -114,13 +114,14 @@ class ChatState extends State<Chat> {
               },
             )),
             Container(
-              height: 50,
               child: Row(
                 children: <Widget>[
                   Flexible(
                       child: TextField(
+                        maxLines: null,
                         textCapitalization: TextCapitalization.sentences,
                     controller: textController,
+                    keyboardType: TextInputType.multiline,
                     decoration: InputDecoration(
                         hintText: "Send a message",
                         focusColor: Colors.blue[800]),

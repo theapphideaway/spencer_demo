@@ -430,6 +430,7 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
 
   goToProfile(String id, String isProfileMentee)async {
     bool profileMentee = isProfileMentee == "true";
+    profileMentee? mentee.Key = id: mentor.Key = id;
 
     Navigator.push(
         context,
