@@ -21,9 +21,9 @@ class MyApp extends StatelessWidget {
       home: SplashScreen(
       seconds: 2,
       navigateAfterSeconds:Login(),
-    image: new Image.asset('assets/wayaheadLogo.png'),
+    image: new Image.asset('assets/logo_splash.png'),
     backgroundColor: Colors.blue[800],
-        photoSize: 100,
+        photoSize: 260,
         loaderColor: Colors.transparent,
     ));
   }
