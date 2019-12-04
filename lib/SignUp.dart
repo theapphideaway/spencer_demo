@@ -272,7 +272,7 @@ class SignUpState extends State<SignUp> {
             controller: emailController,
             decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(16),
-                hintText: "Username",
+                hintText: "Email",
                 border: OutlineInputBorder()),
           ),
         ),
@@ -359,21 +359,28 @@ class SignUpState extends State<SignUp> {
     if(confirmPasswordController.text == passwordController.text) {
       if (_radioValue == 0) {
         if (emailController.text != null && passwordController.text != null) {
-          mentee.Id = await FirebaseProvider.firebaseProvider.signUp(
-              emailController.text, passwordController.text);
-          addProfilePicture(mentee.Id, "Mentees", mentee);
-          Navigator.push(context, MaterialPageRoute(
-              builder: (context) => CreateMentee(mentee: mentee)));
-          isLoading = false;
+          await FirebaseProvider.firebaseProvider.signUp(
+              emailController.text, passwordController.text).then((id){
+                mentee.Id = id;
+            addProfilePicture(mentee.Id, "Mentees", mentee);
+            Navigator.push(context, MaterialPageRoute(
+                builder: (context) => CreateMentee(mentee: mentee)));
+            isLoading = false;
+          });
+
+
         }
       } else {
         if (emailController.text != null && passwordController.text != null) {
-          mentor.id = await FirebaseProvider.firebaseProvider.signUp(
-              emailController.text, passwordController.text);
-          addProfilePicture(mentee.Id, "Mentees", null, mentor);
-          Navigator.push(context, MaterialPageRoute(
-              builder: (context) => CreateMentor(mentor: mentor,)));
-          isLoading = false;
+          await FirebaseProvider.firebaseProvider.signUp(
+              emailController.text, passwordController.text).then((id){
+                mentor.id = id;
+                addProfilePicture(mentee.Id, "Mentees", null, mentor);
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => CreateMentor(mentor: mentor,)));
+                isLoading = false;
+          });
+
         }
       }
     } else{
@@ -388,10 +395,10 @@ class SignUpState extends State<SignUp> {
       profilePicture = await ImagePicker.pickImage(source: ImageSource.gallery);
   }
 
-  addProfilePicture(String id, String tableName,[Mentee mentee, Mentor mentor]) async {
+  Future addProfilePicture(String id, String tableName,[Mentee mentee, Mentor mentor]) async {
     var imageBytes = profilePicture.readAsBytesSync();
-      mentee.ProfilePicture = await base64Encode(imageBytes);
-    mentor.ProfilePicture = await base64Encode(imageBytes);
+    if(mentee != null) mentee.ProfilePicture = await base64Encode(imageBytes);
+    if(mentor != null)mentor.ProfilePicture = await base64Encode(imageBytes);
 
   }
 }

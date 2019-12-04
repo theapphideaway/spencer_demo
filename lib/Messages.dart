@@ -138,7 +138,9 @@ class MessagesState extends State<Messages>{
       await FirebaseProvider.firebaseProvider.getMessages(isMentee, id);
       getAllUsers(id);
     } catch(e){
-      isLoading = false;
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -156,6 +158,9 @@ class MessagesState extends State<Messages>{
             isLoading = false;
           })
         });
+      });
+      setState(() {
+        isLoading = false;
       });
     }catch(e){
       isLoading = false;
