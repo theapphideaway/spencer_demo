@@ -489,7 +489,6 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
             {
               finalTempString = base64Decode(temp.toString()),
               setState(() {
-                isLoading = false;
                 profileBytes = temp;
                 profilePictureUrl = finalTempString;
               }),
@@ -497,9 +496,6 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
           else
             {
               profilePictureUrl = null,
-              setState(() {
-                isLoading = false;
-              })
             },
         });
   }
@@ -617,6 +613,9 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
             });
             posts.add(post);
           }),
+      setState(() {
+        isLoading = false;
+      })
         });
   }
 
