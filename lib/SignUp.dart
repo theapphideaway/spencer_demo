@@ -355,7 +355,9 @@ class SignUpState extends State<SignUp> {
   }
 
   startQuestionaire()async {
-    isLoading = true;
+    setState(() {
+      isLoading = true;
+    });
     if(confirmPasswordController.text == passwordController.text) {
       if (_radioValue == 0) {
         if (emailController.text != null && passwordController.text != null) {
