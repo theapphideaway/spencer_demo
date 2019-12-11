@@ -381,7 +381,8 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
                                                                       image: MemoryImage(!isMentee? mentees[index].ProfilePicture: mentors[index].ProfilePicture
                                                                       ),
                                                                       fit: BoxFit.cover,
-                                                                    )))
+                                                                    )
+                                                                ))
 //                                                                : Container(
 //                                                                height: 45,
 //                                                                width: 45,

@@ -40,7 +40,7 @@ android {
         applicationId "io.wayahead.way_ahead"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode flutterVersionCode.toInteger()
+        versionCode 3
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

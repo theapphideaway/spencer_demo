@@ -527,7 +527,7 @@ class ProfileState extends State<Profile> {
             crossAxisAlignment: WrapCrossAlignment.start,
             runSpacing: 5.0,
             spacing: 5.0,
-            children: !isMentee?<Widget>[
+            children: !isMentee && !isGuest?<Widget>[
               Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
@@ -596,7 +596,7 @@ class ProfileState extends State<Profile> {
                           padding: EdgeInsets.all(8), child: Text(detailSeven)),
                     )),
               )
-            ]:<Widget>[
+            ]:isGuest && !isMentee?<Widget>[
               Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
@@ -637,7 +637,7 @@ class ProfileState extends State<Profile> {
                     child: Padding(
                         padding: EdgeInsets.all(8), child: Text(certainty)),
                   )),
-            ],
+            ]: Container(),
           ),
         ),
         Visibility(

@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:way_ahead/CreateMentee.dart';
 import 'package:way_ahead/CreateMentor.dart';
@@ -22,6 +23,8 @@ class SignUpState extends State<SignUp> {
   var profilePicture;
   int _radioValue = 0;
   bool isLoading = false;
+  bool hasError = false;
+  String errorMessage = " ";
   Mentor mentor = new Mentor();
   Mentee mentee = new Mentee();
   TextEditingController emailController = new TextEditingController();
@@ -300,10 +303,19 @@ class SignUpState extends State<SignUp> {
             ),
           ),
         ),
+
+        Visibility(
+          visible: hasError,
+          child: Padding(
+            padding: EdgeInsets.only(left: 16),
+            child: Text(errorMessage, style: TextStyle(color: Colors.red),),
+          ),
+        ),
+
         new Container(
           width: double.infinity,
           child: new Padding(
-            padding: EdgeInsets.only(left: 16, top: 10, right: 16, bottom: 32),
+            padding: EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 32),
             child: RaisedButton(
               shape: RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(10.0)),
@@ -358,38 +370,44 @@ class SignUpState extends State<SignUp> {
     setState(() {
       isLoading = true;
     });
-    if(confirmPasswordController.text == passwordController.text) {
-      if (_radioValue == 0) {
-        if (emailController.text != null && passwordController.text != null) {
-          await FirebaseProvider.firebaseProvider.signUp(
-              emailController.text, passwordController.text).then((id){
-                mentee.Id = id;
-            addProfilePicture(mentee.Id, "Mentees", mentee);
-            Navigator.push(context, MaterialPageRoute(
-                builder: (context) => CreateMentee(mentee: mentee)));
+    if(confirmPasswordController.text == passwordController.text ) {
+      if(confirmPasswordController.text.length > 7) {
+        if (_radioValue == 0) {
+          if (emailController.text != null && passwordController.text != null) {
+            await FirebaseProvider.firebaseProvider.signUp(
+                emailController.text, passwordController.text).then((id) {
+              mentee.Id = id;
+              addProfilePicture(mentee);
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => CreateMentee(mentee: mentee)));
+              isLoading = false;
+            });
+          }
+        } else {
+          if (emailController.text != null && passwordController.text != null) {
+            await FirebaseProvider.firebaseProvider.signUp(
+                emailController.text, passwordController.text).then((id) {
+              mentor.id = id;
+              addProfilePicture(null, mentor);
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => CreateMentor(mentor: mentor,)));
+              isLoading = false;
+            });
+          }
+        }
+      } else{
+        hasError = true;
+          errorMessage = 'Password must be at least 8 characters.';
+          setState(() {
             isLoading = false;
           });
-
-
-        }
-      } else {
-        if (emailController.text != null && passwordController.text != null) {
-          await FirebaseProvider.firebaseProvider.signUp(
-              emailController.text, passwordController.text).then((id){
-                mentor.id = id;
-                addProfilePicture(mentee.Id, "Mentees", null, mentor);
-                Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => CreateMentor(mentor: mentor,)));
-                isLoading = false;
-          });
-
-        }
       }
     } else{
-      final snackBar = SnackBar(
-      content: Text('Passwords must match', style: TextStyle(fontSize: 18),),
-    );
-      Scaffold.of(context).showSnackBar(snackBar);
+      setState(() {
+        hasError = true;
+        errorMessage = "Passwords must be the same.";
+        isLoading = false;
+      });
     }
   }
 
@@ -397,10 +415,28 @@ class SignUpState extends State<SignUp> {
       profilePicture = await ImagePicker.pickImage(source: ImageSource.gallery);
   }
 
-  Future addProfilePicture(String id, String tableName,[Mentee mentee, Mentor mentor]) async {
-    var imageBytes = profilePicture.readAsBytesSync();
-    if(mentee != null) mentee.ProfilePicture = await base64Encode(imageBytes);
-    if(mentor != null)mentor.ProfilePicture = await base64Encode(imageBytes);
+  Future addProfilePicture([Mentee mentee, Mentor mentor]) async {
+    if(profilePicture == null) {
+      var file = await rootBundle.load('assets/DefaultProfilePicture.png');
+
+      if (mentee != null)
+        mentee.ProfilePicture = await base64Encode(file.buffer.asUint8List());
+      if (mentor != null)
+        mentor.ProfilePicture = await base64Encode(file.buffer.asUint8List());
+
+      setState(() {
+        isLoading = false;
+      });
+    } else{
+      var imageBytes = profilePicture.readAsBytesSync();
+      if (mentee != null)
+        mentee.ProfilePicture = await base64Encode(imageBytes);
+      if (mentor != null)
+        mentor.ProfilePicture = await base64Encode(imageBytes);
+      setState(() {
+        isLoading = false;
+      });
+    }
 
   }
 }

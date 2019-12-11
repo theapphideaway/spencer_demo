@@ -20,7 +20,10 @@ class FirebaseProvider{
   }
 
   Future<String> signUp(String email, String password)async {
-    AuthResult result = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+    AuthResult result = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password).catchError((error){
+      print(error);
+      print("HELLO YOU HAVE AN ERROR");
+    });
     FirebaseUser user = result.user;
     return user.uid;
 
