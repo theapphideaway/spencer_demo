@@ -38,7 +38,7 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
   bool isSearchLoading = true;
   String industry;
   String userId;
-  String name;
+  String Name;
   var mentee = new Mentee();
   var mentor = new Mentor();
   List<Post> posts = new List<Post>();
@@ -499,6 +499,7 @@ class FeedState extends State<Feed> with TickerProviderStateMixin {
               profilePictureUrl = null,
             },
         });
+
   }
 
   getMentor(String id) async {

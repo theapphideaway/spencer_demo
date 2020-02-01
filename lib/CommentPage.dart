@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,7 @@ class CommentPageState extends State<CommentPage> {
   @override
   void initState() {
     getComments();
+    getUser();
     super.initState();
   }
 
@@ -256,7 +258,7 @@ class CommentPageState extends State<CommentPage> {
             .child(value.toString())
             .set({
           "content": commentController.text,
-          "name": post.name,
+          "name": name,
           "user_picture": userPicture,
           "id": id,
           "isMentee": isMentee
@@ -269,4 +271,57 @@ class CommentPageState extends State<CommentPage> {
     commentController.text = "";
     getComments();
   }
+
+
+  getUser() async {
+    try {
+      await FirebaseAuth.instance.currentUser().then((user) =>  {
+        isMentee? getMentee(user.uid): getMentor(user.uid)
+      });
+
+    } catch (e) {
+
+    }
+  }
+
+  getMentee(String id) async {
+    var lastName;
+    var firstName;
+    var first = await FirebaseDatabase.instance.reference()
+        .child("Mentees").child(id).child("first_name");
+
+    var last = await FirebaseDatabase.instance.reference()
+        .child("Mentees").child(id).child("last_name");
+
+    first.once().then((firstNameSnapshot){
+      firstName = firstNameSnapshot.value;
+    }).then((_){
+      last.once().then((lastNameSnapshot){
+        lastName = lastNameSnapshot.value;
+        name = firstName + " " + lastName;
+      });
+    });
+  }
+
+  getMentor(String id)async{
+    var lastName;
+    var firstName;
+    var first = await FirebaseDatabase.instance.reference()
+        .child("Mentors").child(id).child("first_name");
+
+    var last = await FirebaseDatabase.instance.reference()
+        .child("Mentors").child(id).child("last_name");
+
+    first.once().then((firstNameSnapshot){
+      firstName = firstNameSnapshot.value;
+    }).then((_){
+      last.once().then((lastNameSnapshot){
+        lastName = lastNameSnapshot.value;
+        name = firstName + " " + lastName;
+      });
+    });
+
+
+  }
+
 }
