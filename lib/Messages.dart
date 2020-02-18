@@ -8,7 +8,8 @@ import 'Model/Post.dart';
 
 class Messages extends StatefulWidget{
   final isMentee;
-  Messages({Key key, @required this.isMentee});
+
+  Messages({Key key, @required this.isMentee}) : super(key: key);
   MessagesState createState() => MessagesState(isMentee);
 }
 
